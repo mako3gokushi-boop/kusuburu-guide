@@ -4,11 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>くすぶると過ごす隠岐の島 | くすぶるハウス</title>
-  <meta name="description" content="隠岐の島のゲストハウス「くすぶるハウス」滞在ガイド。来島月に合わせた気候・服装・グルメ・観光スポット情報をお届けします。">
+  <meta name="description" content="隠岐の島のゲストハウス「くすぶるハウス」滞在ガイド。来島月に合わせた気候・服装・グルメ・観光スポット情報。">
   <meta property="og:title" content="くすぶると過ごす隠岐の島">
   <meta property="og:description" content="あなたの来島月に合わせた、隠岐の島旅ガイド">
   <meta property="og:image" content="https://kusuburu-house.com/img/ogp.jpg">
-  <meta property="og:type" content="website">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -21,933 +20,611 @@
             body: ['"Noto Sans JP"', 'sans-serif'],
           },
           colors: {
-            wood: { 50:'#faf6f0',100:'#f0e6d3',200:'#e0ccaa',300:'#c9a96e',400:'#b8934f',500:'#96763a',600:'#7a5d2e',700:'#5e4623',800:'#3d2e17',900:'#2a1f10' },
-            leaf: { 50:'#f0f7f0',100:'#d4e8d4',200:'#a8d1a8',300:'#6db56d',400:'#4a9a4a',500:'#3a7a3a',600:'#2d5e2d' },
-            smoke: { 50:'#f8f7f5',100:'#eeece8',200:'#ddd9d2',300:'#c4bfb5',400:'#a39d91',500:'#7d776c' },
-            spring: { 400:'#e8a0b4',500:'#d4728e' },
-            summer: { 400:'#5aadcc',500:'#3d8fb0' },
-            autumn: { 400:'#d4945a',500:'#b87a42' },
+            kwood: {
+              50:'#faf8f5',100:'#f0ebe3',200:'#e0d5c5',300:'#c9a96e',
+              400:'#b8934f',500:'#96763a',600:'#7a5d2e',700:'#5e4623',
+              800:'#3d2e17',900:'#2a1f10',950:'#1a1410'
+            }
           }
         }
       }
     }
   </script>
   <style>
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    body{font-family:'Noto Sans JP',sans-serif;background:#faf6f0;color:#2a1f10}
-    .font-display{font-family:'Zen Maru Gothic',sans-serif}
+    :root {
+      --accent:#b8934f;
+      --accent-glow:rgba(184,147,79,0.25);
+      --surface:#faf8f5;
+      --surface-alt:#f0ebe3;
+      --text-primary:#1a1410;
+      --text-secondary:#5e4623;
+      --text-muted:#8c8377;
+      --radius-md:12px;
+      --radius-lg:16px;
+      --radius-pill:999px;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0}
     html{scroll-behavior:smooth}
+    body{font-family:'Noto Sans JP',sans-serif;background:var(--surface);color:var(--text-primary);overflow-x:hidden}
+    .font-display{font-family:'Zen Maru Gothic',sans-serif}
 
-    .hero-bg{
-      background:linear-gradient(135deg,#3d2e17 0%,#5e4623 40%,#3d2e17 100%);
-      position:relative;overflow:hidden;
+    /* ===== HERO ===== */
+    .hero{
+      position:relative;min-height:85vh;display:flex;flex-direction:column;
+      justify-content:flex-end;padding:0 24px 48px;overflow:hidden;
     }
-    .hero-bg::before{
+    .hero-img{
+      position:absolute;inset:0;
+      background:url('https://kusuburu-house.com/img/main-pc.jpg') center/cover no-repeat;
+    }
+    .hero-img::after{
       content:'';position:absolute;inset:0;
-      background:radial-gradient(ellipse at 30% 50%,rgba(201,169,110,0.15) 0%,transparent 60%),
-                  radial-gradient(ellipse at 70% 30%,rgba(201,169,110,0.1) 0%,transparent 50%);
+      background:linear-gradient(to bottom,rgba(26,20,16,0.2) 0%,rgba(26,20,16,0.55) 60%,rgba(26,20,16,0.85) 100%);
     }
-
-    .month-btn{
-      padding:14px 8px;border-radius:14px;font-weight:600;font-size:15px;
-      background:white;color:#5e4623;border:2px solid transparent;
-      box-shadow:0 1px 4px rgba(42,31,16,0.08);
-      transition:all 0.3s;cursor:pointer;
+    .hero-content{position:relative;z-index:2;max-width:540px;margin:0 auto;text-align:center}
+    .hero-title{
+      font-size:clamp(32px,7vw,52px);font-weight:700;line-height:1.2;
+      color:white;letter-spacing:0.02em;
     }
-    .month-btn:active{transform:scale(0.96)}
-    .month-btn.selected{
-      background:var(--accent,#c9a96e);color:white;
-      box-shadow:0 4px 12px rgba(201,169,110,0.4);border-color:var(--accent,#c9a96e);
-    }
-    .month-btn.off-season{
-      background:#eeece8;color:#a39d91;box-shadow:none;cursor:default;
-    }
-
-    .card{
-      background:white;border-radius:16px;
-      box-shadow:0 1px 3px rgba(42,31,16,0.08),0 4px 12px rgba(42,31,16,0.04);
-    }
-
-    .spot-card{
-      min-width:220px;border-radius:14px;overflow:hidden;
-      box-shadow:0 2px 8px rgba(42,31,16,0.1);flex-shrink:0;background:white;
-    }
-    .spot-img{
-      height:150px;background-size:cover;background-position:center;
-      display:flex;align-items:center;justify-content:center;position:relative;
-    }
-    .spot-img::after{
-      content:'';position:absolute;inset:0;
-      background:linear-gradient(to top,rgba(42,31,16,0.4) 0%,transparent 50%);
-    }
-    .spot-emoji{position:relative;z-index:1;font-size:40px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))}
-
-    .scroll-row{
-      display:flex;gap:14px;overflow-x:auto;padding:4px 0 16px;
-      -webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;
-    }
-    .scroll-row::-webkit-scrollbar{display:none}
-    .scroll-row>*{scroll-snap-align:start}
-
-    .check-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eeece8;font-size:14px}
-    .check-item:last-child{border-bottom:none}
-    .check-item input[type="checkbox"]{
-      width:20px;height:20px;accent-color:#96763a;cursor:pointer;flex-shrink:0;
-    }
-    .check-item.checked label{text-decoration:line-through;color:#a39d91}
+    .hero-sub{color:rgba(255,255,255,0.75);font-size:14px;margin-top:12px}
+    .hero-lang{position:absolute;top:16px;right:24px;z-index:10;display:flex;gap:6px}
 
     .lang-btn{
-      padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;
-      cursor:pointer;transition:all 0.2s;border:none;
+      padding:6px 16px;border-radius:var(--radius-pill);font-size:12px;font-weight:600;
+      cursor:pointer;transition:all 0.3s;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:rgba(255,255,255,0.7);
     }
-    .lang-btn.active{background:#c9a96e;color:white}
-    .lang-btn:not(.active){background:rgba(255,255,255,0.2);color:rgba(255,255,255,0.7)}
+    .lang-btn.active{background:rgba(255,255,255,0.15);color:white;border-color:rgba(255,255,255,0.5);backdrop-filter:blur(8px)}
+    .lang-btn:hover{border-color:rgba(255,255,255,0.5)}
 
+    .scroll-hint{
+      position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:2;
+      animation:bounce 2s infinite;color:rgba(255,255,255,0.5);
+    }
+    @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+
+    /* ===== MONTH SELECT ===== */
+    .month-section{background:var(--kwood-950,#1a1410);padding:48px 24px 56px}
+    .month-grid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+      max-width:400px;margin:0 auto;
+    }
+    .month-btn{
+      padding:16px 8px;border-radius:var(--radius-md);font-weight:600;font-size:15px;
+      background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);
+      border:1.5px solid rgba(255,255,255,0.08);cursor:pointer;
+      transition:all 0.3s ease;
+    }
+    .month-btn:hover{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.85);border-color:rgba(255,255,255,0.15)}
+    .month-btn:active{transform:scale(0.96)}
+    .month-btn.selected{
+      background:var(--accent);color:white;
+      border-color:var(--accent);
+      box-shadow:0 0 24px var(--accent-glow);
+    }
+    .month-btn.off-season{
+      background:rgba(255,255,255,0.02);color:rgba(255,255,255,0.2);
+      border-color:transparent;cursor:default;
+    }
+    .month-btn.off-season:hover{background:rgba(255,255,255,0.02);color:rgba(255,255,255,0.2)}
+
+    /* ===== SECTIONS ===== */
+    .sec{padding:56px 24px}
+    .sec-alt{background:var(--surface-alt)}
+    .sec-dark{background:var(--kwood-950,#1a1410);color:white}
+    .sec-inner{max-width:540px;margin:0 auto}
+
+    .sec-label{
+      font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;
+      color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:8px;
+    }
+    .sec-label i{width:16px;height:16px}
+    .sec-heading{
+      font-size:clamp(22px,5vw,28px);font-weight:700;line-height:1.3;margin-bottom:20px;
+    }
+
+    /* ===== CARDS ===== */
+    .card-premium{
+      background:white;border-radius:var(--radius-lg);
+      box-shadow:0 1px 2px rgba(26,20,16,0.04),0 8px 24px rgba(26,20,16,0.06);
+      overflow:hidden;
+    }
+
+    /* ===== WEATHER ===== */
+    .weather-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center}
+    .weather-val{font-size:clamp(28px,6vw,36px);font-weight:700;line-height:1}
+    .weather-unit{font-size:14px;font-weight:400}
+    .weather-meta{font-size:11px;color:var(--text-muted);margin-top:4px}
+
+    /* ===== FOOD ===== */
+    .food-banner{
+      position:relative;aspect-ratio:16/9;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px;
+    }
+    .food-banner img{width:100%;height:100%;object-fit:cover}
+    .food-banner::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(to top,rgba(26,20,16,0.5) 0%,transparent 50%);
+    }
+    .food-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .food-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius-md)}
+
+    /* ===== SPOTS ===== */
+    .spot-scroll{
+      display:flex;gap:16px;overflow-x:auto;padding:0 24px 20px;
+      -webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;
+      margin:0 -24px;
+    }
+    .spot-scroll::-webkit-scrollbar{display:none}
+    .spot-scroll>*{scroll-snap-align:start}
+    .spot-card{
+      min-width:280px;border-radius:var(--radius-lg);overflow:hidden;flex-shrink:0;
+      background:white;box-shadow:0 2px 12px rgba(26,20,16,0.08);
+    }
+    .spot-visual{
+      height:180px;background-size:cover;background-position:center;
+      display:flex;align-items:center;justify-content:center;position:relative;
+    }
+    .spot-visual::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(to top,rgba(0,0,0,0.35) 0%,transparent 60%);
+    }
+    .spot-icon{
+      position:relative;z-index:1;width:48px;height:48px;
+      background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);
+      border-radius:50%;display:flex;align-items:center;justify-content:center;
+      border:1px solid rgba(255,255,255,0.2);
+    }
+    .spot-icon i{width:22px;height:22px;color:white}
+    .spot-name{
+      position:absolute;bottom:12px;left:16px;z-index:2;
+      color:white;font-weight:700;font-size:15px;
+      text-shadow:0 1px 4px rgba(0,0,0,0.4);
+    }
+
+    /* ===== ACTIVITIES ===== */
+    .act-card{
+      border-radius:var(--radius-lg);overflow:hidden;position:relative;
+      aspect-ratio:4/3;
+    }
+    .act-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease}
+    .act-card:hover img{transform:scale(1.04)}
+    .act-overlay{
+      position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
+      padding:16px;background:linear-gradient(to top,rgba(26,20,16,0.7) 0%,transparent 55%);
+    }
+    .act-overlay h4{color:white;font-weight:700;font-size:14px}
+    .act-overlay p{color:rgba(255,255,255,0.8);font-size:11px;margin-top:2px}
+
+    /* ===== CHECKLIST ===== */
+    .check-row{
+      display:flex;align-items:center;gap:14px;padding:12px 0;
+      border-bottom:1px solid rgba(26,20,16,0.06);font-size:14px;
+    }
+    .check-row:last-child{border-bottom:none}
+    .check-row input[type="checkbox"]{
+      appearance:none;-webkit-appearance:none;width:22px;height:22px;flex-shrink:0;
+      border:2px solid #c4bfb5;border-radius:6px;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;transition:all 0.2s;
+    }
+    .check-row input:checked{background:var(--accent);border-color:var(--accent)}
+    .check-row input:checked::after{content:'✓';color:white;font-size:13px;font-weight:700}
+    .check-row.checked label{text-decoration:line-through;color:var(--text-muted)}
+
+    /* ===== EVENTS ===== */
+    .event-item{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid rgba(26,20,16,0.06)}
+    .event-item:last-child{border-bottom:none}
+    .event-dot{
+      width:10px;height:10px;border-radius:50%;background:var(--accent);
+      flex-shrink:0;margin-top:5px;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-primary{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:14px 28px;border-radius:var(--radius-pill);font-size:14px;font-weight:600;
+      background:var(--text-primary);color:white;border:none;cursor:pointer;
+      transition:all 0.3s ease;
+    }
+    .btn-primary:hover{opacity:0.85}
+    .btn-secondary{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:14px 28px;border-radius:var(--radius-pill);font-size:14px;font-weight:600;
+      background:transparent;color:var(--text-primary);
+      border:1.5px solid rgba(26,20,16,0.15);cursor:pointer;
+      transition:all 0.3s ease;
+    }
+    .btn-secondary:hover{border-color:var(--text-primary)}
+
+    .map-pill{
+      display:inline-flex;align-items:center;gap:4px;
+      padding:6px 12px;border-radius:var(--radius-pill);
+      background:rgba(26,20,16,0.05);color:var(--text-secondary);
+      font-size:11px;font-weight:600;text-decoration:none;
+      transition:background 0.2s;
+    }
+    .map-pill:hover{background:rgba(26,20,16,0.1)}
+
+    /* ===== TIPS CARD ===== */
+    .tips-card{
+      background:rgba(184,147,79,0.08);border:1px solid rgba(184,147,79,0.15);
+      border-radius:var(--radius-lg);padding:24px;
+    }
+
+    /* ===== REVEAL ANIMATION ===== */
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    .reveal-d1{transition-delay:0.1s}
+    .reveal-d2{transition-delay:0.2s}
+    .reveal-d3{transition-delay:0.3s}
+
+    /* ===== TOAST ===== */
+    .toast{
+      position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:100;
+      background:var(--text-primary);color:white;padding:12px 28px;border-radius:var(--radius-pill);
+      font-size:13px;font-weight:500;
+      animation:toastIn 0.3s ease,toastOut 0.3s ease 1.5s forwards;
+    }
+    @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+    @keyframes toastOut{from{opacity:1}to{opacity:0}}
+
+    /* ===== BACK TOP ===== */
+    .back-top{
+      position:fixed;bottom:24px;right:24px;z-index:50;
+      width:48px;height:48px;border-radius:50%;
+      background:var(--text-primary);color:white;border:none;cursor:pointer;
+      box-shadow:0 4px 16px rgba(26,20,16,0.25);
+      display:none;align-items:center;justify-content:center;
+      transition:all 0.3s ease;
+    }
+    .back-top:hover{transform:scale(1.05)}
+    .back-top.visible{display:flex}
+
+    /* ===== LANG TOGGLE ===== */
     [data-lang="en"]{display:none}
     body.lang-en [data-lang="ja"]{display:none}
     body.lang-en [data-lang="en"]{display:block}
     body.lang-en span[data-lang="en"]{display:inline}
+    body.lang-en a[data-lang="en"]{display:inline-flex}
 
-    .fade-in{animation:fadeIn 0.5s ease forwards}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-
-    .weather-num{font-size:28px;font-weight:700;line-height:1.2}
-    .weather-label{font-size:11px;color:#7d776c;margin-top:2px}
-
-    .section-title{
-      font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;
-      margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f0e6d3;
+    /* ===== RESPONSIVE ===== */
+    @media(min-width:768px){
+      .hero{min-height:90vh;padding-bottom:80px}
+      .sec{padding:80px 40px}
+      .month-grid{grid-template-columns:repeat(3,1fr);gap:14px;max-width:420px}
+      .spot-card{min-width:320px}
+      .spot-visual{height:200px}
     }
-
-    .food-img{
-      width:100%;height:160px;object-fit:cover;border-radius:12px;
-      box-shadow:0 2px 6px rgba(42,31,16,0.1);
-    }
-
-    .activity-card{
-      border-radius:14px;overflow:hidden;background:white;
-      box-shadow:0 2px 8px rgba(42,31,16,0.1);
-    }
-    .activity-card img{width:100%;height:140px;object-fit:cover}
-
-    .map-link{
-      display:inline-flex;align-items:center;gap:4px;
-      padding:4px 10px;border-radius:6px;
-      background:#f0e6d3;color:#7a5d2e;
-      font-size:11px;font-weight:500;text-decoration:none;
-    }
-
-    .toast{
-      position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
-      background:#3d2e17;color:white;padding:10px 24px;border-radius:100px;
-      font-size:13px;font-weight:500;z-index:100;
-      animation:toastIn 0.3s ease,toastOut 0.3s ease 1.5s forwards;
-    }
-    @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-    @keyframes toastOut{from{opacity:1}to{opacity:0}}
-
-    .back-top{
-      position:fixed;bottom:24px;right:24px;z-index:50;
-      width:48px;height:48px;border-radius:50%;
-      background:#3d2e17;color:white;border:none;cursor:pointer;
-      box-shadow:0 4px 12px rgba(42,31,16,0.3);
-      display:none;align-items:center;justify-content:center;
-      transition:transform 0.2s;
-    }
-    .back-top:active{transform:scale(0.9)}
-    .back-top.visible{display:flex}
   </style>
 </head>
 <body>
 
   <!-- ===== HERO ===== -->
-  <header class="hero-bg text-white px-5 pt-10 pb-8 relative z-10">
-    <div class="flex justify-end gap-2 mb-8">
+  <header class="hero">
+    <div class="hero-img" role="img" aria-label="くすぶるハウス外観"></div>
+    <div class="hero-lang">
       <button class="lang-btn active" onclick="setLang('ja')" id="btn-ja">JP</button>
       <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
     </div>
-    <div class="text-center relative z-10">
-      <p class="text-wood-300 text-xs tracking-widest mb-3">KUSUBURU HOUSE GUEST GUIDE</p>
-      <h1 class="font-display text-3xl font-bold mb-2 leading-tight" data-lang="ja">くすぶると過ごす<br>隠岐の島</h1>
-      <h1 class="font-display text-2xl font-bold mb-2 leading-tight" data-lang="en">Your Oki Island Guide<br>with Kusuburu House</h1>
-      <p class="text-wood-200 text-sm mt-3" data-lang="ja">来島予定の月を選んでください</p>
-      <p class="text-wood-200 text-sm mt-3" data-lang="en">Select the month of your visit</p>
-      <div class="mt-4 flex items-center justify-center gap-2 text-wood-300 text-xs">
-        <i data-lucide="map-pin" class="w-3 h-3"></i>
-        <span>島根県隠岐郡隠岐の島町南方1227-1</span>
-      </div>
+    <div class="hero-content">
+      <p style="font-size:12px;letter-spacing:0.2em;color:rgba(255,255,255,0.5);margin-bottom:16px">KUSUBURU HOUSE</p>
+      <h1 class="hero-title font-display" data-lang="ja">くすぶると過ごす<br>隠岐の島</h1>
+      <h1 class="hero-title font-display" data-lang="en">Your Oki Island<br>Guide</h1>
+      <p class="hero-sub" data-lang="ja">あなたの来島月に合わせた島旅ガイド</p>
+      <p class="hero-sub" data-lang="en">A personalized guide for your island stay</p>
     </div>
+    <div class="scroll-hint"><i data-lucide="chevron-down" style="width:24px;height:24px"></i></div>
   </header>
 
   <!-- ===== MONTH SELECTOR ===== -->
-  <section id="month-select" class="px-5 py-8">
-    <h2 class="font-display text-lg font-bold text-center mb-2" data-lang="ja">何月に隠岐の島へ？</h2>
-    <h2 class="font-display text-lg font-bold text-center mb-2" data-lang="en">When are you visiting?</h2>
-    <p class="text-center text-smoke-500 text-xs mb-6" data-lang="ja">営業期間：3月中旬〜11月下旬</p>
-    <p class="text-center text-smoke-500 text-xs mb-6" data-lang="en">Open: Mid-March to Late November</p>
-
-    <div class="grid grid-cols-3 gap-3 max-w-md mx-auto" id="month-grid"></div>
+  <section class="month-section" id="month-select">
+    <div style="max-width:540px;margin:0 auto;text-align:center">
+      <p style="font-size:11px;letter-spacing:0.15em;color:rgba(255,255,255,0.35);margin-bottom:8px;text-transform:uppercase">Select Month</p>
+      <h2 class="font-display" style="font-size:clamp(22px,5vw,28px);font-weight:700;color:white;margin-bottom:8px">
+        <span data-lang="ja">何月に隠岐の島へ？</span>
+        <span data-lang="en">When are you visiting?</span>
+      </h2>
+      <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:32px">
+        <span data-lang="ja">営業期間：3月中旬 — 11月下旬</span>
+        <span data-lang="en">Open: Mid-March — Late November</span>
+      </p>
+      <div class="month-grid" id="month-grid"></div>
+    </div>
   </section>
 
-  <!-- ===== CONTENT (shown after month selection) ===== -->
-  <main id="content" class="hidden px-5 pb-8 max-w-lg mx-auto">
+  <!-- ===== CONTENT ===== -->
+  <div id="content" class="hidden">
 
     <!-- Month Header -->
-    <div id="month-header" class="text-center mb-6 fade-in">
-      <div class="inline-block px-4 py-1 rounded-full text-sm font-bold text-white mb-2" id="month-badge" style="background:var(--accent)"></div>
-      <p class="font-display text-lg font-bold" id="month-tagline"></p>
-    </div>
+    <section class="sec sec-alt" id="month-header">
+      <div class="sec-inner" style="text-align:center">
+        <div id="month-badge" style="display:inline-block;padding:6px 20px;border-radius:var(--radius-pill);font-size:13px;font-weight:700;color:white;background:var(--accent);margin-bottom:12px"></div>
+        <h2 class="font-display" style="font-size:clamp(24px,5vw,32px);font-weight:700;line-height:1.3" id="month-tagline"></h2>
+      </div>
+    </section>
 
     <!-- Weather -->
-    <section class="card p-5 mb-5 fade-in" id="sec-weather">
-      <div class="section-title" data-lang="ja"><i data-lucide="thermometer" class="w-5 h-5 text-wood-400"></i>気候</div>
-      <div class="section-title" data-lang="en"><i data-lucide="thermometer" class="w-5 h-5 text-wood-400"></i>Climate</div>
-      <div class="grid grid-cols-3 gap-4 text-center" id="weather-cards"></div>
-      <p class="text-xs text-smoke-400 mt-3 text-center" data-lang="ja">※ 気象庁 平年値（1991〜2020年）</p>
-      <p class="text-xs text-smoke-400 mt-3 text-center" data-lang="en">※ JMA Normal Values (1991-2020)</p>
+    <section class="sec reveal" id="sec-weather">
+      <div class="sec-inner">
+        <div class="sec-label"><i data-lucide="thermometer"></i><span data-lang="ja">気候</span><span data-lang="en">CLIMATE</span></div>
+        <div class="weather-grid" id="weather-cards"></div>
+        <p style="font-size:10px;color:var(--text-muted);text-align:center;margin-top:16px" data-lang="ja">気象庁 平年値 1991–2020</p>
+        <p style="font-size:10px;color:var(--text-muted);text-align:center;margin-top:16px" data-lang="en">JMA Normal Values 1991–2020</p>
+      </div>
     </section>
 
     <!-- Clothing -->
-    <section class="card p-5 mb-5 fade-in" id="sec-clothing">
-      <div class="section-title" data-lang="ja"><i data-lucide="shirt" class="w-5 h-5 text-wood-400"></i>おすすめの服装</div>
-      <div class="section-title" data-lang="en"><i data-lucide="shirt" class="w-5 h-5 text-wood-400"></i>What to Wear</div>
-      <p id="clothing-text-ja" class="text-sm leading-relaxed" data-lang="ja"></p>
-      <p id="clothing-text-en" class="text-sm leading-relaxed" data-lang="en"></p>
+    <section class="sec sec-alt reveal" id="sec-clothing">
+      <div class="sec-inner">
+        <div class="sec-label"><i data-lucide="shirt"></i><span data-lang="ja">おすすめの服装</span><span data-lang="en">WHAT TO WEAR</span></div>
+        <p id="clothing-text-ja" style="font-size:15px;line-height:1.9;color:var(--text-secondary)" data-lang="ja"></p>
+        <p id="clothing-text-en" style="font-size:15px;line-height:1.9;color:var(--text-secondary)" data-lang="en"></p>
+      </div>
     </section>
 
     <!-- Food -->
-    <section class="card p-5 mb-5 fade-in" id="sec-food">
-      <div class="section-title" data-lang="ja"><i data-lucide="utensils" class="w-5 h-5 text-wood-400"></i>旬の味覚</div>
-      <div class="section-title" data-lang="en"><i data-lucide="utensils" class="w-5 h-5 text-wood-400"></i>Seasonal Flavors</div>
-      <p id="food-text-ja" class="text-sm leading-relaxed mb-4" data-lang="ja"></p>
-      <p id="food-text-en" class="text-sm leading-relaxed mb-4" data-lang="en"></p>
-      <div class="grid grid-cols-2 gap-3" id="food-photos"></div>
-      <p class="text-xs text-smoke-400 mt-3" data-lang="ja">※ くすぶるハウスの夕食イメージ（1泊2食付きプラン）</p>
-      <p class="text-xs text-smoke-400 mt-3" data-lang="en">※ Dinner at Kusuburu House (1-night 2-meal plan)</p>
+    <section class="sec reveal" id="sec-food">
+      <div class="sec-inner">
+        <div class="sec-label"><i data-lucide="utensils"></i><span data-lang="ja">旬の味覚</span><span data-lang="en">SEASONAL FLAVORS</span></div>
+        <h3 class="sec-heading" data-lang="ja">この季節の食卓</h3>
+        <h3 class="sec-heading" data-lang="en">Island Dining This Season</h3>
+        <p id="food-text-ja" style="font-size:15px;line-height:1.9;color:var(--text-secondary);margin-bottom:24px" data-lang="ja"></p>
+        <p id="food-text-en" style="font-size:15px;line-height:1.9;color:var(--text-secondary);margin-bottom:24px" data-lang="en"></p>
+        <div class="food-grid" id="food-photos"></div>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:12px" data-lang="ja">くすぶるハウスの夕食（1泊2食付きプラン）</p>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:12px" data-lang="en">Dinner at Kusuburu House (2-meal plan)</p>
+      </div>
     </section>
 
-    <!-- Tourist Spots -->
-    <section class="mb-5 fade-in" id="sec-spots">
-      <div class="card p-5">
-        <div class="section-title" data-lang="ja"><i data-lucide="compass" class="w-5 h-5 text-wood-400"></i>島後の観光スポット</div>
-        <div class="section-title" data-lang="en"><i data-lucide="compass" class="w-5 h-5 text-wood-400"></i>Sightseeing on Dogo Island</div>
-        <p class="text-xs text-smoke-500 mb-4" data-lang="ja">← 横にスクロールできます</p>
-        <p class="text-xs text-smoke-500 mb-4" data-lang="en">← Scroll horizontally</p>
+    <!-- Spots -->
+    <section class="sec sec-alt reveal" id="sec-spots">
+      <div class="sec-inner" style="margin-bottom:20px">
+        <div class="sec-label"><i data-lucide="compass"></i><span data-lang="ja">島後の観光スポット</span><span data-lang="en">SIGHTSEEING — DOGO ISLAND</span></div>
+        <h3 class="sec-heading" data-lang="ja">隠岐の絶景を巡る</h3>
+        <h3 class="sec-heading" data-lang="en">Explore Oki's Landscapes</h3>
       </div>
-      <div class="scroll-row mt-3 px-1" id="spots-row"></div>
+      <div class="spot-scroll" id="spots-row"></div>
     </section>
 
     <!-- Events -->
-    <section class="card p-5 mb-5 fade-in" id="sec-events">
-      <div class="section-title" data-lang="ja"><i data-lucide="calendar-heart" class="w-5 h-5 text-wood-400"></i>この時期のイベント</div>
-      <div class="section-title" data-lang="en"><i data-lucide="calendar-heart" class="w-5 h-5 text-wood-400"></i>Events This Month</div>
-      <div id="events-list"></div>
+    <section class="sec reveal" id="sec-events">
+      <div class="sec-inner">
+        <div class="sec-label"><i data-lucide="calendar-heart"></i><span data-lang="ja">この時期のイベント</span><span data-lang="en">EVENTS THIS MONTH</span></div>
+        <div id="events-list"></div>
+      </div>
     </section>
 
-    <!-- Activities at Kusuburu -->
-    <section class="card p-5 mb-5 fade-in" id="sec-activities">
-      <div class="section-title" data-lang="ja"><i data-lucide="sparkles" class="w-5 h-5 text-wood-400"></i>くすぶるハウスでの過ごし方</div>
-      <div class="section-title" data-lang="en"><i data-lucide="sparkles" class="w-5 h-5 text-wood-400"></i>Things to Do at Kusuburu</div>
-      <div class="grid grid-cols-2 gap-3" id="activities-grid"></div>
-    </section>
-
-    <!-- Packing List -->
-    <section class="card p-5 mb-5 fade-in" id="sec-packing">
-      <div class="section-title" data-lang="ja"><i data-lucide="luggage" class="w-5 h-5 text-wood-400"></i>持ち物チェックリスト</div>
-      <div class="section-title" data-lang="en"><i data-lucide="luggage" class="w-5 h-5 text-wood-400"></i>Packing Checklist</div>
-      <div id="packing-list"></div>
+    <!-- Activities -->
+    <section class="sec sec-alt reveal" id="sec-activities">
+      <div class="sec-inner">
+        <div class="sec-label"><i data-lucide="sparkles"></i><span data-lang="ja">くすぶるハウスでの過ごし方</span><span data-lang="en">AT KUSUBURU HOUSE</span></div>
+        <h3 class="sec-heading" data-lang="ja">島時間を、まるごと</h3>
+        <h3 class="sec-heading" data-lang="en">Embrace Island Time</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="activities-grid"></div>
+      </div>
     </section>
 
     <!-- Tips -->
-    <section class="card p-5 mb-5 fade-in" id="sec-tips" style="background:var(--accent-light,#fef6e8);border:1px solid var(--accent-border,#f0e6d3)">
-      <div class="section-title" style="border-bottom-color:var(--accent-border,#f0e6d3)" data-lang="ja"><i data-lucide="lightbulb" class="w-5 h-5" style="color:var(--accent)"></i>ひとことアドバイス</div>
-      <div class="section-title" style="border-bottom-color:var(--accent-border,#f0e6d3)" data-lang="en"><i data-lucide="lightbulb" class="w-5 h-5" style="color:var(--accent)"></i>Insider Tips</div>
-      <p id="tips-text-ja" class="text-sm leading-relaxed" data-lang="ja"></p>
-      <p id="tips-text-en" class="text-sm leading-relaxed" data-lang="en"></p>
+    <section class="sec reveal" id="sec-tips">
+      <div class="sec-inner">
+        <div class="tips-card">
+          <div class="sec-label"><i data-lucide="lightbulb"></i><span data-lang="ja">ひとことアドバイス</span><span data-lang="en">INSIDER TIP</span></div>
+          <p id="tips-text-ja" style="font-size:15px;line-height:1.9;color:var(--text-secondary)" data-lang="ja"></p>
+          <p id="tips-text-en" style="font-size:15px;line-height:1.9;color:var(--text-secondary)" data-lang="en"></p>
+        </div>
+      </div>
     </section>
 
-    <!-- Share / Change Month -->
-    <div class="flex gap-3 mb-8">
-      <button onclick="shareGuide()" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-wood-800 text-white font-bold text-sm">
-        <i data-lucide="share-2" class="w-4 h-4"></i>
-        <span data-lang="ja">このガイドを共有</span>
-        <span data-lang="en">Share Guide</span>
-      </button>
-      <button onclick="resetMonth()" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-white text-wood-700 font-bold text-sm border-2 border-wood-200">
-        <i data-lucide="calendar" class="w-4 h-4"></i>
-        <span data-lang="ja">月を変更</span>
-        <span data-lang="en">Change Month</span>
-      </button>
-    </div>
-  </main>
+    <!-- Packing -->
+    <section class="sec sec-alt reveal" id="sec-packing">
+      <div class="sec-inner">
+        <div class="sec-label"><i data-lucide="luggage"></i><span data-lang="ja">持ち物チェックリスト</span><span data-lang="en">PACKING CHECKLIST</span></div>
+        <div class="card-premium" style="padding:20px 24px">
+          <div id="packing-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Actions -->
+    <section class="sec" style="padding-top:24px">
+      <div class="sec-inner" style="display:flex;gap:12px">
+        <button onclick="shareGuide()" class="btn-primary" style="flex:1">
+          <i data-lucide="share-2" style="width:16px;height:16px"></i>
+          <span data-lang="ja">共有する</span><span data-lang="en">Share</span>
+        </button>
+        <button onclick="resetMonth()" class="btn-secondary" style="flex:1">
+          <i data-lucide="calendar" style="width:16px;height:16px"></i>
+          <span data-lang="ja">月を変更</span><span data-lang="en">Change</span>
+        </button>
+      </div>
+    </section>
+  </div>
 
   <!-- ===== FOOTER ===== -->
-  <footer class="bg-wood-800 text-wood-200 px-5 py-10 text-center text-xs">
-    <p class="font-display text-lg text-white font-bold mb-1">くすぶるハウス -燻家-</p>
-    <p class="mb-4">KUSUBURU HOUSE</p>
-    <div class="flex flex-col gap-1 mb-4">
-      <p>島根県隠岐郡隠岐の島町南方1227-1</p>
-      <p>Check-in 16:00〜21:00 / Check-out 10:00</p>
-      <p data-lang="ja">定休日：月曜</p>
-      <p data-lang="en">Closed: Mondays</p>
+  <footer style="background:#1a1410;padding:64px 24px 40px;text-align:center">
+    <p class="font-display" style="font-size:22px;font-weight:700;color:white;margin-bottom:4px">くすぶるハウス</p>
+    <p style="font-size:11px;letter-spacing:0.15em;color:rgba(255,255,255,0.3);margin-bottom:32px">KUSUBURU HOUSE — 燻家</p>
+    <div style="display:flex;flex-direction:column;gap:4px;font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:32px">
+      <p>島根県隠岐郡隠岐の島町南方 1227-1</p>
+      <p>Check-in 16:00–21:00 / Check-out 10:00</p>
     </div>
-    <div class="flex justify-center gap-4 mb-6">
-      <a href="https://kusuburu-house.com" target="_blank" class="text-wood-300 hover:text-white underline">Website</a>
-      <a href="https://lin.ee/a4uWMOX" target="_blank" class="text-wood-300 hover:text-white underline">LINE</a>
-      <a href="mailto:info@kusuburu-house.com" class="text-wood-300 hover:text-white underline">Email</a>
+    <div style="display:flex;justify-content:center;gap:24px;margin-bottom:40px">
+      <a href="https://kusuburu-house.com" target="_blank" style="color:rgba(255,255,255,0.5);font-size:13px;text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Website</a>
+      <a href="https://lin.ee/a4uWMOX" target="_blank" style="color:rgba(255,255,255,0.5);font-size:13px;text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">LINE</a>
+      <a href="mailto:info@kusuburu-house.com" style="color:rgba(255,255,255,0.5);font-size:13px;text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Email</a>
     </div>
-    <p class="text-wood-500 text-[10px]">Weather data: Japan Meteorological Agency (1991-2020 normals)</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.2)">Weather: Japan Meteorological Agency 1991–2020 normals</p>
   </footer>
 
-  <!-- Back to Top -->
   <button class="back-top" id="back-top" onclick="document.getElementById('month-select').scrollIntoView({behavior:'smooth'})">
-    <i data-lucide="chevron-up" class="w-5 h-5"></i>
+    <i data-lucide="chevron-up" style="width:20px;height:20px"></i>
   </button>
 
 <script>
-// =====================================================
-// DATA
-// =====================================================
 const IMG = 'https://kusuburu-house.com/img';
 
 const MONTHS = {
-  3: {
-    name:{ja:'3月',en:'March'}, season:'spring',
-    tagline:{ja:'島に春の足音が聞こえる',en:'First whispers of spring on the island'},
-    weather:{avg:7.8,high:11.7,low:2.9,rain:108.6,sun:157.9},
-    clothing:{
-      ja:'まだ冬の名残り。厚手のコートやダウン、マフラー、手袋があると安心です。日中は日差しが暖かくなる日もありますが、海風は冷たいので防風対策を。',
-      en:'Winter still lingers. Bring a heavy coat, scarf, and gloves. Daytime sun can feel warm, but sea winds are cold — bring windproof layers.'
-    },
-    food:{
-      ja:'ワカメが旬を迎えます。春の山菜も出始め、島の新鮮な魚介と一緒に楽しめる贅沢な時期。',
-      en:'Peak wakame seaweed season. Spring mountain vegetables begin to appear alongside fresh island seafood.'
-    },
-    foodPhotos:[`${IMG}/food/12.jpg`,`${IMG}/food/02.jpg`],
-    events:[
-      {ja:'百手祭り（3/28）- 花生神社にて伝統の弓射神事',en:'Hyakute Festival (3/28) - Traditional archery ritual at Hanao Shrine'}
-    ],
-    tips:{
-      ja:'シーズン開幕の月。まだ観光客が少なく、静かな島を独り占めできる贅沢な時期です。フェリーは冬ダイヤの場合があるので事前確認を。',
-      en:'Season opening month. Few tourists yet — enjoy the quiet island all to yourself. Check ferry schedules as winter timetables may still apply.'
-    },
-    packing:['heavy_coat','layers','scarf_gloves','rain_gear','walking_shoes','camera','cash','meds','charger']
-  },
-  4: {
-    name:{ja:'4月',en:'April'}, season:'spring',
-    tagline:{ja:'桜と海、観光シーズンの幕開け',en:'Cherry blossoms meet the sea — season begins'},
-    weather:{avg:12.5,high:16.8,low:7.3,rain:107.5,sun:204.6},
-    clothing:{
-      ja:'薄手のジャケットやカーディガンで快適。朝晩は冷えるので重ね着がおすすめ。日中は暖かい日も増えてきます。',
-      en:'A light jacket or cardigan works well. Layer up for cool mornings and evenings. Daytime gets warmer.'
-    },
-    food:{
-      ja:'サザエ、岩ノリ、春の山菜が勢揃い。海の幸と山の幸が同時に楽しめる贅沢な季節です。',
-      en:'Turban shells, rock seaweed, spring mountain vegetables — enjoy both sea and mountain delicacies together.'
-    },
-    foodPhotos:[`${IMG}/food/05.jpg`,`${IMG}/food/06.jpg`],
-    events:[
-      {ja:'隠岐いぐり凧祭（4月上旬）- 総合運動公園にて',en:'Oki Iguri Kite Festival (early Apr) - at Sports Park'},
-      {ja:'蓮華会舞（4/21）- 隠岐国分寺にて重要無形民俗文化財の舞',en:'Renge-e-mai Dance (4/21) - Important Intangible Folk Cultural Property at Kokubunji Temple'}
-    ],
-    tips:{
-      ja:'ローソク島遊覧船がこの月から運航開始！桜が咲き始め、島全体が華やかになる季節。晴天率が上がり、観光日和が増えます。',
-      en:'Candle Island boat tours start this month! Cherry blossoms bloom across the island. Clear skies become more frequent.'
-    },
-    packing:['light_jacket','layers','rain_gear','walking_shoes','camera','sunglasses','cash','meds','charger']
-  },
-  5: {
-    name:{ja:'5月',en:'May'}, season:'spring',
-    tagline:{ja:'ベストシーズン到来、海も山も輝く',en:'Peak season — sea and mountains shine'},
-    weather:{avg:17.1,high:21.3,low:12.6,rain:125.7,sun:215.2},
-    clothing:{
-      ja:'長袖シャツ＋薄い上着で快適。日差しが強くなるので帽子・サングラスも忘れずに。',
-      en:'Long sleeves with a light outer layer. Bring a hat and sunglasses — the sun is getting strong.'
-    },
-    food:{
-      ja:'白イカの走り、サザエ、アワビ。旬の海産物が豊富に揃い始める、食の楽しみが一気に広がる季節。',
-      en:'First white squid of the season, turban shells, abalone. Abundant fresh seafood — a feast for food lovers.'
-    },
-    foodPhotos:[`${IMG}/food/01.jpg`,`${IMG}/food/10.jpg`],
-    events:[
-      {ja:'しゃくなげ祭（5月初旬）- 村上家隠岐しゃくなげ園',en:'Rhododendron Festival (early May) - Murakami Rhododendron Garden'},
-      {ja:'しげさ踊りパレード（5月第2土曜）- 島びらきの祭り',en:'Shigesa Dance Parade (2nd Sat in May) - Island Opening Festival'},
-      {ja:'隠岐しげさ節全国大会（翌日曜）- 全国から民謡愛好家が集結',en:'National Shigesa Folk Song Competition (following Sun)'}
-    ],
-    tips:{
-      ja:'年間で最も過ごしやすい時期。島びらきで活気が出ます。釣り体験にも最高のシーズン。日照時間が一年で最も長い月。',
-      en:'The most comfortable time of year. Island Opening brings energy. Best season for fishing. Longest daylight hours of the year.'
-    },
-    packing:['light_jacket','sunscreen','hat_sunglasses','walking_shoes','camera','cash','meds','charger']
-  },
-  6: {
-    name:{ja:'6月',en:'June'}, season:'summer',
-    tagline:{ja:'恵みの雨、緑が最も美しい季節',en:'Blessed rain — the greenest time of year'},
-    weather:{avg:20.7,high:24.6,low:17.2,rain:167.0,sun:156.1},
-    clothing:{
-      ja:'薄手の服で過ごせます。折りたたみ傘は必須。蒸し暑い日もあるのでレインウェアがあると安心。',
-      en:'Light clothing works. Folding umbrella is essential. Can be humid — rain gear recommended.'
-    },
-    food:{
-      ja:'白イカ本番、そして岩ガキ解禁！島の夏の味覚が一斉にスタート。新鮮な海の幸が最高です。',
-      en:'White squid in full season, rock oysters just opened! Summer island flavors kick off — fresh seafood at its finest.'
-    },
-    foodPhotos:[`${IMG}/food/10.jpg`,`${IMG}/food/01.jpg`],
-    events:[
-      {ja:'玉若酢命神社御霊会風流（6/5）- 伝統神事',en:'Tamawakasu Shrine Goryo-e Festival (6/5) - Traditional Shinto ritual'},
-      {ja:'隠岐の島ウルトラマラソン - 100kmの島一周レース',en:'Oki Island Ultra Marathon - 100km island circuit race'}
-    ],
-    tips:{
-      ja:'梅雨時期ですが、雨上がりの島は格別に美しい。緑が最も鮮やかで、壇鏡の滝は水量が増して迫力満点。観光客も少なめの穴場時期。',
-      en:'Rainy season, but the island after rain is breathtaking. Greenery at its peak, Dangyo Falls at full force. A hidden gem season with fewer tourists.'
-    },
-    packing:['rain_gear','umbrella','light_clothes','sandals','walking_shoes','camera','cash','meds','charger']
-  },
-  7: {
-    name:{ja:'7月',en:'July'}, season:'summer',
-    tagline:{ja:'夏本番！太陽と潮風の島時間',en:'Full summer! Sun and sea breeze island time'},
-    weather:{avg:24.8,high:28.2,low:21.9,rain:203.7,sun:161.5},
-    clothing:{
-      ja:'夏服、サンダル、水着持参。日焼け止め・帽子は必須。夜は意外と涼しく薄手の羽織があると◎。',
-      en:'Summer clothes, sandals, swimwear. Sunscreen and hat essential. Evenings are surprisingly cool — a light layer helps.'
-    },
-    food:{
-      ja:'白イカ最盛期、岩ガキ、サザエ、アワビ。島の海の幸がフルコースで楽しめる贅沢な季節。',
-      en:'Peak white squid, rock oysters, turban shells, abalone — the full course of island ocean bounty.'
-    },
-    foodPhotos:[`${IMG}/food/10.jpg`,`${IMG}/food/09.jpg`],
-    events:[
-      {ja:'久見神楽 - 伊勢命神社にて伝統の舞',en:'Kumi Kagura - Traditional sacred dance at Isemikoto Shrine'}
-    ],
-    tips:{
-      ja:'海のアクティビティが最高に楽しい！シュノーケリング、海水浴、釣り。塩の浜は透明度抜群。くすぶるハウスの釣り体験もぜひ。',
-      en:'Ocean activities are amazing! Snorkeling, swimming, fishing. Shio-no-hama beach has crystal-clear water. Try fishing at Kusuburu House!'
-    },
-    packing:['swimwear','sunscreen','hat_sunglasses','sandals','light_clothes','rash_guard','insect_repellent','camera','cash','meds','charger']
-  },
-  8: {
-    name:{ja:'8月',en:'August'}, season:'summer',
-    tagline:{ja:'島の夏祭り、最も賑やかな季節',en:'Island summer festivals — the liveliest season'},
-    weather:{avg:26.3,high:30.1,low:22.9,rain:141.6,sun:213.2},
-    clothing:{
-      ja:'夏服全開で。海遊び用の装備もお忘れなく。夜は薄手の羽織が一枚あると過ごしやすい。',
-      en:'Full summer wear. Bring ocean activity gear. A light layer for evenings makes a difference.'
-    },
-    food:{
-      ja:'岩ガキ最盛期、白イカ、島の夏野菜。BBQにも最高の食材が揃います。',
-      en:'Peak rock oysters, white squid, island summer vegetables. Perfect ingredients for a BBQ feast.'
-    },
-    foodPhotos:[`${IMG}/food/01.jpg`,`${IMG}/food/08.jpg`],
-    events:[
-      {ja:'西村神楽（8/14）- 西村神社神楽殿にて',en:'Nishimura Kagura (8/14) - Sacred dance at Nishimura Shrine'},
-      {ja:'牛突き夏場所大会（8/15）- 隠岐モーモードームにて島の伝統行事',en:'Bull Sumo Summer Tournament (8/15) - Traditional bull fighting at Oki Moo Moo Dome'}
-    ],
-    tips:{
-      ja:'ハイシーズン！花火、祭り、海。一年で最も賑やかな時期。夜は星空が格別に美しい。牛突きは隠岐ならではの迫力ある伝統文化。',
-      en:'Peak season! Fireworks, festivals, ocean. The liveliest time of year. Night skies are stunning for stargazing. Bull sumo is a unique Oki tradition.'
-    },
-    packing:['swimwear','sunscreen','hat_sunglasses','sandals','light_clothes','light_layer','insect_repellent','camera','cash','meds','charger']
-  },
-  9: {
-    name:{ja:'9月',en:'September'}, season:'autumn',
-    tagline:{ja:'穴場の秋、静けさと温もりの季節',en:'Hidden gem autumn — quiet warmth on the island'},
-    weather:{avg:22.3,high:26.3,low:18.3,rain:197.8,sun:164.8},
-    clothing:{
-      ja:'まだ暖かいですが朝晩は涼しくなります。薄い長袖があると安心。前半はまだ海に入れる日も。',
-      en:'Still warm but cooler mornings and evenings. Light long sleeves recommended. You can still swim in early September.'
-    },
-    food:{
-      ja:'白イカの終盤を楽しみつつ、秋の魚が始まる。海と秋の味覚の移り変わりを堪能できる特別な時期。',
-      en:'Last of the white squid season while autumn fish appear. A special time to enjoy the seasonal transition.'
-    },
-    foodPhotos:[`${IMG}/food/01.jpg`,`${IMG}/food/05.jpg`],
-    events:[
-      {ja:'八朔牛突き大会（9月上旬）- 佐山牛突き場にて',en:'Hassaku Bull Sumo Tournament (early Sep) - at Sayama Bull Arena'}
-    ],
-    tips:{
-      ja:'観光客がぐっと減り、静かな島時間を過ごせる穴場シーズン。夕日が特に美しい季節。くすぶるハウスの焚き火が心地よくなる頃。',
-      en:'Tourists thin out — enjoy quiet island time. Especially beautiful sunsets. Kusuburu\'s bonfire starts feeling perfect.'
-    },
-    packing:['light_jacket','layers','light_clothes','walking_shoes','camera','cash','meds','charger']
-  },
-  10: {
-    name:{ja:'10月',en:'October'}, season:'autumn',
-    tagline:{ja:'実りの秋、食も景色も最高の季節',en:'Bountiful autumn — peak food and scenery'},
-    weather:{avg:17.1,high:21.4,low:12.3,rain:97.7,sun:163.6},
-    clothing:{
-      ja:'薄手のジャケットが活躍。朝晩は重ね着で調整。一年で最も降水量が少なく、晴天率が高い月。',
-      en:'A light jacket comes in handy. Layer for temperature swings. The driest month with the most clear skies.'
-    },
-    food:{
-      ja:'紅ズワイガニ解禁！サバ、ブリの走り。秋の味覚が勢揃いし、食が一年で最も旨い季節が到来。',
-      en:'Red snow crab season opens! Mackerel and yellowtail begin. The best food season of the year has arrived.'
-    },
-    foodPhotos:[`${IMG}/food/07.jpg`,`${IMG}/food/11.jpg`],
-    events:[
-      {ja:'一夜嶽牛突き大会（10/13）- 一夜嶽牛突き場にて',en:'Ichiyatake Bull Sumo Tournament (10/13) - at Ichiyatake Arena'},
-      {ja:'隠岐武良祭風流（奇数年 10/19）- 伝統の祭礼',en:'Oki Mura Festival (odd years, 10/19) - Traditional festival'}
-    ],
-    tips:{
-      ja:'ローソク島の夕日が最も美しい季節。空気が澄み、幻想的な光景が見られます。食も最高。最もバランスの取れた名月。',
-      en:'The most beautiful Candle Island sunsets of the year. Crystal-clear air creates magical views. Food is at its peak. The most well-balanced month.'
-    },
-    packing:['light_jacket','layers','walking_shoes','camera','onsen_set','cash','meds','charger']
-  },
-  11: {
-    name:{ja:'11月',en:'November'}, season:'autumn',
-    tagline:{ja:'晩秋の贅沢、温泉とカニと焚き火と',en:'Late autumn luxury — hot springs, crab, and bonfire'},
-    weather:{avg:12.3,high:16.3,low:7.7,rain:105.8,sun:110.2},
-    clothing:{
-      ja:'暖かいジャケット必須。マフラーもあると安心。海風が冷たくなり、冬の足音が聞こえます。',
-      en:'Warm jacket essential. A scarf helps. Sea winds turn cold as winter approaches.'
-    },
-    food:{
-      ja:'松葉ガニ解禁（11月上旬）、ブリが脂を蓄え始める。冬の味覚の始まり。カニ×温泉は最高の贅沢。',
-      en:'Snow crab season opens (early Nov), yellowtail fattens up. Winter delicacies begin. Crab + hot springs = ultimate luxury.'
-    },
-    foodPhotos:[`${IMG}/food/07.jpg`,`${IMG}/food/06.jpg`],
-    events:[
-      {ja:'上西神社奉納牛突き大会（11月上旬）- シーズン最後の牛突き',en:'Kaminishi Shrine Bull Sumo (early Nov) - Last bull sumo of the season'}
-    ],
-    tips:{
-      ja:'シーズン終盤。温泉×カニ×焚き火の三重奏は、この時期だけの贅沢。隠岐唯一の温泉は宿から徒歩15分。静かな島の魅力を存分に。',
-      en:'End of season. The trio of hot springs × crab × bonfire is a luxury only this time offers. The island\'s only hot spring is a 15-min walk from the inn.'
-    },
-    packing:['warm_jacket','scarf_gloves','layers','walking_shoes','onsen_set','camera','cash','meds','charger']
-  }
+  3:{name:{ja:'3月',en:'March'},season:'spring',tagline:{ja:'島に春の足音が聞こえる',en:'First whispers of spring on the island'},weather:{avg:7.8,high:11.7,low:2.9,rain:108.6,sun:157.9},clothing:{ja:'まだ冬の名残り。厚手のコートやダウン、マフラー、手袋があると安心です。日中は日差しが暖かくなる日もありますが、海風は冷たいので防風対策を。',en:'Winter still lingers. Bring a heavy coat, scarf, and gloves. Daytime sun can feel warm, but sea winds are cold — bring windproof layers.'},food:{ja:'ワカメが旬を迎えます。春の山菜も出始め、島の新鮮な魚介と一緒に楽しめる贅沢な時期。',en:'Peak wakame seaweed season. Spring mountain vegetables begin to appear alongside fresh island seafood.'},foodPhotos:[`${IMG}/food/12.jpg`,`${IMG}/food/02.jpg`],events:[{ja:'百手祭り（3/28）— 花生神社にて伝統の弓射神事',en:'Hyakute Festival (3/28) — Traditional archery ritual at Hanao Shrine'}],tips:{ja:'シーズン開幕の月。まだ観光客が少なく、静かな島を独り占めできる贅沢な時期です。フェリーは冬ダイヤの場合があるので事前確認を。',en:'Season opening month. Few tourists yet — enjoy the quiet island all to yourself. Check ferry schedules as winter timetables may still apply.'},packing:['heavy_coat','layers','scarf_gloves','rain_gear','walking_shoes','camera','cash','meds','charger']},
+  4:{name:{ja:'4月',en:'April'},season:'spring',tagline:{ja:'桜と海、観光シーズンの幕開け',en:'Cherry blossoms meet the sea — season begins'},weather:{avg:12.5,high:16.8,low:7.3,rain:107.5,sun:204.6},clothing:{ja:'薄手のジャケットやカーディガンで快適。朝晩は冷えるので重ね着がおすすめ。日中は暖かい日も増えてきます。',en:'A light jacket or cardigan works well. Layer up for cool mornings and evenings. Daytime gets warmer.'},food:{ja:'サザエ、岩ノリ、春の山菜が勢揃い。海の幸と山の幸が同時に楽しめる贅沢な季節です。',en:'Turban shells, rock seaweed, spring mountain vegetables — enjoy both sea and mountain delicacies together.'},foodPhotos:[`${IMG}/food/05.jpg`,`${IMG}/food/06.jpg`],events:[{ja:'隠岐いぐり凧祭（4月上旬）— 総合運動公園にて',en:'Oki Iguri Kite Festival (early Apr) — at Sports Park'},{ja:'蓮華会舞（4/21）— 隠岐国分寺にて重要無形民俗文化財の舞',en:'Renge-e-mai Dance (4/21) — Important Intangible Folk Cultural Property at Kokubunji Temple'}],tips:{ja:'ローソク島遊覧船がこの月から運航開始！桜が咲き始め、島全体が華やかになる季節。晴天率が上がり、観光日和が増えます。',en:'Candle Island boat tours start this month! Cherry blossoms bloom across the island. Clear skies become more frequent.'},packing:['light_jacket','layers','rain_gear','walking_shoes','camera','sunglasses','cash','meds','charger']},
+  5:{name:{ja:'5月',en:'May'},season:'spring',tagline:{ja:'ベストシーズン到来、海も山も輝く',en:'Peak season — sea and mountains shine'},weather:{avg:17.1,high:21.3,low:12.6,rain:125.7,sun:215.2},clothing:{ja:'長袖シャツ＋薄い上着で快適。日差しが強くなるので帽子・サングラスも忘れずに。',en:'Long sleeves with a light outer layer. Bring a hat and sunglasses — the sun is getting strong.'},food:{ja:'白イカの走り、サザエ、アワビ。旬の海産物が豊富に揃い始める、食の楽しみが一気に広がる季節。',en:'First white squid of the season, turban shells, abalone. Abundant fresh seafood — a feast for food lovers.'},foodPhotos:[`${IMG}/food/01.jpg`,`${IMG}/food/10.jpg`],events:[{ja:'しゃくなげ祭（5月初旬）— 村上家隠岐しゃくなげ園',en:'Rhododendron Festival (early May) — Murakami Rhododendron Garden'},{ja:'しげさ踊りパレード（5月第2土曜）— 島びらきの祭り',en:'Shigesa Dance Parade (2nd Sat in May) — Island Opening Festival'},{ja:'隠岐しげさ節全国大会（翌日曜）— 全国から民謡愛好家が集結',en:'National Shigesa Folk Song Competition (following Sun)'}],tips:{ja:'年間で最も過ごしやすい時期。島びらきで活気が出ます。釣り体験にも最高のシーズン。日照時間が一年で最も長い月。',en:'The most comfortable time of year. Island Opening brings energy. Best season for fishing. Longest daylight hours of the year.'},packing:['light_jacket','sunscreen','hat_sunglasses','walking_shoes','camera','cash','meds','charger']},
+  6:{name:{ja:'6月',en:'June'},season:'summer',tagline:{ja:'恵みの雨、緑が最も美しい季節',en:'Blessed rain — the greenest time of year'},weather:{avg:20.7,high:24.6,low:17.2,rain:167.0,sun:156.1},clothing:{ja:'薄手の服で過ごせます。折りたたみ傘は必須。蒸し暑い日もあるのでレインウェアがあると安心。',en:'Light clothing works. Folding umbrella is essential. Can be humid — rain gear recommended.'},food:{ja:'白イカ本番、そして岩ガキ解禁！島の夏の味覚が一斉にスタート。新鮮な海の幸が最高です。',en:'White squid in full season, rock oysters just opened! Summer island flavors kick off — fresh seafood at its finest.'},foodPhotos:[`${IMG}/food/10.jpg`,`${IMG}/food/01.jpg`],events:[{ja:'玉若酢命神社御霊会風流（6/5）— 伝統神事',en:'Tamawakasu Shrine Goryo-e Festival (6/5) — Traditional Shinto ritual'},{ja:'隠岐の島ウルトラマラソン — 100kmの島一周レース',en:'Oki Island Ultra Marathon — 100km island circuit race'}],tips:{ja:'梅雨時期ですが、雨上がりの島は格別に美しい。緑が最も鮮やかで、壇鏡の滝は水量が増して迫力満点。観光客も少なめの穴場時期。',en:'Rainy season, but the island after rain is breathtaking. Greenery at its peak, Dangyo Falls at full force. A hidden gem season with fewer tourists.'},packing:['rain_gear','umbrella','light_clothes','sandals','walking_shoes','camera','cash','meds','charger']},
+  7:{name:{ja:'7月',en:'July'},season:'summer',tagline:{ja:'夏本番！太陽と潮風の島時間',en:'Full summer! Sun and sea breeze island time'},weather:{avg:24.8,high:28.2,low:21.9,rain:203.7,sun:161.5},clothing:{ja:'夏服、サンダル、水着持参。日焼け止め・帽子は必須。夜は意外と涼しく薄手の羽織があると◎。',en:'Summer clothes, sandals, swimwear. Sunscreen and hat essential. Evenings are surprisingly cool — a light layer helps.'},food:{ja:'白イカ最盛期、岩ガキ、サザエ、アワビ。島の海の幸がフルコースで楽しめる贅沢な季節。',en:'Peak white squid, rock oysters, turban shells, abalone — the full course of island ocean bounty.'},foodPhotos:[`${IMG}/food/10.jpg`,`${IMG}/food/09.jpg`],events:[{ja:'久見神楽 — 伊勢命神社にて伝統の舞',en:'Kumi Kagura — Traditional sacred dance at Isemikoto Shrine'}],tips:{ja:'海のアクティビティが最高に楽しい！シュノーケリング、海水浴、釣り。塩の浜は透明度抜群。くすぶるハウスの釣り体験もぜひ。',en:'Ocean activities are amazing! Snorkeling, swimming, fishing. Shio-no-hama beach has crystal-clear water. Try fishing at Kusuburu House!'},packing:['swimwear','sunscreen','hat_sunglasses','sandals','light_clothes','rash_guard','insect_repellent','camera','cash','meds','charger']},
+  8:{name:{ja:'8月',en:'August'},season:'summer',tagline:{ja:'島の夏祭り、最も賑やかな季節',en:'Island summer festivals — the liveliest season'},weather:{avg:26.3,high:30.1,low:22.9,rain:141.6,sun:213.2},clothing:{ja:'夏服全開で。海遊び用の装備もお忘れなく。夜は薄手の羽織が一枚あると過ごしやすい。',en:'Full summer wear. Bring ocean activity gear. A light layer for evenings makes a difference.'},food:{ja:'岩ガキ最盛期、白イカ、島の夏野菜。BBQにも最高の食材が揃います。',en:'Peak rock oysters, white squid, island summer vegetables. Perfect ingredients for a BBQ feast.'},foodPhotos:[`${IMG}/food/01.jpg`,`${IMG}/food/08.jpg`],events:[{ja:'西村神楽（8/14）— 西村神社神楽殿にて',en:'Nishimura Kagura (8/14) — Sacred dance at Nishimura Shrine'},{ja:'牛突き夏場所大会（8/15）— 隠岐モーモードームにて島の伝統行事',en:'Bull Sumo Summer Tournament (8/15) — Traditional bull fighting at Oki Moo Moo Dome'}],tips:{ja:'ハイシーズン！花火、祭り、海。一年で最も賑やかな時期。夜は星空が格別に美しい。牛突きは隠岐ならではの迫力ある伝統文化。',en:'Peak season! Fireworks, festivals, ocean. The liveliest time of year. Night skies are stunning for stargazing. Bull sumo is a unique Oki tradition.'},packing:['swimwear','sunscreen','hat_sunglasses','sandals','light_clothes','light_layer','insect_repellent','camera','cash','meds','charger']},
+  9:{name:{ja:'9月',en:'September'},season:'autumn',tagline:{ja:'穴場の秋、静けさと温もりの季節',en:'Hidden gem autumn — quiet warmth on the island'},weather:{avg:22.3,high:26.3,low:18.3,rain:197.8,sun:164.8},clothing:{ja:'まだ暖かいですが朝晩は涼しくなります。薄い長袖があると安心。前半はまだ海に入れる日も。',en:'Still warm but cooler mornings and evenings. Light long sleeves recommended. You can still swim in early September.'},food:{ja:'白イカの終盤を楽しみつつ、秋の魚が始まる。海と秋の味覚の移り変わりを堪能できる特別な時期。',en:'Last of the white squid season while autumn fish appear. A special time to enjoy the seasonal transition.'},foodPhotos:[`${IMG}/food/01.jpg`,`${IMG}/food/05.jpg`],events:[{ja:'八朔牛突き大会（9月上旬）— 佐山牛突き場にて',en:'Hassaku Bull Sumo Tournament (early Sep) — at Sayama Bull Arena'}],tips:{ja:'観光客がぐっと減り、静かな島時間を過ごせる穴場シーズン。夕日が特に美しい季節。くすぶるハウスの焚き火が心地よくなる頃。',en:'Tourists thin out — enjoy quiet island time. Especially beautiful sunsets. Kusuburu\'s bonfire starts feeling perfect.'},packing:['light_jacket','layers','light_clothes','walking_shoes','camera','cash','meds','charger']},
+  10:{name:{ja:'10月',en:'October'},season:'autumn',tagline:{ja:'実りの秋、食も景色も最高の季節',en:'Bountiful autumn — peak food and scenery'},weather:{avg:17.1,high:21.4,low:12.3,rain:97.7,sun:163.6},clothing:{ja:'薄手のジャケットが活躍。朝晩は重ね着で調整。一年で最も降水量が少なく、晴天率が高い月。',en:'A light jacket comes in handy. Layer for temperature swings. The driest month with the most clear skies.'},food:{ja:'紅ズワイガニ解禁！サバ、ブリの走り。秋の味覚が勢揃いし、食が一年で最も旨い季節が到来。',en:'Red snow crab season opens! Mackerel and yellowtail begin. The best food season of the year has arrived.'},foodPhotos:[`${IMG}/food/07.jpg`,`${IMG}/food/11.jpg`],events:[{ja:'一夜嶽牛突き大会（10/13）— 一夜嶽牛突き場にて',en:'Ichiyatake Bull Sumo Tournament (10/13) — at Ichiyatake Arena'},{ja:'隠岐武良祭風流（奇数年 10/19）— 伝統の祭礼',en:'Oki Mura Festival (odd years, 10/19) — Traditional festival'}],tips:{ja:'ローソク島の夕日が最も美しい季節。空気が澄み、幻想的な光景が見られます。食も最高。最もバランスの取れた名月。',en:'The most beautiful Candle Island sunsets of the year. Crystal-clear air creates magical views. Food is at its peak. The most well-balanced month.'},packing:['light_jacket','layers','walking_shoes','camera','onsen_set','cash','meds','charger']},
+  11:{name:{ja:'11月',en:'November'},season:'autumn',tagline:{ja:'晩秋の贅沢、温泉とカニと焚き火と',en:'Late autumn luxury — hot springs, crab, and bonfire'},weather:{avg:12.3,high:16.3,low:7.7,rain:105.8,sun:110.2},clothing:{ja:'暖かいジャケット必須。マフラーもあると安心。海風が冷たくなり、冬の足音が聞こえます。',en:'Warm jacket essential. A scarf helps. Sea winds turn cold as winter approaches.'},food:{ja:'松葉ガニ解禁（11月上旬）、ブリが脂を蓄え始める。冬の味覚の始まり。カニ×温泉は最高の贅沢。',en:'Snow crab season opens (early Nov), yellowtail fattens up. Winter delicacies begin. Crab + hot springs = ultimate luxury.'},foodPhotos:[`${IMG}/food/07.jpg`,`${IMG}/food/06.jpg`],events:[{ja:'上西神社奉納牛突き大会（11月上旬）— シーズン最後の牛突き',en:'Kaminishi Shrine Bull Sumo (early Nov) — Last bull sumo of the season'}],tips:{ja:'シーズン終盤。温泉×カニ×焚き火の三重奏は、この時期だけの贅沢。隠岐唯一の温泉は宿から徒歩15分。静かな島の魅力を存分に。',en:'End of season. The trio of hot springs × crab × bonfire is a luxury only this time offers. The island\'s only hot spring is a 15-min walk from the inn.'},packing:['warm_jacket','scarf_gloves','layers','walking_shoes','onsen_set','camera','cash','meds','charger']}
 };
 
-// Tourist Spots
 const SPOTS = [
-  {
-    id:'rosoku', emoji:'🕯️',
-    name:{ja:'ローソク島',en:'Candle Island'},
-    desc:{ja:'夕日が岩の先端に灯ると、巨大なローソクに火が灯ったような幻想的な光景。遊覧船（4〜10月運航）で海上から鑑賞。',en:'When the setting sun sits atop this 20m rock spire, it looks like a giant lit candle. Sightseeing boats run April to October.'},
-    season:{ja:'4月〜10月（遊覧船）',en:'Apr-Oct (boat tours)'},
-    gradient:'linear-gradient(135deg,#d4945a,#c9a96e,#e8b070)',
-    map:'https://www.google.com/maps/search/ローソク島+隠岐の島',
-    photo:'' // Add photo URL here
-  },
-  {
-    id:'shirashima', emoji:'🏝️',
-    name:{ja:'白島海岸',en:'Shirashima Coast'},
-    desc:{ja:'白い岩肌とエメラルドグリーンの海が織りなす絶景。展望台から大小の奇岩が連なる景色を一望。',en:'White cliffs and emerald-green seas create a stunning view. The observation deck offers panoramic views of the rocky coastline.'},
-    season:{ja:'通年',en:'Year-round'},
-    gradient:'linear-gradient(135deg,#5aadcc,#4a9ac4,#3d8fb0)',
-    map:'https://www.google.com/maps/search/白島海岸+隠岐の島',
-    photo:''
-  },
-  {
-    id:'dangyo', emoji:'💧',
-    name:{ja:'壇鏡の滝',en:'Dangyo Falls'},
-    desc:{ja:'日本の滝百選・名水百選に選定。高さ40mの雄滝と雌滝が壇鏡神社の左右に流れ落ちる神秘的な空間。',en:'Selected among Japan\'s Top 100 Waterfalls and Top 100 Spring Waters. Two 40m falls cascade on either side of Dangyo Shrine.'},
-    season:{ja:'通年（梅雨・秋が見事）',en:'Year-round (best in rainy season & autumn)'},
-    gradient:'linear-gradient(135deg,#4a9a4a,#3a7a3a,#2d5e2d)',
-    map:'https://www.google.com/maps/search/壇鏡の滝+隠岐の島',
-    photo:''
-  },
-  {
-    id:'jodogaura', emoji:'⛩️',
-    name:{ja:'浄土ヶ浦',en:'Jodogaura Coast'},
-    desc:{ja:'極楽浄土のような独特の世界観。5つの時代の7種類の岩石が織りなす地質の宝庫。シュノーケリングにも最適。',en:'An otherworldly landscape named after paradise. A geological treasure with 7 rock types from 5 different eras. Great for snorkeling.'},
-    season:{ja:'通年（夏は海遊びも）',en:'Year-round (swimming in summer)'},
-    gradient:'linear-gradient(135deg,#5a8cc4,#4a7ab0,#3d6894)',
-    map:'https://www.google.com/maps/search/浄土ヶ浦+隠岐の島',
-    photo:''
-  },
-  {
-    id:'chichi', emoji:'🌲',
-    name:{ja:'乳房杉',en:'Chichi-sugi Cedar'},
-    desc:{ja:'樹齢800年超、樹高約30m。15本に分かれた幹から24個の乳房状の根が垂れ下がる、神秘的な巨木。',en:'Over 800 years old, ~30m tall. 24 breast-shaped aerial roots hang from 15 divided trunks — a mystical ancient tree.'},
-    season:{ja:'通年（新緑・紅葉◎）',en:'Year-round (spring green & autumn colors)'},
-    gradient:'linear-gradient(135deg,#3a7a3a,#2d5e2d,#1d4620)',
-    map:'https://www.google.com/maps/search/乳房杉+隠岐の島',
-    photo:''
-  },
-  {
-    id:'tokage', emoji:'🦎',
-    name:{ja:'トカゲ岩',en:'Tokage Rock'},
-    desc:{ja:'山の斜面に現れたトカゲの形をした巨大な自然岩。展望所から眺めるとまさにトカゲが山を登っている姿。',en:'A giant natural rock formation shaped like a lizard climbing the mountainside. Best viewed from the observation point.'},
-    season:{ja:'通年',en:'Year-round'},
-    gradient:'linear-gradient(135deg,#a39d91,#7d776c,#5e5850)',
-    map:'https://www.google.com/maps/search/トカゲ岩+隠岐の島',
-    photo:''
-  },
-  {
-    id:'naku', emoji:'🌅',
-    name:{ja:'那久岬',en:'Naku Cape'},
-    desc:{ja:'高台の展望台から島前の島々を一望できる絶景スポット。夕日の名所としても知られる静かな岬。',en:'A hilltop viewpoint overlooking the Dozen Islands. Known as a sunset spot. A quiet, peaceful cape.'},
-    season:{ja:'通年',en:'Year-round'},
-    gradient:'linear-gradient(135deg,#d4945a,#5aadcc)',
-    map:'https://www.google.com/maps/search/那久岬+隠岐の島',
-    photo:''
-  },
-  {
-    id:'yaosugi', emoji:'⛩️',
-    name:{ja:'玉若酢命神社・八百杉',en:'Tamawakasu Shrine & Yao-sugi'},
-    desc:{ja:'隠岐の総社。境内にそびえる八百杉は樹高38m、県下一の巨木。パワースポットとしても人気。',en:'The grand shrine of Oki. The Yao-sugi cedar stands 38m tall — the largest tree in Shimane Prefecture. A popular power spot.'},
-    season:{ja:'通年',en:'Year-round'},
-    gradient:'linear-gradient(135deg,#96763a,#7a5d2e,#5e4623)',
-    map:'https://www.google.com/maps/search/玉若酢命神社+隠岐の島',
-    photo:''
-  }
+  {id:'rosoku',icon:'flame',name:{ja:'ローソク島',en:'Candle Island'},desc:{ja:'夕日が岩の先端に灯ると、巨大なローソクに火が灯ったような幻想的な光景。遊覧船で海上から鑑賞。',en:'When the setting sun sits atop this 20m rock spire, it looks like a giant lit candle. Best seen from a sightseeing boat.'},season:{ja:'4月〜10月',en:'Apr–Oct'},gradient:'linear-gradient(135deg,#d4945a,#c9a96e)',map:'https://www.google.com/maps/search/ローソク島+隠岐の島',photo:''},
+  {id:'shirashima',icon:'waves',name:{ja:'白島海岸',en:'Shirashima Coast'},desc:{ja:'白い岩肌とエメラルドグリーンの海が織りなす絶景。展望台から奇岩群を一望。',en:'White cliffs and emerald-green seas. Panoramic views of rock formations from the observation deck.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#5aadcc,#3d8fb0)',map:'https://www.google.com/maps/search/白島海岸+隠岐の島',photo:''},
+  {id:'dangyo',icon:'droplets',name:{ja:'壇鏡の滝',en:'Dangyo Falls'},desc:{ja:'日本の滝百選・名水百選。高さ40mの雄滝と雌滝が神社の左右に流れ落ちる。',en:'Top 100 Waterfalls & Spring Waters of Japan. Two 40m falls cascade beside Dangyo Shrine.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#4a9a4a,#2d5e2d)',map:'https://www.google.com/maps/search/壇鏡の滝+隠岐の島',photo:''},
+  {id:'jodogaura',icon:'anchor',name:{ja:'浄土ヶ浦',en:'Jodogaura Coast'},desc:{ja:'極楽浄土のような世界観。5時代7種の岩石が織りなす地質の宝庫。',en:'An otherworldly landscape. A geological treasure with 7 rock types from 5 eras.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#5a8cc4,#3d6894)',map:'https://www.google.com/maps/search/浄土ヶ浦+隠岐の島',photo:''},
+  {id:'chichi',icon:'tree-pine',name:{ja:'乳房杉',en:'Chichi-sugi Cedar'},desc:{ja:'樹齢800年超。15本の幹から24個の乳房状の根が垂れ下がる神秘的な巨木。',en:'Over 800 years old. 24 aerial roots hang from 15 divided trunks — a mystical ancient tree.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#3a7a3a,#1d4620)',map:'https://www.google.com/maps/search/乳房杉+隠岐の島',photo:''},
+  {id:'tokage',icon:'mountain',name:{ja:'トカゲ岩',en:'Tokage Rock'},desc:{ja:'山の斜面に現れたトカゲ形の巨大な自然岩。展望所から眺めると圧巻。',en:'A giant natural rock shaped like a lizard climbing the mountainside. Stunning from the viewpoint.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#8c8377,#5e5850)',map:'https://www.google.com/maps/search/トカゲ岩+隠岐の島',photo:''},
+  {id:'naku',icon:'sunset',name:{ja:'那久岬',en:'Naku Cape'},desc:{ja:'高台の展望台から島前を一望。夕日の名所として知られる静かな岬。',en:'Hilltop viewpoint overlooking the Dozen Islands. A quiet cape known for stunning sunsets.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#d4945a,#5aadcc)',map:'https://www.google.com/maps/search/那久岬+隠岐の島',photo:''},
+  {id:'yaosugi',icon:'landmark',name:{ja:'玉若酢命神社・八百杉',en:'Tamawakasu Shrine'},desc:{ja:'隠岐の総社。境内の八百杉は樹高38m、県下一の巨木。パワースポット。',en:'Grand shrine of Oki. The 38m Yao-sugi is the tallest tree in Shimane. A popular power spot.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#96763a,#5e4623)',map:'https://www.google.com/maps/search/玉若酢命神社+隠岐の島',photo:''}
 ];
 
-// Kusuburu Activities
-const KUSUBURU_ACTIVITIES = [
-  {
-    img:`${IMG}/activity02.jpg`,
-    name:{ja:'釣り体験',en:'Fishing Experience'},
-    desc:{ja:'装備一式完備。初心者も安心',en:'All gear provided. Beginners welcome'}
-  },
-  {
-    img:`${IMG}/activity01.jpg`,
-    name:{ja:'あさみのエステ',en:"Asami's Massage"},
-    desc:{ja:'女将あさみが施術する癒しの時間',en:'Relaxing treatment by hostess Asami'}
-  },
-  {
-    img:`${IMG}/activity03.jpg`,
-    name:{ja:'焚き火',en:'Bonfire'},
-    desc:{ja:'星空の下、島時間を満喫',en:'Enjoy island time under the stars'}
-  },
-  {
-    img:`${IMG}/food/01.jpg`,
-    name:{ja:'島の食卓',en:'Island Dinner'},
-    desc:{ja:'地元の魚・米・野菜を使った夕食',en:'Dinner with local fish, rice & vegetables'}
-  }
+const ACTIVITIES = [
+  {img:`${IMG}/activity02.jpg`,name:{ja:'釣り体験',en:'Fishing'},desc:{ja:'装備一式完備、初心者も安心',en:'All gear provided. Beginners welcome'}},
+  {img:`${IMG}/activity01.jpg`,name:{ja:'あさみのエステ',en:"Asami's Spa"},desc:{ja:'女将あさみの癒しの施術',en:'Relaxing treatment by hostess Asami'}},
+  {img:`${IMG}/activity03.jpg`,name:{ja:'焚き火',en:'Bonfire'},desc:{ja:'星空の下、島時間を満喫',en:'Under the stars, savor island time'}},
+  {img:`${IMG}/food/01.jpg`,name:{ja:'島の食卓',en:'Island Dinner'},desc:{ja:'地元の魚・米・野菜の夕食',en:'Local fish, rice & vegetables'}}
 ];
 
-// Packing items
 const PACKING = {
-  heavy_coat:     {ja:'厚手のコート / ダウン',en:'Heavy coat / down jacket'},
-  warm_jacket:    {ja:'暖かいジャケット',en:'Warm jacket'},
-  light_jacket:   {ja:'薄手のジャケット',en:'Light jacket'},
-  layers:         {ja:'重ね着用の服',en:'Layering clothes'},
-  light_clothes:  {ja:'薄手の服',en:'Light clothing'},
-  light_layer:    {ja:'薄手の羽織（夜用）',en:'Light layer for evenings'},
-  scarf_gloves:   {ja:'マフラー・手袋',en:'Scarf & gloves'},
-  rain_gear:      {ja:'レインウェア / 防水ジャケット',en:'Rain gear / waterproof jacket'},
-  umbrella:       {ja:'折りたたみ傘',en:'Folding umbrella'},
-  sunscreen:      {ja:'日焼け止め',en:'Sunscreen'},
-  hat_sunglasses: {ja:'帽子・サングラス',en:'Hat & sunglasses'},
-  sunglasses:     {ja:'サングラス',en:'Sunglasses'},
-  swimwear:       {ja:'水着',en:'Swimwear'},
-  rash_guard:     {ja:'ラッシュガード',en:'Rash guard'},
-  sandals:        {ja:'サンダル',en:'Sandals'},
-  insect_repellent:{ja:'虫よけスプレー',en:'Insect repellent'},
-  walking_shoes:  {ja:'歩きやすい靴',en:'Walking shoes'},
-  onsen_set:      {ja:'温泉セット（タオルは宿にもあります）',en:'Hot spring kit (towels available at inn)'},
-  camera:         {ja:'カメラ',en:'Camera'},
-  cash:           {ja:'現金（島のATMは限られます）',en:'Cash (few ATMs on the island)'},
-  meds:           {ja:'常備薬',en:'Regular medications'},
-  charger:        {ja:'スマホ充電器',en:'Phone charger'}
+  heavy_coat:{ja:'厚手のコート / ダウン',en:'Heavy coat / down jacket'},warm_jacket:{ja:'暖かいジャケット',en:'Warm jacket'},light_jacket:{ja:'薄手のジャケット',en:'Light jacket'},layers:{ja:'重ね着用の服',en:'Layering clothes'},light_clothes:{ja:'薄手の服',en:'Light clothing'},light_layer:{ja:'薄手の羽織（夜用）',en:'Light layer for evenings'},scarf_gloves:{ja:'マフラー・手袋',en:'Scarf & gloves'},rain_gear:{ja:'レインウェア',en:'Rain gear'},umbrella:{ja:'折りたたみ傘',en:'Folding umbrella'},sunscreen:{ja:'日焼け止め',en:'Sunscreen'},hat_sunglasses:{ja:'帽子・サングラス',en:'Hat & sunglasses'},sunglasses:{ja:'サングラス',en:'Sunglasses'},swimwear:{ja:'水着',en:'Swimwear'},rash_guard:{ja:'ラッシュガード',en:'Rash guard'},sandals:{ja:'サンダル',en:'Sandals'},insect_repellent:{ja:'虫よけスプレー',en:'Insect repellent'},walking_shoes:{ja:'歩きやすい靴',en:'Walking shoes'},onsen_set:{ja:'温泉セット',en:'Hot spring kit'},camera:{ja:'カメラ',en:'Camera'},cash:{ja:'現金（ATMが限られます）',en:'Cash (few ATMs)'},meds:{ja:'常備薬',en:'Medications'},charger:{ja:'充電器',en:'Charger'}
 };
 
-// Season colors
-const SEASON_COLORS = {
-  spring: {accent:'#d4728e',light:'#fef0f3',border:'#f5d0da'},
-  summer: {accent:'#3d8fb0',light:'#eef7fb',border:'#c4e1ed'},
-  autumn: {accent:'#b87a42',light:'#fef6e8',border:'#edd6b5'}
-};
+const SEASON_COLORS = {spring:{accent:'#c4728e'},summer:{accent:'#3d8fb0'},autumn:{accent:'#b87a42'}};
 
-// =====================================================
-// RENDERING
-// =====================================================
-let currentMonth = null;
-let currentLang = 'ja';
+let currentMonth = null, currentLang = 'ja';
 
-function setLang(lang) {
-  currentLang = lang;
-  document.body.classList.toggle('lang-en', lang === 'en');
-  document.getElementById('btn-ja').classList.toggle('active', lang === 'ja');
-  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+function setLang(l){
+  currentLang=l;
+  document.body.classList.toggle('lang-en',l==='en');
+  document.getElementById('btn-ja').classList.toggle('active',l==='ja');
+  document.getElementById('btn-en').classList.toggle('active',l==='en');
 }
 
-function buildMonthGrid() {
-  const grid = document.getElementById('month-grid');
-  // Operating season: 3-11, off-season: 12,1,2
-  const order = [3,4,5,6,7,8,9,10,11,12,1,2];
-  order.forEach(m => {
-    const btn = document.createElement('button');
-    const isOff = m === 12 || m === 1 || m === 2;
-    btn.className = `month-btn ${isOff ? 'off-season' : ''}`;
-    btn.id = `month-${m}`;
-    const labels = {
-      1:{ja:'1月',en:'Jan'},2:{ja:'2月',en:'Feb'},3:{ja:'3月',en:'Mar'},
-      4:{ja:'4月',en:'Apr'},5:{ja:'5月',en:'May'},6:{ja:'6月',en:'Jun'},
-      7:{ja:'7月',en:'Jul'},8:{ja:'8月',en:'Aug'},9:{ja:'9月',en:'Sep'},
-      10:{ja:'10月',en:'Oct'},11:{ja:'11月',en:'Nov'},12:{ja:'12月',en:'Dec'}
-    };
-    btn.innerHTML = `<span data-lang="ja">${labels[m].ja}</span><span data-lang="en">${labels[m].en}</span>`;
-    if (!isOff) {
-      btn.addEventListener('click', () => selectMonth(m));
-    }
-    grid.appendChild(btn);
+function buildMonthGrid(){
+  const g=document.getElementById('month-grid');
+  [3,4,5,6,7,8,9,10,11,12,1,2].forEach(m=>{
+    const b=document.createElement('button');
+    const off=m===12||m===1||m===2;
+    b.className=`month-btn${off?' off-season':''}`;b.id=`month-${m}`;
+    const L={1:{j:'1月',e:'Jan'},2:{j:'2月',e:'Feb'},3:{j:'3月',e:'Mar'},4:{j:'4月',e:'Apr'},5:{j:'5月',e:'May'},6:{j:'6月',e:'Jun'},7:{j:'7月',e:'Jul'},8:{j:'8月',e:'Aug'},9:{j:'9月',e:'Sep'},10:{j:'10月',e:'Oct'},11:{j:'11月',e:'Nov'},12:{j:'12月',e:'Dec'}};
+    b.innerHTML=`<span data-lang="ja">${L[m].j}</span><span data-lang="en">${L[m].e}</span>`;
+    if(!off) b.addEventListener('click',()=>selectMonth(m));
+    g.appendChild(b);
   });
-  // Off-season note
-  const note = document.createElement('p');
-  note.className = 'col-span-3 text-center text-smoke-400 text-xs mt-1';
-  note.innerHTML = '<span data-lang="ja">※ 12〜2月は冬季休業です</span><span data-lang="en">※ Closed December - February</span>';
-  grid.appendChild(note);
+  const n=document.createElement('p');
+  n.style.cssText='grid-column:span 3;text-align:center;color:rgba(255,255,255,0.25);font-size:11px;margin-top:8px';
+  n.innerHTML='<span data-lang="ja">12–2月は冬季休業</span><span data-lang="en">Closed Dec–Feb</span>';
+  g.appendChild(n);
 }
 
-function selectMonth(m) {
-  currentMonth = m;
-  const data = MONTHS[m];
-  if (!data) return;
-
-  const sc = SEASON_COLORS[data.season];
-  document.documentElement.style.setProperty('--accent', sc.accent);
-  document.documentElement.style.setProperty('--accent-light', sc.light);
-  document.documentElement.style.setProperty('--accent-border', sc.border);
-
-  // Update month buttons
-  document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('selected'));
+function selectMonth(m){
+  currentMonth=m;const d=MONTHS[m];if(!d)return;
+  const sc=SEASON_COLORS[d.season];
+  document.documentElement.style.setProperty('--accent',sc.accent);
+  document.querySelectorAll('.month-btn').forEach(b=>b.classList.remove('selected'));
   document.getElementById(`month-${m}`).classList.add('selected');
+  document.getElementById('month-badge').textContent=currentLang==='en'?d.name.en:d.name.ja;
+  document.getElementById('month-tagline').innerHTML=`<span data-lang="ja">${d.tagline.ja}</span><span data-lang="en">${d.tagline.en}</span>`;
 
-  // Month header
-  document.getElementById('month-badge').textContent = currentLang === 'en' ? data.name.en : data.name.ja;
-  document.getElementById('month-tagline').innerHTML =
-    `<span data-lang="ja">${data.tagline.ja}</span><span data-lang="en">${data.tagline.en}</span>`;
-  if (currentLang === 'en') document.body.classList.add('lang-en');
+  renderWeather(d.weather);
+  document.getElementById('clothing-text-ja').textContent=d.clothing.ja;
+  document.getElementById('clothing-text-en').textContent=d.clothing.en;
+  document.getElementById('food-text-ja').textContent=d.food.ja;
+  document.getElementById('food-text-en').textContent=d.food.en;
+  renderFoodPhotos(d.foodPhotos);
+  renderSpots();renderEvents(d.events);renderActivities();renderPacking(d.packing);
+  document.getElementById('tips-text-ja').textContent=d.tips.ja;
+  document.getElementById('tips-text-en').textContent=d.tips.en;
 
-  // Weather
-  renderWeather(data.weather);
-
-  // Clothing
-  document.getElementById('clothing-text-ja').textContent = data.clothing.ja;
-  document.getElementById('clothing-text-en').textContent = data.clothing.en;
-
-  // Food
-  document.getElementById('food-text-ja').textContent = data.food.ja;
-  document.getElementById('food-text-en').textContent = data.food.en;
-  renderFoodPhotos(data.foodPhotos);
-
-  // Spots
-  renderSpots(m);
-
-  // Events
-  renderEvents(data.events);
-
-  // Activities
-  renderActivities();
-
-  // Packing
-  renderPacking(data.packing);
-
-  // Tips
-  document.getElementById('tips-text-ja').textContent = data.tips.ja;
-  document.getElementById('tips-text-en').textContent = data.tips.en;
-
-  // Show content
-  const content = document.getElementById('content');
-  content.classList.remove('hidden');
-
-  // Re-init lucide icons
+  document.getElementById('content').classList.remove('hidden');
+  if(currentLang==='en') document.body.classList.add('lang-en');
   lucide.createIcons();
-
-  // Update URL
-  history.replaceState(null, '', `?m=${m}`);
-
-  // Scroll to content
-  setTimeout(() => {
-    document.getElementById('month-header').scrollIntoView({behavior:'smooth',block:'start'});
-  }, 100);
+  initReveal();
+  history.replaceState(null,'',`?m=${m}`);
+  setTimeout(()=>document.getElementById('month-header').scrollIntoView({behavior:'smooth',block:'start'}),100);
 }
 
-function renderWeather(w) {
-  const container = document.getElementById('weather-cards');
-  container.innerHTML = `
-    <div>
-      <div class="weather-num" style="color:var(--accent)">${w.avg}<span class="text-base">°C</span></div>
-      <div class="weather-label"><span data-lang="ja">平均気温</span><span data-lang="en">Avg Temp</span></div>
-      <div class="text-[10px] text-smoke-400 mt-1">
-        <span data-lang="ja">最高 ${w.high}° / 最低 ${w.low}°</span>
-        <span data-lang="en">High ${w.high}° / Low ${w.low}°</span>
-      </div>
-    </div>
-    <div>
-      <div class="weather-num text-blue-400">${w.rain}<span class="text-base">mm</span></div>
-      <div class="weather-label"><span data-lang="ja">降水量</span><span data-lang="en">Rainfall</span></div>
-    </div>
-    <div>
-      <div class="weather-num text-amber-500">${w.sun}<span class="text-base">h</span></div>
-      <div class="weather-label"><span data-lang="ja">日照時間</span><span data-lang="en">Sunshine</span></div>
-    </div>
-  `;
-  if (currentLang === 'en') document.body.classList.add('lang-en');
+function renderWeather(w){
+  document.getElementById('weather-cards').innerHTML=`
+    <div><div class="weather-val" style="color:var(--accent)">${w.avg}<span class="weather-unit">°C</span></div><div class="weather-meta"><span data-lang="ja">平均気温</span><span data-lang="en">Avg</span></div><div class="weather-meta" style="margin-top:2px"><span data-lang="ja">${w.high}° / ${w.low}°</span><span data-lang="en">${w.high}° / ${w.low}°</span></div></div>
+    <div><div class="weather-val" style="color:#5a8cc4">${w.rain}<span class="weather-unit">mm</span></div><div class="weather-meta"><span data-lang="ja">降水量</span><span data-lang="en">Rain</span></div></div>
+    <div><div class="weather-val" style="color:#d4945a">${w.sun}<span class="weather-unit">h</span></div><div class="weather-meta"><span data-lang="ja">日照時間</span><span data-lang="en">Sun</span></div></div>`;
 }
 
-function renderFoodPhotos(photos) {
-  const container = document.getElementById('food-photos');
-  container.innerHTML = photos.map(url =>
-    `<img src="${url}" alt="くすぶるハウスの料理" class="food-img" loading="lazy" onerror="this.style.display='none'">`
-  ).join('');
+function renderFoodPhotos(p){
+  document.getElementById('food-photos').innerHTML=p.map(u=>`<img src="${u}" alt="" loading="lazy" onerror="this.style.display='none'">`).join('');
 }
 
-function renderSpots(month) {
-  const container = document.getElementById('spots-row');
-  container.innerHTML = SPOTS.map(s => {
-    const bgStyle = s.photo
-      ? `background-image:url('${s.photo}');`
-      : `background:${s.gradient};`;
-    return `
-      <div class="spot-card">
-        <div class="spot-img" style="${bgStyle}">
-          ${!s.photo ? `<span class="spot-emoji">${s.emoji}</span>` : ''}
-        </div>
-        <div class="p-3">
-          <div class="font-bold text-sm mb-1">
-            <span data-lang="ja">${s.name.ja}</span>
-            <span data-lang="en">${s.name.en}</span>
-          </div>
-          <p class="text-xs text-smoke-500 leading-relaxed mb-2">
-            <span data-lang="ja">${s.desc.ja}</span>
-            <span data-lang="en">${s.desc.en}</span>
-          </p>
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] text-smoke-400">
-              <span data-lang="ja">${s.season.ja}</span>
-              <span data-lang="en">${s.season.en}</span>
-            </span>
-            <a href="${s.map}" target="_blank" class="map-link">
-              <i data-lucide="map-pin" class="w-3 h-3"></i>Map
-            </a>
-          </div>
-        </div>
-      </div>
-    `;
+function renderSpots(){
+  document.getElementById('spots-row').innerHTML=SPOTS.map(s=>{
+    const bg=s.photo?`background-image:url('${s.photo}')`:`background:${s.gradient}`;
+    return `<div class="spot-card"><div class="spot-visual" style="${bg}"><div class="spot-icon"><i data-lucide="${s.icon}"></i></div><div class="spot-name"><span data-lang="ja">${s.name.ja}</span><span data-lang="en">${s.name.en}</span></div></div><div style="padding:14px 16px"><p style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:10px"><span data-lang="ja">${s.desc.ja}</span><span data-lang="en">${s.desc.en}</span></p><div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--text-muted)"><span data-lang="ja">${s.season.ja}</span><span data-lang="en">${s.season.en}</span></span><a href="${s.map}" target="_blank" class="map-pill"><i data-lucide="map-pin" style="width:12px;height:12px"></i>Map</a></div></div></div>`;
   }).join('');
-  if (currentLang === 'en') document.body.classList.add('lang-en');
 }
 
-function renderEvents(events) {
-  const container = document.getElementById('events-list');
-  if (!events || events.length === 0) {
-    container.innerHTML = `
-      <p class="text-sm text-smoke-400" data-lang="ja">この月は大きなイベントはありませんが、島のゆったりした日常が楽しめます。</p>
-      <p class="text-sm text-smoke-400" data-lang="en">No major events this month, but enjoy the relaxed island pace.</p>
-    `;
-    return;
-  }
-  container.innerHTML = events.map(e => `
-    <div class="flex items-start gap-3 py-2 border-b border-smoke-100 last:border-b-0">
-      <div class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style="background:var(--accent)"></div>
-      <div>
-        <p class="text-sm" data-lang="ja">${e.ja}</p>
-        <p class="text-sm" data-lang="en">${e.en}</p>
-      </div>
-    </div>
-  `).join('');
-  if (currentLang === 'en') document.body.classList.add('lang-en');
+function renderEvents(ev){
+  const c=document.getElementById('events-list');
+  if(!ev||!ev.length){c.innerHTML=`<p style="font-size:14px;color:var(--text-muted);padding:8px 0"><span data-lang="ja">大きなイベントはありませんが、島のゆったりした日常を楽しめます。</span><span data-lang="en">No major events, but enjoy the relaxed island pace.</span></p>`;return}
+  c.innerHTML=ev.map(e=>`<div class="event-item"><div class="event-dot"></div><div><p style="font-size:14px;line-height:1.6" data-lang="ja">${e.ja}</p><p style="font-size:14px;line-height:1.6" data-lang="en">${e.en}</p></div></div>`).join('');
 }
 
-function renderActivities() {
-  const container = document.getElementById('activities-grid');
-  container.innerHTML = KUSUBURU_ACTIVITIES.map(a => `
-    <div class="activity-card">
-      <img src="${a.img}" alt="${a.name.ja}" loading="lazy" onerror="this.style.display='none'">
-      <div class="p-3">
-        <div class="font-bold text-xs mb-1">
-          <span data-lang="ja">${a.name.ja}</span>
-          <span data-lang="en">${a.name.en}</span>
-        </div>
-        <p class="text-[11px] text-smoke-500">
-          <span data-lang="ja">${a.desc.ja}</span>
-          <span data-lang="en">${a.desc.en}</span>
-        </p>
-      </div>
-    </div>
-  `).join('');
-  if (currentLang === 'en') document.body.classList.add('lang-en');
+function renderActivities(){
+  document.getElementById('activities-grid').innerHTML=ACTIVITIES.map(a=>`<div class="act-card"><img src="${a.img}" alt="${a.name.ja}" loading="lazy"><div class="act-overlay"><h4><span data-lang="ja">${a.name.ja}</span><span data-lang="en">${a.name.en}</span></h4><p><span data-lang="ja">${a.desc.ja}</span><span data-lang="en">${a.desc.en}</span></p></div></div>`).join('');
 }
 
-function renderPacking(items) {
-  const container = document.getElementById('packing-list');
-  const saved = JSON.parse(localStorage.getItem(`kusuburu-pack-${currentMonth}`) || '{}');
-  container.innerHTML = items.map((key, i) => {
-    const item = PACKING[key];
-    if (!item) return '';
-    const checked = saved[key] ? 'checked' : '';
-    return `
-      <div class="check-item ${checked ? 'checked' : ''}">
-        <input type="checkbox" id="pack-${i}" ${checked} onchange="togglePack('${key}',this)">
-        <label for="pack-${i}">
-          <span data-lang="ja">${item.ja}</span>
-          <span data-lang="en">${item.en}</span>
-        </label>
-      </div>
-    `;
-  }).join('');
-  if (currentLang === 'en') document.body.classList.add('lang-en');
+function renderPacking(items){
+  const c=document.getElementById('packing-list');
+  const s=JSON.parse(localStorage.getItem(`kpack-${currentMonth}`)||'{}');
+  c.innerHTML=items.map((k,i)=>{const it=PACKING[k];if(!it)return'';const ch=s[k]?'checked':'';return`<div class="check-row${ch?' checked':''}"><input type="checkbox" id="p${i}" ${ch} onchange="togglePack('${k}',this)"><label for="p${i}"><span data-lang="ja">${it.ja}</span><span data-lang="en">${it.en}</span></label></div>`}).join('');
 }
 
-function togglePack(key, el) {
-  const saved = JSON.parse(localStorage.getItem(`kusuburu-pack-${currentMonth}`) || '{}');
-  saved[key] = el.checked;
-  localStorage.setItem(`kusuburu-pack-${currentMonth}`, JSON.stringify(saved));
-  el.closest('.check-item').classList.toggle('checked', el.checked);
+function togglePack(k,el){
+  const s=JSON.parse(localStorage.getItem(`kpack-${currentMonth}`)||'{}');
+  s[k]=el.checked;localStorage.setItem(`kpack-${currentMonth}`,JSON.stringify(s));
+  el.closest('.check-row').classList.toggle('checked',el.checked);
 }
 
-function shareGuide() {
-  const url = `${location.origin}${location.pathname}?m=${currentMonth}`;
-  if (navigator.share) {
-    navigator.share({
-      title: 'くすぶると過ごす隠岐の島',
-      text: `${MONTHS[currentMonth].name.ja}の隠岐の島ガイド`,
-      url: url
-    }).catch(() => copyToClipboard(url));
-  } else {
-    copyToClipboard(url);
-  }
+function shareGuide(){
+  const u=`${location.origin}${location.pathname}?m=${currentMonth}`;
+  if(navigator.share) navigator.share({title:'くすぶると過ごす隠岐の島',url:u}).catch(()=>clip(u));
+  else clip(u);
 }
-
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    showToast(currentLang === 'en' ? 'Link copied!' : 'リンクをコピーしました！');
-  });
+function clip(t){navigator.clipboard.writeText(t).then(()=>toast(currentLang==='en'?'Link copied!':'リンクをコピーしました'))}
+function toast(m){
+  const e=document.querySelector('.toast');if(e)e.remove();
+  const t=document.createElement('div');t.className='toast';t.textContent=m;
+  document.body.appendChild(t);setTimeout(()=>t.remove(),2000);
 }
-
-function showToast(msg) {
-  const existing = document.querySelector('.toast');
-  if (existing) existing.remove();
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.textContent = msg;
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 2000);
-}
-
-function resetMonth() {
+function resetMonth(){
   document.getElementById('content').classList.add('hidden');
-  document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('selected'));
-  history.replaceState(null, '', location.pathname);
+  document.querySelectorAll('.month-btn').forEach(b=>b.classList.remove('selected'));
+  history.replaceState(null,'',location.pathname);
   document.getElementById('month-select').scrollIntoView({behavior:'smooth'});
 }
 
-// Back to top button
-window.addEventListener('scroll', () => {
-  const btn = document.getElementById('back-top');
-  btn.classList.toggle('visible', window.scrollY > 600);
+// Scroll reveal
+function initReveal(){
+  const obs=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});
+  },{threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(el=>{el.classList.remove('visible');obs.observe(el)});
+}
+
+window.addEventListener('scroll',()=>{
+  document.getElementById('back-top').classList.toggle('visible',window.scrollY>600);
 });
 
-// =====================================================
-// INIT
-// =====================================================
-document.addEventListener('DOMContentLoaded', () => {
-  buildMonthGrid();
-  lucide.createIcons();
-
-  // Check URL params
-  const params = new URLSearchParams(location.search);
-  const m = parseInt(params.get('m'));
-  if (m && MONTHS[m]) {
-    selectMonth(m);
-  }
-
-  // Check lang param
-  const lang = params.get('lang');
-  if (lang === 'en') setLang('en');
+document.addEventListener('DOMContentLoaded',()=>{
+  buildMonthGrid();lucide.createIcons();
+  const p=new URLSearchParams(location.search);
+  const m=parseInt(p.get('m'));if(m&&MONTHS[m])selectMonth(m);
+  if(p.get('lang')==='en')setLang('en');
 });
 </script>
 </body>
