@@ -87,42 +87,6 @@
     }
     .intro-sub.show { opacity: 1 }
 
-    /* ===== TRANSITION OVERLAY (month select → content) ===== */
-    .transition-overlay {
-      position: fixed; inset: 0; z-index: 200;
-      background: #faf9f7;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.5s ease;
-    }
-    .transition-overlay.active {
-      opacity: 1; pointer-events: auto;
-    }
-    .transition-overlay.dissolve {
-      opacity: 0; pointer-events: none;
-      transition: opacity 1.2s ease;
-    }
-    .trans-content { text-align: center }
-    .trans-char {
-      display: inline-block;
-      opacity: 0; transform: translateY(10px);
-      transition: opacity 0.4s ease, transform 0.4s ease;
-    }
-    .trans-char.show { opacity: 1; transform: translateY(0) }
-    .trans-line {
-      width: 0; height: 1px;
-      background: rgba(42,37,32,0.15);
-      margin: 20px auto;
-      transition: width 0.6s ease;
-    }
-    .trans-line.show { width: 48px }
-    .trans-sub {
-      opacity: 0;
-      transition: opacity 0.6s ease;
-    }
-    .trans-sub.show { opacity: 1 }
-
     body.no-scroll { overflow: hidden }
 
     /* ===== TYPOGRAPHY ===== */
@@ -510,15 +474,6 @@
       <p class="font-display" id="intro-title" style="font-size:clamp(24px,6vw,40px);font-weight:400;color:var(--text-dark);letter-spacing:0.12em;line-height:1.6"></p>
       <div class="intro-line" id="intro-line"></div>
       <p class="intro-sub" id="intro-sub" style="font-size:10px;letter-spacing:0.25em;color:var(--text-muted)">KUSUBURU HOUSE — 燻家</p>
-    </div>
-  </div>
-
-  <!-- ===== TRANSITION OVERLAY (plays on month select) ===== -->
-  <div class="transition-overlay" id="trans-overlay">
-    <div class="trans-content">
-      <p class="font-display" id="trans-title" style="font-size:clamp(22px,5vw,36px);font-weight:400;color:var(--text-dark);letter-spacing:0.12em;line-height:1.6"></p>
-      <div class="trans-line" id="trans-line"></div>
-      <p class="trans-sub" id="trans-sub" style="font-size:10px;letter-spacing:0.25em;color:var(--text-muted)">KUSUBURU HOUSE — 燻家</p>
     </div>
   </div>
 
@@ -993,12 +948,7 @@ function showContent(m){
 
 function selectMonth(m, skipAnim){
   currentMonth=m;const d=MONTHS[m];if(!d)return;
-  if(skipAnim){
-    showContent(m);
-    return;
-  }
-  const monthName = currentLang==='en' ? d.name.en : d.name.ja;
-  playTransition(monthName, ()=> showContent(m));
+  showContent(m);
 }
 
 function renderWeather(w){
@@ -1069,56 +1019,6 @@ function initReveal(){
 window.addEventListener('scroll',()=>{
   document.getElementById('back-top').classList.toggle('visible',window.scrollY>600);
 });
-
-function playTransition(monthName, callback){
-  const overlay = document.getElementById('trans-overlay');
-  const title = document.getElementById('trans-title');
-  const line = document.getElementById('trans-line');
-  const sub = document.getElementById('trans-sub');
-
-  // Reset
-  title.innerHTML = '';
-  line.classList.remove('show');
-  sub.classList.remove('show');
-  overlay.classList.remove('dissolve');
-
-  // Build characters for staggered animation
-  const text = 'くすぶるハウス';
-  text.split('').forEach((ch,i) => {
-    const span = document.createElement('span');
-    span.className = 'trans-char';
-    span.textContent = ch;
-    span.style.transitionDelay = (i * 0.08) + 's';
-    title.appendChild(span);
-  });
-
-  // Show overlay
-  document.body.classList.add('no-scroll');
-  overlay.classList.add('active');
-
-  // Step 1: Characters appear one by one
-  setTimeout(() => {
-    title.querySelectorAll('.trans-char').forEach(c => c.classList.add('show'));
-  }, 200);
-
-  // Step 2: Line extends
-  setTimeout(() => line.classList.add('show'), 600);
-
-  // Step 3: Subtitle
-  setTimeout(() => sub.classList.add('show'), 900);
-
-  // Step 4: Dissolve overlay → reveal content
-  setTimeout(() => {
-    callback();
-    overlay.classList.add('dissolve');
-    document.body.classList.remove('no-scroll');
-  }, 2200);
-
-  // Step 5: Cleanup
-  setTimeout(() => {
-    overlay.classList.remove('active','dissolve');
-  }, 3500);
-}
 
 function runIntro(){
   const overlay = document.getElementById('intro-overlay');
