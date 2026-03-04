@@ -920,55 +920,18 @@
         <span data-lang="ja">隠岐の島へは、七類港（松江市）または境港から出発します。季節によりダイヤが変わりますので、最新情報は隠岐汽船をご確認ください。</span>
         <span data-lang="en">Ferries to Oki depart from Shichirui Port (Matsue) or Sakaiminato. Schedules vary by season — check Oki Kisen for the latest.</span>
       </p>
-      <div style="background:white;padding:24px;margin-bottom:20px">
-        <div style="display:flex;flex-direction:column;gap:20px">
-          <div>
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-              <span class="ferry-badge ferry-slow" data-lang="ja">フェリー</span>
-              <span class="ferry-badge ferry-slow" data-lang="en">Ferry</span>
-              <span style="font-size:11px;color:var(--text-muted)" data-lang="ja">おき・くにが・しらしま</span>
-              <span style="font-size:11px;color:var(--text-muted)" data-lang="en">Oki / Kuniga / Shirashima</span>
-            </div>
-            <div style="font-size:13px;color:var(--text-body);line-height:1.8">
-              <span data-lang="ja">七類港（松江市）または 境港 → 島前経由 → 西郷港</span>
-              <span data-lang="en">Shichirui (Matsue) or Sakaiminato → via Dozen → Saigo Port</span><br>
-              <span style="font-size:12px;color:var(--text-muted)">
-                <span data-lang="ja">所要 約2時間30分〜3時間（経由地により変動）</span>
-                <span data-lang="en">Duration: approx. 2.5–3 hours (varies by route)</span>
-              </span>
-            </div>
-          </div>
-          <div style="border-top:1px solid var(--border-light);padding-top:20px">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-              <span class="ferry-badge ferry-fast" data-lang="ja">高速船</span>
-              <span class="ferry-badge ferry-fast" data-lang="en">High-speed</span>
-              <span style="font-size:11px;color:var(--text-muted)" data-lang="ja">レインボージェット</span>
-              <span style="font-size:11px;color:var(--text-muted)" data-lang="en">Rainbow Jet</span>
-            </div>
-            <div style="font-size:13px;color:var(--text-body);line-height:1.8">
-              <span data-lang="ja">七類港 ⇔ 西郷港（島前寄港便あり）</span>
-              <span data-lang="en">Shichirui ⇔ Saigo Port (some via Dozen)</span><br>
-              <span style="font-size:12px;color:var(--text-muted)">
-                <span data-lang="ja">所要 約1時間〜1時間20分</span>
-                <span data-lang="en">Duration: approx. 60–80 min</span>
-              </span>
-            </div>
-            <div style="margin-top:10px;padding:8px 12px;background:#faf9f7;font-size:11px;color:var(--accent-warm);line-height:1.6">
-              <span data-lang="ja">⚠ 高速船は冬期（12月下旬〜2月中旬頃）運休、メンテナンス休航期間あり</span>
-              <span data-lang="en">⚠ Not available in winter (late Dec–mid Feb) & maintenance periods</span>
-            </div>
-          </div>
-        </div>
+      <div id="ferry-info" style="background:white;padding:24px;margin-bottom:20px">
+        <!-- JS が月別フェリー情報を描画 -->
       </div>
       <p style="font-size:11px;color:var(--text-muted);margin-bottom:16px">
-        <span data-lang="ja">※ ダイヤは季節・曜日により大きく変わります。必ず公式サイトで最新時刻表をご確認ください。</span>
-        <span data-lang="en">※ Schedules change significantly by season & day. Always check the official site for the latest timetable.</span>
+        <span data-lang="ja">※ 上記は目安です。ダイヤは季節・曜日により変わります。ご乗船前に必ず最新の時刻表をご確認ください。</span>
+        <span data-lang="en">※ Above is a rough guide. Schedules change by season & day. Always check the latest timetable before boarding.</span>
       </p>
-      <a href="https://www.oki-kisen.co.jp/timetable/" target="_blank" rel="noopener" class="btn-outline" style="font-size:12px;padding:12px 20px;display:inline-flex;align-items:center;gap:8px">
-        <i data-lucide="ship" style="width:14px;height:14px"></i>
-        <span data-lang="ja">隠岐汽船 最新時刻表を確認</span>
-        <span data-lang="en">Oki Kisen — Check Latest Schedule</span>
-        <i data-lucide="external-link" style="width:12px;height:12px;opacity:0.5"></i>
+      <a href="https://www.oki-kisen.co.jp/timetable/" target="_blank" rel="noopener" class="btn-dark" style="font-size:13px;padding:14px 24px;display:inline-flex;align-items:center;gap:10px;width:100%;justify-content:center">
+        <i data-lucide="ship" style="width:16px;height:16px"></i>
+        <span data-lang="ja">隠岐汽船 最新時刻表を確認する</span>
+        <span data-lang="en">Check Latest Oki Kisen Schedule</span>
+        <i data-lucide="external-link" style="width:13px;height:13px;opacity:0.6"></i>
       </a>
     </section>
 
@@ -1046,6 +1009,18 @@ const PACKING = {
   heavy_coat:{ja:'厚手のコート / ダウン',en:'Heavy coat / down jacket'},warm_jacket:{ja:'暖かいジャケット',en:'Warm jacket'},light_jacket:{ja:'薄手のジャケット',en:'Light jacket'},layers:{ja:'重ね着用の服',en:'Layering clothes'},light_clothes:{ja:'薄手の服',en:'Light clothing'},light_layer:{ja:'薄手の羽織（夜用）',en:'Light layer for evenings'},scarf_gloves:{ja:'マフラー・手袋',en:'Scarf & gloves'},rain_gear:{ja:'レインウェア',en:'Rain gear'},umbrella:{ja:'折りたたみ傘',en:'Folding umbrella'},sunscreen:{ja:'日焼け止め',en:'Sunscreen'},hat_sunglasses:{ja:'帽子・サングラス',en:'Hat & sunglasses'},sunglasses:{ja:'サングラス',en:'Sunglasses'},swimwear:{ja:'水着',en:'Swimwear'},rash_guard:{ja:'ラッシュガード',en:'Rash guard'},sandals:{ja:'サンダル',en:'Sandals'},insect_repellent:{ja:'虫よけスプレー',en:'Insect repellent'},walking_shoes:{ja:'歩きやすい靴',en:'Walking shoes'},onsen_set:{ja:'温泉セット',en:'Hot spring kit'},camera:{ja:'カメラ',en:'Camera'},cash:{ja:'現金（ATMが限られます）',en:'Cash (few ATMs)'},meds:{ja:'常備薬',en:'Medications'},charger:{ja:'充電器',en:'Charger'}
 };
 
+const FERRY_INFO = {
+  3:{ferry:{ja:'フェリー 1日1〜2便（冬ダイヤの場合あり）',en:'Ferry: 1–2 per day (winter schedule may apply)'},jet:{ja:'高速船 運休中の可能性あり（3月中旬頃まで船舶検査）',en:'Rainbow Jet: may be suspended (ship inspection until mid-Mar)'},note:{ja:'3月中旬までドック入り期間のため、高速船は運休の場合があります。必ず事前にご確認を。',en:'Rainbow Jet may be out of service until mid-March for annual inspection. Always confirm in advance.'}},
+  4:{ferry:{ja:'フェリー 1日1〜2便',en:'Ferry: 1–2 per day'},jet:{ja:'高速船レインボージェット 1日1〜2便',en:'Rainbow Jet: 1–2 per day'},note:{ja:'通常ダイヤに切り替わります。GW前後は混雑するため早めの予約を。',en:'Regular schedule resumes. Book early around Golden Week — ferries get crowded.'}},
+  5:{ferry:{ja:'フェリー 1日1〜2便',en:'Ferry: 1–2 per day'},jet:{ja:'高速船レインボージェット 1日1〜2便（5月下旬メンテナンス休航あり）',en:'Rainbow Jet: 1–2 per day (maintenance break in late May possible)'},note:{ja:'GW期間は増便される場合があります。5月下旬に高速船のメンテナンス休航があることも。',en:'Extra sailings may be added during Golden Week. Late May maintenance break for Rainbow Jet possible.'}},
+  6:{ferry:{ja:'フェリー 1日1〜2便',en:'Ferry: 1–2 per day'},jet:{ja:'高速船レインボージェット 1日2便',en:'Rainbow Jet: 2 per day'},note:{ja:'通常ダイヤ。比較的空いている時期なので予約が取りやすい。',en:'Regular schedule. Relatively quiet season — easier to book.'}},
+  7:{ferry:{ja:'フェリー 1日2便',en:'Ferry: 2 per day'},jet:{ja:'高速船レインボージェット 1日2〜3便',en:'Rainbow Jet: 2–3 per day'},note:{ja:'夏ダイヤで増便。繁忙期に入るため早めの予約がおすすめ。',en:'Summer schedule with extra sailings. Peak season begins — book early.'}},
+  8:{ferry:{ja:'フェリー 1日2便',en:'Ferry: 2 per day'},jet:{ja:'高速船レインボージェット 1日2〜3便',en:'Rainbow Jet: 2–3 per day'},note:{ja:'ハイシーズン。お盆前後は満席になることも。早めの予約を強くおすすめします。',en:'Peak season. Can sell out around Obon holidays. Strongly recommend booking early.'}},
+  9:{ferry:{ja:'フェリー 1日1〜2便',en:'Ferry: 1–2 per day'},jet:{ja:'高速船レインボージェット 1日1〜2便',en:'Rainbow Jet: 1–2 per day'},note:{ja:'通常ダイヤに戻ります。観光客が減り、予約も取りやすい穴場シーズン。',en:'Returns to regular schedule. Fewer tourists — easier booking in this hidden gem season.'}},
+  10:{ferry:{ja:'フェリー 1日1〜2便',en:'Ferry: 1–2 per day'},jet:{ja:'高速船レインボージェット 1日1〜2便',en:'Rainbow Jet: 1–2 per day'},note:{ja:'通常ダイヤ。10月下旬から減便の可能性あり。',en:'Regular schedule. Sailings may reduce from late October.'}},
+  11:{ferry:{ja:'フェリー 1日1〜2便',en:'Ferry: 1–2 per day'},jet:{ja:'高速船レインボージェット 1日1便（11月下旬から運休の可能性）',en:'Rainbow Jet: 1 per day (may suspend from late Nov)'},note:{ja:'冬ダイヤへの移行期。11月下旬から高速船が運休になる場合があります。',en:'Transition to winter schedule. Rainbow Jet may stop running from late November.'}}
+};
+
 const SEASON_COLORS = {spring:{accent:'#8a6d5b'},summer:{accent:'#5c7a6d'},autumn:{accent:'#96763a'}};
 
 let currentMonth = null, currentLang = 'ja';
@@ -1090,6 +1065,7 @@ function showContent(m){
   document.getElementById('food-text-en').textContent=d.food.en;
   renderFoodPhotos(d.foodPhotos);
   renderSpots();renderEvents(d.events);renderActivities();renderPacking(d.packing);
+  renderFerry(m);
   document.getElementById('tips-text-ja').textContent=d.tips.ja;
   document.getElementById('tips-text-en').textContent=d.tips.en;
 
@@ -1185,6 +1161,46 @@ function togglePack(k,el){
   const s=JSON.parse(localStorage.getItem(`kpack-${currentMonth}`)||'{}');
   s[k]=el.checked;localStorage.setItem(`kpack-${currentMonth}`,JSON.stringify(s));
   el.closest('.check-row').classList.toggle('checked',el.checked);
+}
+
+function renderFerry(m){
+  const f=FERRY_INFO[m];if(!f)return;
+  const el=document.getElementById('ferry-info');
+  el.innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span class="ferry-badge ferry-slow"><span data-lang="ja">フェリー</span><span data-lang="en">Ferry</span></span>
+          <span style="font-size:10px;color:var(--text-muted)"><span data-lang="ja">おき・くにが・しらしま</span><span data-lang="en">Oki / Kuniga / Shirashima</span></span>
+        </div>
+        <p style="font-size:13px;color:var(--text-body);line-height:1.7;margin-bottom:4px">
+          <span data-lang="ja">${f.ferry.ja}</span><span data-lang="en">${f.ferry.en}</span>
+        </p>
+        <p style="font-size:11px;color:var(--text-muted)">
+          <span data-lang="ja">七類港 or 境港 → 島前経由 → 西郷港（約2.5〜3時間）</span>
+          <span data-lang="en">Shichirui or Sakaiminato → via Dozen → Saigo (approx. 2.5–3h)</span>
+        </p>
+      </div>
+      <div style="border-top:1px solid var(--border-light);padding-top:18px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span class="ferry-badge ferry-fast"><span data-lang="ja">高速船</span><span data-lang="en">Jet</span></span>
+          <span style="font-size:10px;color:var(--text-muted)"><span data-lang="ja">レインボージェット</span><span data-lang="en">Rainbow Jet</span></span>
+        </div>
+        <p style="font-size:13px;color:var(--text-body);line-height:1.7;margin-bottom:4px">
+          <span data-lang="ja">${f.jet.ja}</span><span data-lang="en">${f.jet.en}</span>
+        </p>
+        <p style="font-size:11px;color:var(--text-muted)">
+          <span data-lang="ja">七類港 ⇔ 西郷港（約1時間〜1時間20分）</span>
+          <span data-lang="en">Shichirui ⇔ Saigo (approx. 60–80 min)</span>
+        </p>
+      </div>
+      <div style="border-top:1px solid var(--border-light);padding:14px 0 0">
+        <p style="font-size:12px;color:var(--accent-warm);line-height:1.7">
+          <span data-lang="ja">💡 ${f.note.ja}</span><span data-lang="en">💡 ${f.note.en}</span>
+        </p>
+      </div>
+    </div>`;
+  if(currentLang==='en') document.body.classList.add('lang-en');
 }
 
 function shareGuide(){
