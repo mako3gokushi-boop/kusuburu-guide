@@ -55,47 +55,41 @@
       letter-spacing: 0.02em;
     }
 
-    /* ===== INTRO ANIMATION ===== */
-    .intro-overlay {
+    /* ===== TRANSITION OVERLAY (month select → content) ===== */
+    .transition-overlay {
       position: fixed; inset: 0; z-index: 200;
-      background: #2a2520;
+      background: #faf9f7;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      transition: opacity 1s ease;
-    }
-    .intro-overlay.fade-out {
       opacity: 0; pointer-events: none;
+      transition: opacity 0.5s ease;
     }
-    .intro-logo {
-      opacity: 0; transform: translateY(12px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
+    .transition-overlay.active {
+      opacity: 1; pointer-events: auto;
     }
-    .intro-logo.show {
-      opacity: 1; transform: translateY(0);
+    .transition-overlay.dissolve {
+      opacity: 0; pointer-events: none;
+      transition: opacity 1.2s ease;
     }
-    .intro-line {
+    .trans-content { text-align: center }
+    .trans-char {
+      display: inline-block;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .trans-char.show { opacity: 1; transform: translateY(0) }
+    .trans-line {
       width: 0; height: 1px;
-      background: rgba(255,255,255,0.2);
+      background: rgba(42,37,32,0.15);
       margin: 20px auto;
-      transition: width 0.8s ease 0.4s;
+      transition: width 0.6s ease;
     }
-    .intro-line.show { width: 60px }
-    .intro-sub {
+    .trans-line.show { width: 48px }
+    .trans-sub {
       opacity: 0;
-      transition: opacity 0.8s ease 0.8s;
+      transition: opacity 0.6s ease;
     }
-    .intro-sub.show { opacity: 1 }
-
-    /* Month section staggered entrance */
-    .month-section .intro-el {
-      opacity: 0; transform: translateY(16px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .month-section.entered .intro-el { opacity: 1; transform: translateY(0) }
-    .month-section.entered .intro-el:nth-child(1) { transition-delay: 0s }
-    .month-section.entered .intro-el:nth-child(2) { transition-delay: 0.15s }
-    .month-section.entered .intro-el:nth-child(3) { transition-delay: 0.3s }
-    .month-section.entered .intro-el:nth-child(4) { transition-delay: 0.45s }
+    .trans-sub.show { opacity: 1 }
 
     body.no-scroll { overflow: hidden }
 
@@ -476,17 +470,19 @@
     }
   </style>
 </head>
-<body class="no-scroll">
+<body>
 
-  <!-- ===== INTRO OVERLAY ===== -->
-  <div class="intro-overlay" id="intro">
-    <p class="intro-logo font-display" id="intro-logo" style="font-size:clamp(20px,5vw,32px);font-weight:400;color:white;letter-spacing:0.12em">くすぶるハウス</p>
-    <div class="intro-line" id="intro-line"></div>
-    <p class="intro-sub" id="intro-sub" style="font-size:10px;letter-spacing:0.25em;color:rgba(255,255,255,0.35)">KUSUBURU HOUSE — 燻家</p>
+  <!-- ===== TRANSITION OVERLAY (plays on month select) ===== -->
+  <div class="transition-overlay" id="trans-overlay">
+    <div class="trans-content">
+      <p class="font-display" id="trans-title" style="font-size:clamp(22px,5vw,36px);font-weight:400;color:var(--text-dark);letter-spacing:0.12em;line-height:1.6"></p>
+      <div class="trans-line" id="trans-line"></div>
+      <p class="trans-sub" id="trans-sub" style="font-size:10px;letter-spacing:0.25em;color:var(--text-muted)">KUSUBURU HOUSE — 燻家</p>
+    </div>
   </div>
 
   <!-- ===== LANGUAGE TOGGLE (FIXED) ===== -->
-  <div class="lang-toggle" style="opacity:0;transition:opacity 0.5s ease" id="lang-toggle">
+  <div class="lang-toggle">
     <button class="lang-btn active" onclick="setLang('ja')" id="btn-ja">JP</button>
     <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
   </div>
@@ -494,16 +490,16 @@
   <!-- ===== MONTH SELECTOR (LANDING) ===== -->
   <section class="month-section" id="month-select">
     <div style="max-width:540px;margin:0 auto;text-align:center">
-      <p class="sec-label intro-el" style="color:rgba(255,255,255,0.3)">Select Month</p>
-      <h2 class="font-display intro-el" style="font-size:clamp(22px,5vw,32px);font-weight:400;color:white;letter-spacing:0.08em;margin-bottom:8px">
+      <p class="sec-label" style="color:rgba(255,255,255,0.3)">Select Month</p>
+      <h2 class="font-display" style="font-size:clamp(22px,5vw,32px);font-weight:400;color:white;letter-spacing:0.08em;margin-bottom:8px">
         <span data-lang="ja">何月に隠岐の島へ？</span>
         <span data-lang="en">When are you visiting?</span>
       </h2>
-      <p class="intro-el" style="font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:40px;letter-spacing:0.08em">
+      <p style="font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:40px;letter-spacing:0.08em">
         <span data-lang="ja">営業期間：3月中旬 — 11月下旬</span>
         <span data-lang="en">Open: Mid-March — Late November</span>
       </p>
-      <div class="month-grid intro-el" id="month-grid"></div>
+      <div class="month-grid" id="month-grid"></div>
     </div>
   </section>
 
@@ -927,8 +923,8 @@ function buildMonthGrid(){
   g.appendChild(n);
 }
 
-function selectMonth(m){
-  currentMonth=m;const d=MONTHS[m];if(!d)return;
+function showContent(m){
+  const d=MONTHS[m];
   const sc=SEASON_COLORS[d.season];
   document.documentElement.style.setProperty('--accent',sc.accent);
   document.querySelectorAll('.month-btn').forEach(b=>b.classList.remove('selected'));
@@ -951,7 +947,17 @@ function selectMonth(m){
   lucide.createIcons();
   initReveal();
   history.replaceState(null,'',`?m=${m}`);
-  setTimeout(()=>document.getElementById('content').scrollIntoView({behavior:'smooth',block:'start'}),100);
+  window.scrollTo({top:document.getElementById('content').offsetTop, behavior:'instant'});
+}
+
+function selectMonth(m, skipAnim){
+  currentMonth=m;const d=MONTHS[m];if(!d)return;
+  if(skipAnim){
+    showContent(m);
+    return;
+  }
+  const monthName = currentLang==='en' ? d.name.en : d.name.ja;
+  playTransition(monthName, ()=> showContent(m));
 }
 
 function renderWeather(w){
@@ -1023,37 +1029,54 @@ window.addEventListener('scroll',()=>{
   document.getElementById('back-top').classList.toggle('visible',window.scrollY>600);
 });
 
-function runIntro(){
-  const hasMonth = new URLSearchParams(location.search).get('m');
-  if(hasMonth){
-    // Skip intro if coming from direct link with month
-    document.getElementById('intro').style.display='none';
-    document.body.classList.remove('no-scroll');
-    document.getElementById('lang-toggle').style.opacity='1';
-    document.getElementById('month-select').classList.add('entered');
-    return;
-  }
-  // Step 1: Logo fade in
-  setTimeout(()=>document.getElementById('intro-logo').classList.add('show'),300);
+function playTransition(monthName, callback){
+  const overlay = document.getElementById('trans-overlay');
+  const title = document.getElementById('trans-title');
+  const line = document.getElementById('trans-line');
+  const sub = document.getElementById('trans-sub');
+
+  // Reset
+  title.innerHTML = '';
+  line.classList.remove('show');
+  sub.classList.remove('show');
+  overlay.classList.remove('dissolve');
+
+  // Build characters for staggered animation
+  const text = 'くすぶるハウス';
+  text.split('').forEach((ch,i) => {
+    const span = document.createElement('span');
+    span.className = 'trans-char';
+    span.textContent = ch;
+    span.style.transitionDelay = (i * 0.08) + 's';
+    title.appendChild(span);
+  });
+
+  // Show overlay
+  document.body.classList.add('no-scroll');
+  overlay.classList.add('active');
+
+  // Step 1: Characters appear one by one
+  setTimeout(() => {
+    title.querySelectorAll('.trans-char').forEach(c => c.classList.add('show'));
+  }, 200);
+
   // Step 2: Line extends
-  setTimeout(()=>document.getElementById('intro-line').classList.add('show'),300);
-  // Step 3: Subtitle appears
-  setTimeout(()=>document.getElementById('intro-sub').classList.add('show'),300);
-  // Step 4: Overlay fades out, reveal month select
-  setTimeout(()=>{
-    document.getElementById('intro').classList.add('fade-out');
+  setTimeout(() => line.classList.add('show'), 600);
+
+  // Step 3: Subtitle
+  setTimeout(() => sub.classList.add('show'), 900);
+
+  // Step 4: Dissolve overlay → reveal content
+  setTimeout(() => {
+    callback();
+    overlay.classList.add('dissolve');
     document.body.classList.remove('no-scroll');
-    document.getElementById('lang-toggle').style.opacity='1';
-  },2400);
-  // Step 5: Month section elements stagger in
-  setTimeout(()=>{
-    document.getElementById('month-select').classList.add('entered');
-  },2800);
-  // Step 6: Remove overlay from DOM
-  setTimeout(()=>{
-    const intro=document.getElementById('intro');
-    if(intro)intro.remove();
-  },3600);
+  }, 2200);
+
+  // Step 5: Cleanup
+  setTimeout(() => {
+    overlay.classList.remove('active','dissolve');
+  }, 3500);
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
@@ -1061,8 +1084,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   const p=new URLSearchParams(location.search);
   const m=parseInt(p.get('m'));
   if(p.get('lang')==='en')setLang('en');
-  runIntro();
-  if(m&&MONTHS[m])selectMonth(m);
+  // Direct link: skip animation
+  if(m&&MONTHS[m]) selectMonth(m, true);
   initReveal();
 });
 </script>
