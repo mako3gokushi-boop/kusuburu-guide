@@ -332,17 +332,34 @@
     }
 
     /* ===== SPOTS ===== */
+    .spot-wrap {
+      position: relative;
+    }
     .spot-scroll {
       display: flex; gap: 20px; overflow-x: auto;
       padding: 0 24px 20px;
       -webkit-overflow-scrolling: touch;
       scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
     }
     .spot-scroll::-webkit-scrollbar { display: none }
     .spot-card {
       min-width: 300px; flex-shrink: 0;
       scroll-snap-align: start;
     }
+    .spot-arrow {
+      position: absolute; top: 100px; z-index: 5;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: white; border: 1px solid var(--border-light);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+      color: var(--text-dark);
+    }
+    .spot-arrow:hover { transform: scale(1.1) }
+    .spot-arrow.hide { opacity: 0; pointer-events: none }
+    .spot-arrow-l { left: 8px }
+    .spot-arrow-r { right: 8px }
     .spot-visual {
       height: 200px; background-size: cover;
       background-position: center; position: relative;
@@ -691,7 +708,11 @@
         </h3>
         <div class="sec-divider"></div>
       </div>
-      <div class="spot-scroll" id="spots-row"></div>
+      <div class="spot-wrap">
+        <button class="spot-arrow spot-arrow-l hide" id="spot-left" onclick="scrollSpots(-1)" aria-label="Previous"><i data-lucide="chevron-left" style="width:18px;height:18px"></i></button>
+        <div class="spot-scroll" id="spots-row"></div>
+        <button class="spot-arrow spot-arrow-r" id="spot-right" onclick="scrollSpots(1)" aria-label="Next"><i data-lucide="chevron-right" style="width:18px;height:18px"></i></button>
+      </div>
     </section>
 
     <!-- Events -->
@@ -1085,10 +1106,29 @@ function renderFoodPhotos(p){
 }
 
 function renderSpots(){
-  document.getElementById('spots-row').innerHTML=SPOTS.map(s=>{
+  const row=document.getElementById('spots-row');
+  row.innerHTML=SPOTS.map(s=>{
     const bg=s.photo?`background-image:url('${s.photo}')`:`background:${s.gradient}`;
     return `<div class="spot-card"><div class="spot-visual" style="${bg}"></div><div class="spot-info"><h4 style="font-size:14px;font-weight:500;margin-bottom:6px"><span data-lang="ja">${s.name.ja}</span><span data-lang="en">${s.name.en}</span></h4><p style="font-size:12px;color:var(--text-body);line-height:1.8;margin-bottom:10px"><span data-lang="ja">${s.desc.ja}</span><span data-lang="en">${s.desc.en}</span></p><div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:10px;color:var(--text-muted);letter-spacing:0.05em"><span data-lang="ja">${s.season.ja}</span><span data-lang="en">${s.season.en}</span></span><a href="${s.map}" target="_blank" class="map-pill"><i data-lucide="map-pin" style="width:10px;height:10px"></i>Map</a></div></div></div>`;
   }).join('');
+  row.addEventListener('scroll',updateSpotArrows);
+  updateSpotArrows();
+}
+
+function scrollSpots(dir){
+  const row=document.getElementById('spots-row');
+  const card=row.querySelector('.spot-card');
+  if(!card)return;
+  row.scrollBy({left:dir*(card.offsetWidth+20),behavior:'smooth'});
+}
+
+function updateSpotArrows(){
+  const row=document.getElementById('spots-row');
+  if(!row)return;
+  const l=document.getElementById('spot-left');
+  const r=document.getElementById('spot-right');
+  if(l)l.classList.toggle('hide',row.scrollLeft<10);
+  if(r)r.classList.toggle('hide',row.scrollLeft>=row.scrollWidth-row.clientWidth-10);
 }
 
 function renderEvents(ev){
