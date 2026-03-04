@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>くすぶると過ごす隠岐の島 | くすぶるハウス</title>
+  <title>くすぶるで過ごす隠岐の島 | くすぶるハウス</title>
   <meta name="description" content="隠岐の島のゲストハウス「くすぶるハウス」滞在ガイド。来島月に合わせた気候・服装・グルメ・観光スポット情報。">
-  <meta property="og:title" content="くすぶると過ごす隠岐の島">
+  <meta property="og:title" content="くすぶるで過ごす隠岐の島">
   <meta property="og:description" content="あなたの来島月に合わせた、隠岐の島旅ガイド">
   <meta property="og:image" content="https://kusuburu-house.com/img/ogp.jpg">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -344,8 +344,12 @@
     }
     .spot-scroll::-webkit-scrollbar { display: none }
     .spot-card {
-      min-width: 300px; flex-shrink: 0;
+      min-width: 280px; flex-shrink: 0;
       scroll-snap-align: start;
+    }
+    .spot-card h4 {
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
     .spot-arrow {
       position: absolute; top: 100px; z-index: 5;
@@ -696,11 +700,15 @@
             <span data-lang="ja">夕日が岩の先端に灯ると、巨大なローソクに火が灯ったような幻想的な光景。海上から眺める約50分の遊覧です。人気のため早めのご予約を。</span>
             <span data-lang="en">When the setting sun aligns with the rock spire, it looks like a giant lit candle. A 50-min boat tour from the sea. Book early — very popular.</span>
           </p>
-          <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--text-body);margin-bottom:20px">
+          <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--text-body);margin-bottom:12px">
             <span><span data-lang="ja">運航</span><span data-lang="en">Season</span>: <span data-lang="ja">4/1–10/31</span><span data-lang="en">Apr 1–Oct 31</span></span>
             <span><span data-lang="ja">約50分</span><span data-lang="en">~50 min</span></span>
             <span><span data-lang="ja">大人 ¥4,000 ／ 小人 ¥2,000</span><span data-lang="en">Adult ¥4,000 ／ Child ¥2,000</span></span>
           </div>
+          <p style="font-size:12px;color:var(--text-body);margin-bottom:20px">
+            <span data-lang="ja">🚗 宿から車で8分 ／ 🚶 徒歩 約1時間（乗船場：福浦岸壁）</span>
+            <span data-lang="en">🚗 8 min by car ／ 🚶 ~1 hour walk from the inn (Boarding: Fukuura Wharf)</span>
+          </p>
           <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
             <a href="https://www.e-oki.net/experience/6313/" target="_blank" rel="noopener" class="btn-outline" style="font-size:11px;padding:10px 20px">
               <span data-lang="ja">詳細・予約</span>
@@ -753,6 +761,36 @@
       <p class="sec-label"><i data-lucide="calendar-heart" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">イベント</span><span data-lang="en">Events</span></p>
       <div class="sec-divider"></div>
       <div id="events-list"></div>
+    </section>
+
+    <!-- Goka Onsen -->
+    <section class="sec sec-warm reveal">
+      <p class="sec-label"><i data-lucide="droplets" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">温泉</span><span data-lang="en">Hot Spring</span></p>
+      <h3 class="font-display sec-title" style="font-size:clamp(20px,4vw,28px);margin-bottom:8px">
+        <span data-lang="ja">五箇温泉 GOKA</span>
+        <span data-lang="en">Goka Onsen GOKA</span>
+      </h3>
+      <div class="sec-divider"></div>
+      <p class="sec-body" style="margin-bottom:20px">
+        <span data-lang="ja">宿のお風呂は古民家のお風呂ですのでお一人サイズです。大人数の場合は五箇温泉をご利用ください。チェックイン時に割引優待券とタオルセットをお渡しします。</span>
+        <span data-lang="en">Our inn's bath is a traditional single-person size. For groups, please use Goka Onsen. We'll provide a discount voucher and towel set at check-in.</span>
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--text-body);margin-bottom:16px">
+        <span><span data-lang="ja">🚶 宿から徒歩15分 ／ 🚗 車3分</span><span data-lang="en">🚶 15 min walk ／ 🚗 3 min by car</span></span>
+        <span><span data-lang="ja">14:00〜20:00（最終受付 19:15）</span><span data-lang="en">14:00–20:00 (last entry 19:15)</span></span>
+        <span><span data-lang="ja">大人 ¥500</span><span data-lang="en">Adult ¥500</span></span>
+        <span><span data-lang="ja">月曜定休</span><span data-lang="en">Closed Mon</span></span>
+      </div>
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:20px">
+        <span data-lang="ja">隠岐唯一の天然温泉。ナトリウム-炭酸水素塩泉（美肌の湯）。2階にはジェットバス・ミストサウナ等のバーデゾーン（水着着用）も。</span>
+        <span data-lang="en">Oki's only natural hot spring. Sodium bicarbonate spring (beauty water). 2F includes jet bath & mist sauna (swimwear required).</span>
+      </p>
+      <a href="https://www.google.com/maps/search/隠岐温泉GOKA+隠岐の島" target="_blank" rel="noopener" class="btn-outline" style="font-size:11px;padding:10px 20px">
+        <i data-lucide="map-pin" style="width:12px;height:12px"></i>
+        <span data-lang="ja">地図を見る</span>
+        <span data-lang="en">View map</span>
+        <i data-lucide="external-link" style="width:12px;height:12px"></i>
+      </a>
     </section>
 
     <!-- Island Activities & Services (MERGED) -->
@@ -820,24 +858,49 @@
         </div>
       </div>
 
-      <!-- Relaxation -->
+      <!-- Yakiniku -->
       <div class="service-card">
         <div class="service-img" style="background:linear-gradient(135deg,#e8e4dc,#d4cec3);display:flex;align-items:center;justify-content:center">
-          <i data-lucide="flame" style="width:28px;height:28px;color:var(--text-muted)"></i>
+          <i data-lucide="beef" style="width:28px;height:28px;color:var(--text-muted)"></i>
         </div>
         <div>
-          <p style="font-size:10px;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase">Hot Spring</p>
+          <p style="font-size:10px;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase">Yakiniku</p>
           <h4 style="font-size:15px;font-weight:500;margin-bottom:6px">
-            <span data-lang="ja">隠岐温泉 GOKA</span>
-            <span data-lang="en">Oki Onsen GOKA</span>
+            <span data-lang="ja">焼肉 味富</span>
+            <span data-lang="en">Yakiniku Ajitomi</span>
           </h4>
           <p class="sec-body" style="margin-bottom:10px;font-size:13px">
-            <span data-lang="ja">隠岐唯一の天然温泉。宿から車で約15分。露天風呂から日本海を一望。</span>
-            <span data-lang="en">Oki's only natural hot spring. 15 min by car. Ocean views from the open-air bath.</span>
+            <span data-lang="ja">島で焼肉と言えばここ。個室でゆっくり楽しめる人気店。18:00〜（月曜定休）</span>
+            <span data-lang="en">The island's go-to yakiniku spot. Private rooms available. 18:00– (Closed Mon)</span>
           </p>
-          <a href="#" class="service-link">
-            <span data-lang="ja">詳しくはこちら</span>
-            <span data-lang="en">Learn more</span>
+          <a href="https://www.google.com/maps/search/焼肉味富+隠岐の島" target="_blank" rel="noopener" class="service-link">
+            <i data-lucide="map-pin" style="width:12px;height:12px"></i>
+            <span data-lang="ja">地図を見る</span>
+            <span data-lang="en">View map</span>
+            <i data-lucide="arrow-right" style="width:12px;height:12px"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Sushi -->
+      <div class="service-card">
+        <div class="service-img" style="background:linear-gradient(135deg,#d4cec3,#b8b0a0);display:flex;align-items:center;justify-content:center">
+          <i data-lucide="fish" style="width:28px;height:28px;color:var(--text-muted)"></i>
+        </div>
+        <div>
+          <p style="font-size:10px;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase">Sushi</p>
+          <h4 style="font-size:15px;font-weight:500;margin-bottom:6px">
+            <span data-lang="ja">寿司 八百杉</span>
+            <span data-lang="en">Sushi Yaosugi</span>
+          </h4>
+          <p class="sec-body" style="margin-bottom:10px;font-size:13px">
+            <span data-lang="ja">隠岐の旬の海鮮を握りで。刺身、串揚げも。17:00〜（月曜定休）</span>
+            <span data-lang="en">Fresh Oki sushi, sashimi & kushiage. 17:00– (Closed Mon)</span>
+          </p>
+          <a href="https://www.google.com/maps/search/寿司八百杉+隠岐の島" target="_blank" rel="noopener" class="service-link">
+            <i data-lucide="map-pin" style="width:12px;height:12px"></i>
+            <span data-lang="ja">地図を見る</span>
+            <span data-lang="en">View map</span>
             <i data-lucide="arrow-right" style="width:12px;height:12px"></i>
           </a>
         </div>
@@ -889,14 +952,52 @@
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
           <i data-lucide="store" style="width:18px;height:18px;color:var(--accent)"></i>
           <h4 style="font-size:15px;font-weight:500">
-            <span data-lang="ja">買い出し・コンビニ</span>
-            <span data-lang="en">Shops & Convenience Stores</span>
+            <span data-lang="ja">買い物</span>
+            <span data-lang="en">Shopping</span>
           </h4>
         </div>
-        <p class="sec-body" style="font-size:13px">
-          <span data-lang="ja">島にコンビニはありません。スーパー（Aコープ西郷店）は西郷港近くにあり、営業は〜19時頃まで。飲み物や軽食は港ターミナルの売店で購入可能です。必要なものは本土で揃えておくのが安心です。</span>
-          <span data-lang="en">There are no convenience stores on the island. A supermarket (A-Coop Saigo) is near the port, open until around 7 PM. Drinks and snacks are available at the port terminal shop. Stock up on the mainland to be safe.</span>
+        <p class="sec-body" style="font-size:13px;margin-bottom:16px">
+          <span data-lang="ja">島にコンビニはありません。西郷エリアにスーパーとドラッグストアがあります。</span>
+          <span data-lang="en">No convenience stores on the island. Supermarkets and a drugstore are available in the Saigo area.</span>
         </p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <a href="https://www.google.com/maps/search/サンテラス+隠岐の島" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:white;text-decoration:none;color:var(--text-dark);font-size:12px">
+            <i data-lucide="shopping-cart" style="width:14px;height:14px;color:var(--accent);flex-shrink:0"></i>
+            <span style="flex:1">
+              <span style="font-weight:500" data-lang="ja">サンテラス</span>
+              <span style="font-weight:500" data-lang="en">Sun Terrace</span>
+              <span style="display:block;font-size:10px;color:var(--text-muted);margin-top:1px">
+                <span data-lang="ja">総合スーパー ／ 10:00〜20:00</span>
+                <span data-lang="en">Supermarket ／ 10:00–20:00</span>
+              </span>
+            </span>
+            <i data-lucide="map-pin" style="width:12px;height:12px;color:var(--text-muted);flex-shrink:0"></i>
+          </a>
+          <a href="https://www.google.com/maps/search/ショッピングセンターひまり+隠岐の島" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:white;text-decoration:none;color:var(--text-dark);font-size:12px">
+            <i data-lucide="shopping-cart" style="width:14px;height:14px;color:var(--accent);flex-shrink:0"></i>
+            <span style="flex:1">
+              <span style="font-weight:500" data-lang="ja">ひまり</span>
+              <span style="font-weight:500" data-lang="en">Himari</span>
+              <span style="display:block;font-size:10px;color:var(--text-muted);margin-top:1px">
+                <span data-lang="ja">スーパー ／ 9:00〜21:00</span>
+                <span data-lang="en">Supermarket ／ 9:00–21:00</span>
+              </span>
+            </span>
+            <i data-lucide="map-pin" style="width:12px;height:12px;color:var(--text-muted);flex-shrink:0"></i>
+          </a>
+          <a href="https://www.google.com/maps/search/ウェルネス+隠岐の島" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:white;text-decoration:none;color:var(--text-dark);font-size:12px">
+            <i data-lucide="pill" style="width:14px;height:14px;color:var(--accent);flex-shrink:0"></i>
+            <span style="flex:1">
+              <span style="font-weight:500" data-lang="ja">ウェルネス</span>
+              <span style="font-weight:500" data-lang="en">Wellness</span>
+              <span style="display:block;font-size:10px;color:var(--text-muted);margin-top:1px">
+                <span data-lang="ja">ドラッグストア ／ 9:00〜20:00（年中無休）</span>
+                <span data-lang="en">Drugstore ／ 9:00–20:00 (Open daily)</span>
+              </span>
+            </span>
+            <i data-lucide="map-pin" style="width:12px;height:12px;color:var(--text-muted);flex-shrink:0"></i>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -998,11 +1099,13 @@ const SPOTS = [
   {id:'yaosugi',icon:'landmark',name:{ja:'玉若酢命神社・八百杉',en:'Tamawakasu Shrine'},desc:{ja:'隠岐の総社。境内の八百杉は樹高38m、県下一の巨木。パワースポット。',en:'Grand shrine of Oki. The 38m Yao-sugi is the tallest tree in Shimane. A popular power spot.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#7a7060,#5c5448)',map:'https://www.google.com/maps/search/玉若酢命神社+隠岐の島',photo:'https://upload.wikimedia.org/wikipedia/commons/6/6a/Tamawakasu-mikoto-jinja%2C_shaden.jpg'}
 ];
 
-const ACTIVITIES = [
-  {img:`${IMG}/activity02.jpg`,name:{ja:'釣り体験',en:'Fishing'},desc:{ja:'装備一式完備、初心者も安心',en:'All gear provided. Beginners welcome'}},
-  {img:`${IMG}/activity01.jpg`,name:{ja:'あさみのエステ',en:"Asami's Spa"},desc:{ja:'女将あさみの癒しの施術',en:'Relaxing treatment by hostess Asami'}},
-  {img:`${IMG}/activity03.jpg`,name:{ja:'焚き火',en:'Bonfire'},desc:{ja:'星空の下、島時間を満喫',en:'Under the stars, savor island time'}},
-  {img:`${IMG}/food/01.jpg`,name:{ja:'島の食卓',en:'Island Dinner'},desc:{ja:'地元の魚・米・野菜の夕食',en:'Local fish, rice & vegetables'}}
+const ACTIVITIES_BASE = [
+  {img:`${IMG}/activity02.jpg`,name:{ja:'釣り体験（隠岐得乗船券対象）',en:'Fishing (Oki-Toku Ticket)'},desc:{ja:'※要事前予約、体験時間 日の入り1時間前から',en:'Reservation required. Starts 1 hour before sunset'},months:[3,4,5,6,9,10,11]},
+  {img:`${IMG}/activity01.jpg`,name:{ja:'アロマオイルボディ',en:'Aroma Oil Body'},desc:{ja:'※女性限定、事前予約、40分〜のコース',en:'Women only. Reservation required. From 40 min'},months:[3,4,5,6,7,8,9,10,11]},
+  {img:`${IMG}/activity03.jpg`,name:{ja:'庭で焚き火（隠岐得乗船券対象）',en:'Garden Bonfire (Oki-Toku Ticket)'},desc:{ja:'※予約不要',en:'No reservation needed'},months:[3,4,5,6,9,10,11]},
+  {img:`${IMG}/food/01.jpg`,name:{ja:'島の食卓',en:'Island Dinner'},desc:{ja:'地元の魚・米・野菜の夕食',en:'Local fish, rice & vegetables'},months:[3,4,5,6,7,8,9,10,11]},
+  {img:'https://upload.wikimedia.org/wikipedia/commons/9/9a/Tamawakasumikoto_jinja_Zuishinmon.JPG',name:{ja:'神社巡り',en:'Shrine Hopping'},desc:{ja:'150超の神社が点在する神々の島を巡る',en:'Explore 150+ shrines on this island of the gods'},months:[7,8]},
+  {img:'',name:{ja:'トカゲ岩トレッキング',en:'Tokage Rock Trek'},desc:{ja:'山の斜面に現れたトカゲ形の巨大自然岩',en:'Giant lizard-shaped rock on the mountainside'},months:[7,8]}
 ];
 
 const PACKING = {
@@ -1148,7 +1251,13 @@ function renderEvents(ev){
 }
 
 function renderActivities(){
-  document.getElementById('activities-grid').innerHTML=ACTIVITIES.map(a=>`<div class="act-card"><img src="${a.img}" alt="${a.name.ja}" loading="lazy"><div class="act-overlay"><h4 style="color:white;font-weight:500;font-size:13px"><span data-lang="ja">${a.name.ja}</span><span data-lang="en">${a.name.en}</span></h4><p style="color:rgba(255,255,255,0.7);font-size:10px;margin-top:2px"><span data-lang="ja">${a.desc.ja}</span><span data-lang="en">${a.desc.en}</span></p></div></div>`).join('');
+  const acts=ACTIVITIES_BASE.filter(a=>a.months.includes(currentMonth)).slice(0,4);
+  document.getElementById('activities-grid').innerHTML=acts.map(a=>{
+    const hasImg=a.img&&a.img.length>0;
+    const bg=hasImg?'':`background:linear-gradient(135deg,#d4cec3,#b8b0a0);display:flex;align-items:center;justify-content:center`;
+    const inner=hasImg?`<img src="${a.img}" alt="${a.name.ja}" loading="lazy">`:`<i data-lucide="mountain" style="width:40px;height:40px;color:rgba(255,255,255,0.5)"></i>`;
+    return `<div class="act-card" style="${bg}">${inner}<div class="act-overlay"><h4 style="color:white;font-weight:500;font-size:13px"><span data-lang="ja">${a.name.ja}</span><span data-lang="en">${a.name.en}</span></h4><p style="color:rgba(255,255,255,0.7);font-size:10px;margin-top:2px"><span data-lang="ja">${a.desc.ja}</span><span data-lang="en">${a.desc.en}</span></p></div></div>`;
+  }).join('');
 }
 
 function renderPacking(items){
@@ -1205,7 +1314,7 @@ function renderFerry(m){
 
 function shareGuide(){
   const u=`${location.origin}${location.pathname}?m=${currentMonth}`;
-  if(navigator.share) navigator.share({title:'くすぶると過ごす隠岐の島',url:u}).catch(()=>clip(u));
+  if(navigator.share) navigator.share({title:'くすぶるで過ごす隠岐の島',url:u}).catch(()=>clip(u));
   else clip(u);
 }
 function clip(t){navigator.clipboard.writeText(t).then(()=>toast(currentLang==='en'?'Link copied!':'リンクをコピーしました'))}
