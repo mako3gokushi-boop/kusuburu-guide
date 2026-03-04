@@ -59,10 +59,10 @@
     .font-display { font-family: 'Shippori Mincho', serif }
     .font-soft { font-family: 'Zen Maru Gothic', sans-serif }
 
-    /* ===== HERO ===== */
-    .hero {
+    /* ===== HERO (used inside content) ===== */
+    .hero-banner {
       position: relative;
-      height: 100vh; height: 100svh;
+      height: 60vh; min-height: 360px;
       display: flex; flex-direction: column;
       justify-content: center; align-items: center;
       overflow: hidden;
@@ -84,22 +84,6 @@
     .hero-content {
       position: relative; z-index: 2;
       text-align: center; padding: 0 32px;
-    }
-    .hero-scroll {
-      position: absolute; bottom: 40px; left: 50%;
-      transform: translateX(-50%); z-index: 2;
-    }
-    .hero-scroll span {
-      display: block; width: 1px; height: 48px;
-      background: rgba(255,255,255,0.3);
-      margin: 12px auto 0;
-      animation: scrollLine 2s ease-in-out infinite;
-    }
-    @keyframes scrollLine {
-      0% { transform: scaleY(0); transform-origin: top }
-      50% { transform: scaleY(1); transform-origin: top }
-      51% { transform-origin: bottom }
-      100% { transform: scaleY(0); transform-origin: bottom }
     }
 
     /* ===== LANG TOGGLE ===== */
@@ -159,10 +143,12 @@
       font-weight: 300;
     }
 
-    /* ===== MONTH SELECT ===== */
+    /* ===== MONTH SELECT (LANDING VIEW) ===== */
     .month-section {
       background: var(--text-dark);
-      padding: 80px 24px;
+      min-height: 100vh; min-height: 100svh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 60px 24px;
     }
     .month-grid {
       display: grid; grid-template-columns: repeat(3, 1fr);
@@ -454,156 +440,7 @@
     <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
   </div>
 
-  <!-- ===== HERO ===== -->
-  <header class="hero">
-    <div class="hero-bg" role="img" aria-label="隠岐の島の風景"></div>
-    <div class="hero-content">
-      <p style="font-size:11px;letter-spacing:0.3em;color:rgba(255,255,255,0.5);margin-bottom:24px;font-weight:400">KUSUBURU HOUSE</p>
-      <h1 class="font-display" style="font-size:clamp(28px,7vw,48px);font-weight:400;color:white;line-height:1.6;letter-spacing:0.08em" data-lang="ja">
-        くすぶると過ごす<br>隠岐の島
-      </h1>
-      <h1 class="font-display" style="font-size:clamp(28px,7vw,48px);font-weight:400;color:white;line-height:1.6;letter-spacing:0.08em" data-lang="en">
-        Your Oki Island<br>Guide
-      </h1>
-      <p style="font-size:13px;color:rgba(255,255,255,0.55);margin-top:20px;font-weight:300;letter-spacing:0.08em" data-lang="ja">あなたの来島月に合わせた島旅ガイド</p>
-      <p style="font-size:13px;color:rgba(255,255,255,0.55);margin-top:20px;font-weight:300;letter-spacing:0.08em" data-lang="en">A personalized guide for your island stay</p>
-    </div>
-    <div class="hero-scroll">
-      <p style="font-size:9px;letter-spacing:0.2em;color:rgba(255,255,255,0.35);text-transform:uppercase">Scroll</p>
-      <span></span>
-    </div>
-  </header>
-
-  <!-- ===== IMPORTANT: RENTAL CAR ===== -->
-  <section class="sec reveal" style="padding-bottom:40px">
-    <div class="notice-card">
-      <div class="notice-icon"><i data-lucide="car"></i></div>
-      <p class="sec-label" data-lang="ja">大切なお知らせ</p>
-      <p class="sec-label" data-lang="en">Important Notice</p>
-      <h2 class="font-display sec-title" style="font-size:clamp(20px,4vw,26px);margin-bottom:16px">
-        <span data-lang="ja">レンタカーのご予約はお早めに</span>
-        <span data-lang="en">Book Your Rental Car Early</span>
-      </h2>
-      <div class="sec-body" style="margin-bottom:24px">
-        <p data-lang="ja">
-          隠岐の島はレンタカーの台数が非常に限られています。
-          過去には、直前にレンタカーの予約が取れず、島内での移動手段を確保できなかったため、
-          やむなく<strong style="font-weight:500">宿泊自体をキャンセル</strong>されたお客様もいらっしゃいました。
-        </p>
-        <p data-lang="en">
-          Rental cars on Oki Island are very limited. In the past, a guest had to
-          <strong style="font-weight:500">cancel their entire stay</strong> because they couldn't
-          secure a rental car at the last minute.
-        </p>
-      </div>
-      <div class="sec-body" style="margin-bottom:28px">
-        <p data-lang="ja">宿のご予約と同時に、レンタカーもご予約されることを強くおすすめします。</p>
-        <p data-lang="en">We strongly recommend booking your rental car at the same time as your accommodation.</p>
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px">
-        <a href="#" class="btn-outline" style="font-size:11px;padding:10px 20px">
-          <span data-lang="ja">隠岐レンタカー A</span>
-          <span data-lang="en">Oki Rent-a-Car A</span>
-          <i data-lucide="external-link" style="width:12px;height:12px"></i>
-        </a>
-        <a href="#" class="btn-outline" style="font-size:11px;padding:10px 20px">
-          <span data-lang="ja">隠岐レンタカー B</span>
-          <span data-lang="en">Oki Rent-a-Car B</span>
-          <i data-lucide="external-link" style="width:12px;height:12px"></i>
-        </a>
-        <a href="#" class="btn-outline" style="font-size:11px;padding:10px 20px">
-          <span data-lang="ja">隠岐レンタカー C</span>
-          <span data-lang="en">Oki Rent-a-Car C</span>
-          <i data-lucide="external-link" style="width:12px;height:12px"></i>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== FERRY TIMETABLE ===== -->
-  <section class="sec sec-warm reveal" style="padding-top:60px">
-    <p class="sec-label" data-lang="ja">アクセス</p>
-    <p class="sec-label" data-lang="en">Access</p>
-    <h2 class="font-display sec-title" style="margin-bottom:8px">
-      <span data-lang="ja">フェリー時刻表</span>
-      <span data-lang="en">Ferry Timetable</span>
-    </h2>
-    <div class="sec-divider"></div>
-    <p class="sec-body" style="margin-bottom:32px">
-      <span data-lang="ja">隠岐の島へは、七類港（松江市）または境港から出発します。季節によりダイヤが変わりますので、最新情報は隠岐汽船をご確認ください。</span>
-      <span data-lang="en">Ferries to Oki depart from Shichirui Port (Matsue) or Sakaiminato. Schedules vary by season — check Oki Kisen for the latest.</span>
-    </p>
-
-    <div style="margin-bottom:24px">
-      <p style="font-size:12px;font-weight:500;letter-spacing:0.1em;color:var(--text-dark);margin-bottom:12px">
-        <span data-lang="ja">七類港 → 隠岐（島後・西郷港）</span>
-        <span data-lang="en">Shichirui → Oki (Saigo Port)</span>
-      </p>
-      <div style="background:white;overflow:hidden">
-        <table class="ferry-table">
-          <thead>
-            <tr>
-              <th><span data-lang="ja">便</span><span data-lang="en">Type</span></th>
-              <th><span data-lang="ja">出発</span><span data-lang="en">Depart</span></th>
-              <th><span data-lang="ja">到着</span><span data-lang="en">Arrive</span></th>
-              <th><span data-lang="ja">所要</span><span data-lang="en">Duration</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><span class="ferry-badge ferry-fast">高速船</span></td>
-              <td>07:00</td><td>08:15</td><td>約1時間15分</td>
-            </tr>
-            <tr>
-              <td><span class="ferry-badge ferry-slow">フェリー</span></td>
-              <td>09:00</td><td>11:30</td><td>約2時間30分</td>
-            </tr>
-            <tr>
-              <td><span class="ferry-badge ferry-fast">高速船</span></td>
-              <td>14:30</td><td>15:45</td><td>約1時間15分</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div style="margin-bottom:24px">
-      <p style="font-size:12px;font-weight:500;letter-spacing:0.1em;color:var(--text-dark);margin-bottom:12px">
-        <span data-lang="ja">境港 → 隠岐（島後・西郷港）</span>
-        <span data-lang="en">Sakaiminato → Oki (Saigo Port)</span>
-      </p>
-      <div style="background:white;overflow:hidden">
-        <table class="ferry-table">
-          <thead>
-            <tr>
-              <th><span data-lang="ja">便</span><span data-lang="en">Type</span></th>
-              <th><span data-lang="ja">出発</span><span data-lang="en">Depart</span></th>
-              <th><span data-lang="ja">到着</span><span data-lang="en">Arrive</span></th>
-              <th><span data-lang="ja">所要</span><span data-lang="en">Duration</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><span class="ferry-badge ferry-slow">フェリー</span></td>
-              <td>09:00</td><td>11:30</td><td>約2時間30分</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <p style="font-size:11px;color:var(--text-muted);margin-bottom:16px">
-      <span data-lang="ja">※ 上記は参考ダイヤです。季節により変動があります。</span>
-      <span data-lang="en">※ Schedules shown are reference only. Seasonal changes apply.</span>
-    </p>
-    <a href="https://www.oki-kisen.co.jp/" target="_blank" class="btn-outline" style="font-size:11px;padding:10px 20px">
-      <span data-lang="ja">隠岐汽船 公式サイト</span>
-      <span data-lang="en">Oki Kisen Official</span>
-      <i data-lucide="external-link" style="width:12px;height:12px"></i>
-    </a>
-  </section>
-
-  <!-- ===== MONTH SELECTOR ===== -->
+  <!-- ===== MONTH SELECTOR (LANDING) ===== -->
   <section class="month-section" id="month-select">
     <div style="max-width:540px;margin:0 auto;text-align:center">
       <p class="sec-label" style="color:rgba(255,255,255,0.3)">Select Month</p>
@@ -622,10 +459,134 @@
   <!-- ===== MONTH CONTENT ===== -->
   <div id="content" class="hidden">
 
+    <!-- Hero Banner -->
+    <header class="hero-banner reveal">
+      <div class="hero-bg" role="img" aria-label="隠岐の島の風景"></div>
+      <div class="hero-content">
+        <p style="font-size:11px;letter-spacing:0.3em;color:rgba(255,255,255,0.5);margin-bottom:24px;font-weight:400">KUSUBURU HOUSE</p>
+        <h1 class="font-display" style="font-size:clamp(28px,7vw,48px);font-weight:400;color:white;line-height:1.6;letter-spacing:0.08em" data-lang="ja">
+          くすぶると過ごす<br>隠岐の島
+        </h1>
+        <h1 class="font-display" style="font-size:clamp(28px,7vw,48px);font-weight:400;color:white;line-height:1.6;letter-spacing:0.08em" data-lang="en">
+          Your Oki Island<br>Guide
+        </h1>
+      </div>
+    </header>
+
     <!-- Month Header -->
     <section class="sec" style="text-align:center;padding-bottom:40px">
       <div id="month-badge" style="display:inline-block;padding:6px 24px;border-radius:999px;font-size:11px;font-weight:500;letter-spacing:0.15em;color:var(--text-dark);border:1px solid var(--border-medium);margin-bottom:20px"></div>
       <h2 class="font-display sec-title" id="month-tagline" style="letter-spacing:0.08em"></h2>
+    </section>
+
+    <!-- IMPORTANT: RENTAL CAR -->
+    <section class="sec reveal" style="padding-bottom:40px;padding-top:0">
+      <div class="notice-card">
+        <div class="notice-icon"><i data-lucide="car"></i></div>
+        <p class="sec-label" data-lang="ja">大切なお知らせ</p>
+        <p class="sec-label" data-lang="en">Important Notice</p>
+        <h2 class="font-display sec-title" style="font-size:clamp(20px,4vw,26px);margin-bottom:16px">
+          <span data-lang="ja">レンタカーのご予約はお早めに</span>
+          <span data-lang="en">Book Your Rental Car Early</span>
+        </h2>
+        <div class="sec-body" style="margin-bottom:24px">
+          <p data-lang="ja">
+            隠岐の島はレンタカーの台数が非常に限られています。
+            過去には、直前にレンタカーの予約が取れず、島内での移動手段を確保できなかったため、
+            やむなく<strong style="font-weight:500">宿泊自体をキャンセル</strong>されたお客様もいらっしゃいました。
+          </p>
+          <p data-lang="en">
+            Rental cars on Oki Island are very limited. In the past, a guest had to
+            <strong style="font-weight:500">cancel their entire stay</strong> because they couldn't
+            secure a rental car at the last minute.
+          </p>
+        </div>
+        <div class="sec-body" style="margin-bottom:28px">
+          <p data-lang="ja">宿のご予約と同時に、レンタカーもご予約されることを強くおすすめします。</p>
+          <p data-lang="en">We strongly recommend booking your rental car at the same time as your accommodation.</p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <a href="#" class="btn-outline" style="font-size:11px;padding:10px 20px">
+            <span data-lang="ja">隠岐レンタカー A</span>
+            <span data-lang="en">Oki Rent-a-Car A</span>
+            <i data-lucide="external-link" style="width:12px;height:12px"></i>
+          </a>
+          <a href="#" class="btn-outline" style="font-size:11px;padding:10px 20px">
+            <span data-lang="ja">隠岐レンタカー B</span>
+            <span data-lang="en">Oki Rent-a-Car B</span>
+            <i data-lucide="external-link" style="width:12px;height:12px"></i>
+          </a>
+          <a href="#" class="btn-outline" style="font-size:11px;padding:10px 20px">
+            <span data-lang="ja">隠岐レンタカー C</span>
+            <span data-lang="en">Oki Rent-a-Car C</span>
+            <i data-lucide="external-link" style="width:12px;height:12px"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FERRY TIMETABLE -->
+    <section class="sec sec-warm reveal" style="padding-top:60px">
+      <p class="sec-label" data-lang="ja">アクセス</p>
+      <p class="sec-label" data-lang="en">Access</p>
+      <h2 class="font-display sec-title" style="margin-bottom:8px">
+        <span data-lang="ja">フェリー時刻表</span>
+        <span data-lang="en">Ferry Timetable</span>
+      </h2>
+      <div class="sec-divider"></div>
+      <p class="sec-body" style="margin-bottom:32px">
+        <span data-lang="ja">隠岐の島へは、七類港（松江市）または境港から出発します。季節によりダイヤが変わりますので、最新情報は隠岐汽船をご確認ください。</span>
+        <span data-lang="en">Ferries to Oki depart from Shichirui Port (Matsue) or Sakaiminato. Schedules vary by season — check Oki Kisen for the latest.</span>
+      </p>
+      <div style="margin-bottom:24px">
+        <p style="font-size:12px;font-weight:500;letter-spacing:0.1em;color:var(--text-dark);margin-bottom:12px">
+          <span data-lang="ja">七類港 → 隠岐（島後・西郷港）</span>
+          <span data-lang="en">Shichirui → Oki (Saigo Port)</span>
+        </p>
+        <div style="background:white;overflow:hidden">
+          <table class="ferry-table">
+            <thead><tr>
+              <th><span data-lang="ja">便</span><span data-lang="en">Type</span></th>
+              <th><span data-lang="ja">出発</span><span data-lang="en">Depart</span></th>
+              <th><span data-lang="ja">到着</span><span data-lang="en">Arrive</span></th>
+              <th><span data-lang="ja">所要</span><span data-lang="en">Duration</span></th>
+            </tr></thead>
+            <tbody>
+              <tr><td><span class="ferry-badge ferry-fast">高速船</span></td><td>07:00</td><td>08:15</td><td>約1時間15分</td></tr>
+              <tr><td><span class="ferry-badge ferry-slow">フェリー</span></td><td>09:00</td><td>11:30</td><td>約2時間30分</td></tr>
+              <tr><td><span class="ferry-badge ferry-fast">高速船</span></td><td>14:30</td><td>15:45</td><td>約1時間15分</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style="margin-bottom:24px">
+        <p style="font-size:12px;font-weight:500;letter-spacing:0.1em;color:var(--text-dark);margin-bottom:12px">
+          <span data-lang="ja">境港 → 隠岐（島後・西郷港）</span>
+          <span data-lang="en">Sakaiminato → Oki (Saigo Port)</span>
+        </p>
+        <div style="background:white;overflow:hidden">
+          <table class="ferry-table">
+            <thead><tr>
+              <th><span data-lang="ja">便</span><span data-lang="en">Type</span></th>
+              <th><span data-lang="ja">出発</span><span data-lang="en">Depart</span></th>
+              <th><span data-lang="ja">到着</span><span data-lang="en">Arrive</span></th>
+              <th><span data-lang="ja">所要</span><span data-lang="en">Duration</span></th>
+            </tr></thead>
+            <tbody>
+              <tr><td><span class="ferry-badge ferry-slow">フェリー</span></td><td>09:00</td><td>11:30</td><td>約2時間30分</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:16px">
+        <span data-lang="ja">※ 上記は参考ダイヤです。季節により変動があります。</span>
+        <span data-lang="en">※ Schedules shown are reference only. Seasonal changes apply.</span>
+      </p>
+      <a href="https://www.oki-kisen.co.jp/" target="_blank" class="btn-outline" style="font-size:11px;padding:10px 20px">
+        <span data-lang="ja">隠岐汽船 公式サイト</span>
+        <span data-lang="en">Oki Kisen Official</span>
+        <i data-lucide="external-link" style="width:12px;height:12px"></i>
+      </a>
     </section>
 
     <!-- Weather -->
@@ -706,22 +667,7 @@
       <div style="background:white;padding:24px 28px" id="packing-list"></div>
     </section>
 
-    <!-- Share / Change -->
-    <section class="sec" style="padding-top:24px;padding-bottom:40px">
-      <div style="display:flex;gap:12px">
-        <button onclick="shareGuide()" class="btn-dark" style="flex:1">
-          <i data-lucide="share-2" style="width:14px;height:14px"></i>
-          <span data-lang="ja">共有する</span><span data-lang="en">Share</span>
-        </button>
-        <button onclick="resetMonth()" class="btn-outline" style="flex:1">
-          <i data-lucide="calendar" style="width:14px;height:14px"></i>
-          <span data-lang="ja">月を変更</span><span data-lang="en">Change</span>
-        </button>
-      </div>
-    </section>
-  </div>
-
-  <!-- ===== ISLAND ACTIVITIES & SERVICES ===== -->
+    <!-- ISLAND ACTIVITIES & SERVICES -->
   <section class="sec reveal" id="sec-services">
     <p class="sec-label"><i data-lucide="map" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">島のおすすめ</span><span data-lang="en">Island Guide</span></p>
     <h2 class="font-display sec-title" style="margin-bottom:8px">
@@ -828,6 +774,22 @@
       </div>
     </div>
   </section>
+
+    <!-- Share / Change -->
+    <section class="sec" style="padding-top:24px;padding-bottom:40px">
+      <div style="display:flex;gap:12px">
+        <button onclick="shareGuide()" class="btn-dark" style="flex:1">
+          <i data-lucide="share-2" style="width:14px;height:14px"></i>
+          <span data-lang="ja">共有する</span><span data-lang="en">Share</span>
+        </button>
+        <button onclick="resetMonth()" class="btn-outline" style="flex:1">
+          <i data-lucide="calendar" style="width:14px;height:14px"></i>
+          <span data-lang="ja">月を変更</span><span data-lang="en">Change</span>
+        </button>
+      </div>
+    </section>
+
+  </div><!-- end #content -->
 
   <!-- ===== FOOTER ===== -->
   <footer class="site-footer">
@@ -938,7 +900,7 @@ function selectMonth(m){
   lucide.createIcons();
   initReveal();
   history.replaceState(null,'',`?m=${m}`);
-  setTimeout(()=>document.querySelector('#content .sec, #content [class*="reveal"]').scrollIntoView({behavior:'smooth',block:'start'}),100);
+  setTimeout(()=>document.getElementById('content').scrollIntoView({behavior:'smooth',block:'start'}),100);
 }
 
 function renderWeather(w){
