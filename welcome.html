@@ -55,6 +55,68 @@
       letter-spacing: 0.02em;
     }
 
+    /* ===== INTRO OVERLAY ===== */
+    .intro-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: var(--surface);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      opacity: 1;
+      transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .intro-overlay.fade-out {
+      opacity: 0; pointer-events: none;
+    }
+    .intro-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(28px, 7vw, 44px);
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      color: var(--text-dark);
+      display: flex;
+      overflow: hidden;
+    }
+    .intro-char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .intro-char.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .intro-line {
+      width: 0;
+      height: 1px;
+      background: var(--border-medium);
+      margin: 24px 0;
+      transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .intro-line.extend {
+      width: 60px;
+    }
+    .intro-sub {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      color: var(--text-muted);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .intro-sub.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Hide lang toggle during intro */
+    .intro-overlay:not(.fade-out) ~ .lang-toggle {
+      opacity: 0; pointer-events: none;
+    }
+    .lang-toggle {
+      transition: opacity 0.6s ease;
+    }
+
     /* ===== PAGE TRANSITION VEIL ===== */
     .page-veil {
       position: fixed; inset: 0; z-index: 200;
@@ -244,7 +306,7 @@
 
     /* ===== WEATHER ===== */
     .weather-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
+      display: grid; grid-template-columns: repeat(2, 1fr);
       gap: 1px; background: var(--border-light);
     }
     .weather-cell {
@@ -446,6 +508,7 @@
     /* ===== RESPONSIVE ===== */
     @media (min-width: 768px) {
       .sec { padding: 120px 40px }
+      .weather-grid { grid-template-columns: repeat(4, 1fr) }
       .spot-card { min-width: 340px }
       .service-img { width: 140px; height: 140px }
     }
@@ -455,6 +518,13 @@
 
   <!-- ===== PAGE TRANSITION VEIL ===== -->
   <div class="page-veil" id="page-veil"></div>
+
+  <!-- ===== INTRO OVERLAY ===== -->
+  <div class="intro-overlay" id="intro-overlay">
+    <div class="intro-title" id="intro-title"></div>
+    <div class="intro-line" id="intro-line"></div>
+    <div class="intro-sub" id="intro-sub">KUSUBURU HOUSE &mdash; 燻家</div>
+  </div>
 
   <!-- ===== LANGUAGE TOGGLE (FIXED) ===== -->
   <div class="lang-toggle">
@@ -479,9 +549,7 @@
   </section>
 
   <!-- ===== MONTH CONTENT ===== -->
-  <div id="content" class="hidden">
-
-    <!-- Hero Banner -->
+  <div id="content" class="hidden"><!-- Hero Banner -->
     <header class="hero-banner reveal">
       <div class="hero-bg" role="img" aria-label="隠岐の島の風景"></div>
       <div class="hero-content">
@@ -495,10 +563,28 @@
       </div>
     </header>
 
-    <!-- Month Header -->
+    <!-- Month Header + Tips -->
     <section class="sec" style="text-align:center;padding-bottom:40px">
       <div id="month-badge" style="display:inline-block;padding:6px 24px;border-radius:999px;font-size:11px;font-weight:500;letter-spacing:0.15em;color:var(--text-dark);border:1px solid var(--border-medium);margin-bottom:20px"></div>
       <h2 class="font-display sec-title" id="month-tagline" style="letter-spacing:0.08em"></h2>
+      <p id="tips-text-ja" class="sec-body" style="max-width:480px;margin:20px auto 0;text-align:center;font-size:13px;line-height:2" data-lang="ja"></p>
+      <p id="tips-text-en" class="sec-body" style="max-width:480px;margin:20px auto 0;text-align:center;font-size:13px;line-height:2" data-lang="en"></p>
+    </section>
+
+    <!-- Weather -->
+    <section class="reveal" style="padding:0 24px 80px;max-width:720px;margin:0 auto" id="sec-weather">
+      <p class="sec-label"><i data-lucide="thermometer" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">気候</span><span data-lang="en">Climate</span></p>
+      <div class="weather-grid" id="weather-cards" style="margin-top:16px"></div>
+      <p style="font-size:10px;color:var(--text-muted);text-align:right;margin-top:12px" data-lang="ja">気象庁 平年値 1991–2020</p>
+      <p style="font-size:10px;color:var(--text-muted);text-align:right;margin-top:12px" data-lang="en">JMA Normal Values 1991–2020</p>
+    </section>
+
+    <!-- Clothing -->
+    <section class="sec sec-warm reveal" id="sec-clothing">
+      <p class="sec-label"><i data-lucide="shirt" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">服装</span><span data-lang="en">What to Wear</span></p>
+      <div class="sec-divider"></div>
+      <p id="clothing-text-ja" class="sec-body" data-lang="ja"></p>
+      <p id="clothing-text-en" class="sec-body" data-lang="en"></p>
     </section>
 
     <!-- IMPORTANT: RENTAL CAR -->
@@ -547,86 +633,6 @@
       </div>
     </section>
 
-    <!-- FERRY TIMETABLE -->
-    <section class="sec sec-warm reveal" style="padding-top:60px">
-      <p class="sec-label" data-lang="ja">アクセス</p>
-      <p class="sec-label" data-lang="en">Access</p>
-      <h2 class="font-display sec-title" style="margin-bottom:8px">
-        <span data-lang="ja">フェリー時刻表</span>
-        <span data-lang="en">Ferry Timetable</span>
-      </h2>
-      <div class="sec-divider"></div>
-      <p class="sec-body" style="margin-bottom:32px">
-        <span data-lang="ja">隠岐の島へは、七類港（松江市）または境港から出発します。季節によりダイヤが変わりますので、最新情報は隠岐汽船をご確認ください。</span>
-        <span data-lang="en">Ferries to Oki depart from Shichirui Port (Matsue) or Sakaiminato. Schedules vary by season — check Oki Kisen for the latest.</span>
-      </p>
-      <div style="margin-bottom:24px">
-        <p style="font-size:12px;font-weight:500;letter-spacing:0.1em;color:var(--text-dark);margin-bottom:12px">
-          <span data-lang="ja">七類港 → 隠岐（島後・西郷港）</span>
-          <span data-lang="en">Shichirui → Oki (Saigo Port)</span>
-        </p>
-        <div style="background:white;overflow:hidden">
-          <table class="ferry-table">
-            <thead><tr>
-              <th><span data-lang="ja">便</span><span data-lang="en">Type</span></th>
-              <th><span data-lang="ja">出発</span><span data-lang="en">Depart</span></th>
-              <th><span data-lang="ja">到着</span><span data-lang="en">Arrive</span></th>
-              <th><span data-lang="ja">所要</span><span data-lang="en">Duration</span></th>
-            </tr></thead>
-            <tbody>
-              <tr><td><span class="ferry-badge ferry-fast">高速船</span></td><td>07:00</td><td>08:15</td><td>約1時間15分</td></tr>
-              <tr><td><span class="ferry-badge ferry-slow">フェリー</span></td><td>09:00</td><td>11:30</td><td>約2時間30分</td></tr>
-              <tr><td><span class="ferry-badge ferry-fast">高速船</span></td><td>14:30</td><td>15:45</td><td>約1時間15分</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div style="margin-bottom:24px">
-        <p style="font-size:12px;font-weight:500;letter-spacing:0.1em;color:var(--text-dark);margin-bottom:12px">
-          <span data-lang="ja">境港 → 隠岐（島後・西郷港）</span>
-          <span data-lang="en">Sakaiminato → Oki (Saigo Port)</span>
-        </p>
-        <div style="background:white;overflow:hidden">
-          <table class="ferry-table">
-            <thead><tr>
-              <th><span data-lang="ja">便</span><span data-lang="en">Type</span></th>
-              <th><span data-lang="ja">出発</span><span data-lang="en">Depart</span></th>
-              <th><span data-lang="ja">到着</span><span data-lang="en">Arrive</span></th>
-              <th><span data-lang="ja">所要</span><span data-lang="en">Duration</span></th>
-            </tr></thead>
-            <tbody>
-              <tr><td><span class="ferry-badge ferry-slow">フェリー</span></td><td>09:00</td><td>11:30</td><td>約2時間30分</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <p style="font-size:11px;color:var(--text-muted);margin-bottom:16px">
-        <span data-lang="ja">※ 上記は参考ダイヤです。季節により変動があります。</span>
-        <span data-lang="en">※ Schedules shown are reference only. Seasonal changes apply.</span>
-      </p>
-      <a href="https://www.oki-kisen.co.jp/" target="_blank" class="btn-outline" style="font-size:11px;padding:10px 20px">
-        <span data-lang="ja">隠岐汽船 公式サイト</span>
-        <span data-lang="en">Oki Kisen Official</span>
-        <i data-lucide="external-link" style="width:12px;height:12px"></i>
-      </a>
-    </section>
-
-    <!-- Weather -->
-    <section class="reveal" style="padding:0 24px 80px;max-width:720px;margin:0 auto" id="sec-weather">
-      <p class="sec-label"><i data-lucide="thermometer" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">気候</span><span data-lang="en">Climate</span></p>
-      <div class="weather-grid" id="weather-cards" style="margin-top:16px"></div>
-      <p style="font-size:10px;color:var(--text-muted);text-align:right;margin-top:12px" data-lang="ja">気象庁 平年値 1991–2020</p>
-      <p style="font-size:10px;color:var(--text-muted);text-align:right;margin-top:12px" data-lang="en">JMA Normal Values 1991–2020</p>
-    </section>
-
-    <!-- Clothing -->
-    <section class="sec sec-warm reveal" id="sec-clothing">
-      <p class="sec-label"><i data-lucide="shirt" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">服装</span><span data-lang="en">What to Wear</span></p>
-      <div class="sec-divider"></div>
-      <p id="clothing-text-ja" class="sec-body" data-lang="ja"></p>
-      <p id="clothing-text-en" class="sec-body" data-lang="en"></p>
-    </section>
-
     <!-- Food -->
     <section class="sec reveal" id="sec-food">
       <p class="sec-label"><i data-lucide="utensils" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">旬の味覚</span><span data-lang="en">Seasonal Flavors</span></p>
@@ -662,45 +668,23 @@
       <div id="events-list"></div>
     </section>
 
-    <!-- Activities at Kusuburu -->
+    <!-- Island Activities & Services (MERGED) -->
     <section class="sec sec-warm reveal" id="sec-activities">
-      <p class="sec-label"><i data-lucide="sparkles" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">宿での過ごし方</span><span data-lang="en">At Kusuburu House</span></p>
+      <p class="sec-label"><i data-lucide="sparkles" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">島での過ごし方</span><span data-lang="en">Things to Do</span></p>
       <h3 class="font-display sec-title" style="font-size:clamp(20px,4vw,28px);margin-bottom:8px">
-        <span data-lang="ja">島時間を、まるごと</span>
-        <span data-lang="en">Embrace Island Time</span>
+        <span data-lang="ja">隠岐の島を楽しむ</span>
+        <span data-lang="en">Enjoy Oki Island</span>
       </h3>
       <div class="sec-divider"></div>
-      <div class="act-grid" id="activities-grid"></div>
-    </section>
-
-    <!-- Tips -->
-    <section class="sec reveal" id="sec-tips">
-      <div class="tips-card">
-        <p class="sec-label"><i data-lucide="lightbulb" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">ひとこと</span><span data-lang="en">Insider Tip</span></p>
-        <p id="tips-text-ja" class="sec-body" style="margin-top:12px" data-lang="ja"></p>
-        <p id="tips-text-en" class="sec-body" style="margin-top:12px" data-lang="en"></p>
-      </div>
-    </section>
-
-    <!-- Packing -->
-    <section class="sec sec-warm reveal" id="sec-packing">
-      <p class="sec-label"><i data-lucide="luggage" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">持ち物</span><span data-lang="en">Packing Checklist</span></p>
-      <div class="sec-divider"></div>
-      <div style="background:white;padding:24px 28px" id="packing-list"></div>
-    </section>
-
-    <!-- ISLAND ACTIVITIES & SERVICES -->
-  <section class="sec reveal" id="sec-services">
-    <p class="sec-label"><i data-lucide="map" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">島のおすすめ</span><span data-lang="en">Island Guide</span></p>
-    <h2 class="font-display sec-title" style="margin-bottom:8px">
-      <span data-lang="ja">隠岐の島を楽しむ</span>
-      <span data-lang="en">Enjoy Oki Island</span>
-    </h2>
-    <div class="sec-divider"></div>
-    <p class="sec-body" style="margin-bottom:32px">
-      <span data-lang="ja">くすぶるハウス周辺のおすすめスポットやアクティビティをご紹介します。</span>
-      <span data-lang="en">Discover activities and services near Kusuburu House.</span>
-    </p>
+      <p style="font-size:12px;font-weight:500;letter-spacing:0.1em;color:var(--text-dark);margin-bottom:16px">
+        <span data-lang="ja">くすぶるハウスで</span>
+        <span data-lang="en">At Kusuburu House</span>
+      </p>
+      <div class="act-grid" id="activities-grid" style="margin-bottom:48px"></div>
+      <p style="font-size:12px;font-weight:500;letter-spacing:0.1em;color:var(--text-dark);margin-bottom:16px">
+        <span data-lang="ja">島のおすすめスポット</span>
+        <span data-lang="en">Recommended on the Island</span>
+      </p>
 
     <div id="services-list">
       <!-- Dining -->
@@ -795,7 +779,110 @@
         </div>
       </div>
     </div>
-  </section>
+    </section>
+
+    <!-- 知っておきたいこと (WiFi・買い出し) -->
+    <section class="sec reveal" id="sec-info">
+      <p class="sec-label"><i data-lucide="info" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">知っておきたいこと</span><span data-lang="en">Good to Know</span></p>
+      <div class="sec-divider"></div>
+      <div style="padding:20px 0;border-bottom:1px solid var(--border-light)">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <i data-lucide="wifi" style="width:18px;height:18px;color:var(--accent)"></i>
+          <h4 style="font-size:15px;font-weight:500">
+            <span data-lang="ja">WiFi・電波</span>
+            <span data-lang="en">WiFi & Cell Service</span>
+          </h4>
+        </div>
+        <p class="sec-body" style="font-size:13px">
+          <span data-lang="ja">くすぶるハウスはフリーWiFi完備。島内の携帯電波は主要キャリア（docomo・au・SoftBank）が利用可能ですが、山間部や海沿いの一部で圏外になることがあります。</span>
+          <span data-lang="en">Kusuburu House offers free WiFi. Major carriers (docomo, au, SoftBank) work on the island, but signal may drop in mountainous areas or parts of the coast.</span>
+        </p>
+      </div>
+      <div style="padding:20px 0">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+          <i data-lucide="store" style="width:18px;height:18px;color:var(--accent)"></i>
+          <h4 style="font-size:15px;font-weight:500">
+            <span data-lang="ja">買い出し・コンビニ</span>
+            <span data-lang="en">Shops & Convenience Stores</span>
+          </h4>
+        </div>
+        <p class="sec-body" style="font-size:13px">
+          <span data-lang="ja">島にコンビニはありません。スーパー（Aコープ西郷店）は西郷港近くにあり、営業は〜19時頃まで。飲み物や軽食は港ターミナルの売店で購入可能です。必要なものは本土で揃えておくのが安心です。</span>
+          <span data-lang="en">There are no convenience stores on the island. A supermarket (A-Coop Saigo) is near the port, open until around 7 PM. Drinks and snacks are available at the port terminal shop. Stock up on the mainland to be safe.</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- Packing -->
+    <section class="sec sec-warm reveal" id="sec-packing">
+      <p class="sec-label"><i data-lucide="luggage" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">持ち物</span><span data-lang="en">Packing Checklist</span></p>
+      <div class="sec-divider"></div>
+      <div style="background:white;padding:24px 28px" id="packing-list"></div>
+    </section>
+
+    <!-- FERRY TIMETABLE -->
+    <section class="sec reveal" style="padding-top:60px">
+      <p class="sec-label" data-lang="ja">アクセス</p>
+      <p class="sec-label" data-lang="en">Access</p>
+      <h2 class="font-display sec-title" style="margin-bottom:8px">
+        <span data-lang="ja">フェリー時刻表</span>
+        <span data-lang="en">Ferry Timetable</span>
+      </h2>
+      <div class="sec-divider"></div>
+      <p class="sec-body" style="margin-bottom:32px">
+        <span data-lang="ja">隠岐の島へは、七類港（松江市）または境港から出発します。季節によりダイヤが変わりますので、最新情報は隠岐汽船をご確認ください。</span>
+        <span data-lang="en">Ferries to Oki depart from Shichirui Port (Matsue) or Sakaiminato. Schedules vary by season — check Oki Kisen for the latest.</span>
+      </p>
+      <div style="margin-bottom:24px">
+        <p style="font-size:12px;font-weight:500;letter-spacing:0.1em;color:var(--text-dark);margin-bottom:12px">
+          <span data-lang="ja">七類港 → 隠岐（島後・西郷港）</span>
+          <span data-lang="en">Shichirui → Oki (Saigo Port)</span>
+        </p>
+        <div style="background:white;overflow:hidden">
+          <table class="ferry-table">
+            <thead><tr>
+              <th><span data-lang="ja">便</span><span data-lang="en">Type</span></th>
+              <th><span data-lang="ja">出発</span><span data-lang="en">Depart</span></th>
+              <th><span data-lang="ja">到着</span><span data-lang="en">Arrive</span></th>
+              <th><span data-lang="ja">所要</span><span data-lang="en">Duration</span></th>
+            </tr></thead>
+            <tbody>
+              <tr><td><span class="ferry-badge ferry-fast">高速船</span></td><td>07:00</td><td>08:15</td><td>約1時間15分</td></tr>
+              <tr><td><span class="ferry-badge ferry-slow">フェリー</span></td><td>09:00</td><td>11:30</td><td>約2時間30分</td></tr>
+              <tr><td><span class="ferry-badge ferry-fast">高速船</span></td><td>14:30</td><td>15:45</td><td>約1時間15分</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style="margin-bottom:24px">
+        <p style="font-size:12px;font-weight:500;letter-spacing:0.1em;color:var(--text-dark);margin-bottom:12px">
+          <span data-lang="ja">境港 → 隠岐（島後・西郷港）</span>
+          <span data-lang="en">Sakaiminato → Oki (Saigo Port)</span>
+        </p>
+        <div style="background:white;overflow:hidden">
+          <table class="ferry-table">
+            <thead><tr>
+              <th><span data-lang="ja">便</span><span data-lang="en">Type</span></th>
+              <th><span data-lang="ja">出発</span><span data-lang="en">Depart</span></th>
+              <th><span data-lang="ja">到着</span><span data-lang="en">Arrive</span></th>
+              <th><span data-lang="ja">所要</span><span data-lang="en">Duration</span></th>
+            </tr></thead>
+            <tbody>
+              <tr><td><span class="ferry-badge ferry-slow">フェリー</span></td><td>09:00</td><td>11:30</td><td>約2時間30分</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:16px">
+        <span data-lang="ja">※ 上記は参考ダイヤです。季節により変動があります。</span>
+        <span data-lang="en">※ Schedules shown are reference only. Seasonal changes apply.</span>
+      </p>
+      <a href="https://www.oki-kisen.co.jp/" target="_blank" class="btn-outline" style="font-size:11px;padding:10px 20px">
+        <span data-lang="ja">隠岐汽船 公式サイト</span>
+        <span data-lang="en">Oki Kisen Official</span>
+        <i data-lucide="external-link" style="width:12px;height:12px"></i>
+      </a>
+    </section>
 
     <!-- Share / Change -->
     <section class="sec" style="padding-top:24px;padding-bottom:40px">
@@ -952,7 +1039,8 @@ function selectMonth(m, instant){
 
 function renderWeather(w){
   document.getElementById('weather-cards').innerHTML=`
-    <div class="weather-cell"><div class="weather-val">${w.avg}<span class="weather-unit">°</span></div><div class="weather-label"><span data-lang="ja">平均</span><span data-lang="en">Avg</span></div><div style="font-size:11px;color:var(--text-muted);margin-top:6px">${w.high}° / ${w.low}°</div></div>
+    <div class="weather-cell"><div class="weather-val">${w.high}<span class="weather-unit">°</span></div><div class="weather-label"><span data-lang="ja">日中</span><span data-lang="en">Day High</span></div></div>
+    <div class="weather-cell"><div class="weather-val">${w.low}<span class="weather-unit">°</span></div><div class="weather-label"><span data-lang="ja">夜間</span><span data-lang="en">Night Low</span></div></div>
     <div class="weather-cell"><div class="weather-val">${w.rain}<span class="weather-unit">mm</span></div><div class="weather-label"><span data-lang="ja">降水</span><span data-lang="en">Rain</span></div></div>
     <div class="weather-cell"><div class="weather-val">${w.sun}<span class="weather-unit">h</span></div><div class="weather-label"><span data-lang="ja">日照</span><span data-lang="en">Sun</span></div></div>`;
 }
@@ -1025,6 +1113,34 @@ window.addEventListener('scroll',()=>{
   document.getElementById('back-top').classList.toggle('visible',window.scrollY>600);
 });
 
+function runIntro(){
+  const chars='くすぶるハウス'.split('');
+  const container=document.getElementById('intro-title');
+  chars.forEach(c=>{
+    const span=document.createElement('span');
+    span.className='intro-char';
+    span.textContent=c;
+    container.appendChild(span);
+  });
+  const spans=container.querySelectorAll('.intro-char');
+  let t=300;
+  spans.forEach((s,i)=>{
+    setTimeout(()=>s.classList.add('show'), t+i*140);
+  });
+  const lineDelay=t+chars.length*140+300;
+  setTimeout(()=>document.getElementById('intro-line').classList.add('extend'), lineDelay);
+  const subDelay=lineDelay+500;
+  setTimeout(()=>document.getElementById('intro-sub').classList.add('show'), subDelay);
+  const fadeDelay=subDelay+1600;
+  setTimeout(()=>{
+    document.getElementById('intro-overlay').classList.add('fade-out');
+    setTimeout(()=>{
+      const el=document.getElementById('intro-overlay');
+      if(el)el.remove();
+    },1000);
+  },fadeDelay);
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   buildMonthGrid();lucide.createIcons();
   const p=new URLSearchParams(location.search);
@@ -1032,7 +1148,13 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(p.get('lang')==='en')setLang('en');
 
   if(m&&MONTHS[m]){
+    // Direct link: skip intro, go straight to content
+    const intro=document.getElementById('intro-overlay');
+    if(intro)intro.remove();
     selectMonth(m, true);
+  } else {
+    // Normal landing: run intro animation
+    runIntro();
   }
   initReveal();
 });
