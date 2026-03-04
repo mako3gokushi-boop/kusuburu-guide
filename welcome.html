@@ -55,39 +55,24 @@
       letter-spacing: 0.02em;
     }
 
-    /* ===== INTRO OVERLAY (page load) ===== */
-    .intro-overlay {
-      position: fixed; inset: 0; z-index: 300;
-      background: #faf9f7;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      pointer-events: auto;
-    }
-    .intro-overlay.dissolve {
+    /* ===== PAGE TRANSITION VEIL ===== */
+    .page-veil {
+      position: fixed; inset: 0; z-index: 200;
+      background: var(--surface);
       opacity: 0; pointer-events: none;
-      transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .intro-content { text-align: center }
-    .intro-char {
-      display: inline-block;
-      opacity: 0; transform: translateY(12px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
+    .page-veil.active {
+      opacity: 1; pointer-events: auto;
     }
-    .intro-char.show { opacity: 1; transform: translateY(0) }
-    .intro-line {
-      width: 0; height: 1px;
-      background: rgba(42,37,32,0.12);
-      margin: 24px auto;
-      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .intro-line.show { width: 56px }
-    .intro-sub {
-      opacity: 0;
-      transition: opacity 0.8s ease;
-    }
-    .intro-sub.show { opacity: 1 }
 
-    body.no-scroll { overflow: hidden }
+    /* Content fade-in after transition */
+    #content {
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #content.entering {
+      opacity: 0;
+    }
 
     /* ===== TYPOGRAPHY ===== */
     .font-display { font-family: 'Shippori Mincho', serif }
@@ -466,16 +451,10 @@
     }
   </style>
 </head>
-<body class="no-scroll">
+<body>
 
-  <!-- ===== INTRO OVERLAY (page load) ===== -->
-  <div class="intro-overlay" id="intro-overlay">
-    <div class="intro-content">
-      <p class="font-display" id="intro-title" style="font-size:clamp(24px,6vw,40px);font-weight:400;color:var(--text-dark);letter-spacing:0.12em;line-height:1.6"></p>
-      <div class="intro-line" id="intro-line"></div>
-      <p class="intro-sub" id="intro-sub" style="font-size:10px;letter-spacing:0.25em;color:var(--text-muted)">KUSUBURU HOUSE — 燻家</p>
-    </div>
-  </div>
+  <!-- ===== PAGE TRANSITION VEIL ===== -->
+  <div class="page-veil" id="page-veil"></div>
 
   <!-- ===== LANGUAGE TOGGLE (FIXED) ===== -->
   <div class="lang-toggle">
@@ -946,9 +925,29 @@ function showContent(m){
   window.scrollTo({top:document.getElementById('content').offsetTop, behavior:'instant'});
 }
 
-function selectMonth(m, skipAnim){
+function selectMonth(m, instant){
   currentMonth=m;const d=MONTHS[m];if(!d)return;
-  showContent(m);
+  if(instant){
+    document.getElementById('month-select').style.display='none';
+    showContent(m);
+    window.scrollTo({top:0,behavior:'instant'});
+    return;
+  }
+  // Soft page transition: veil fades in → swap content → veil fades out
+  const veil=document.getElementById('page-veil');
+  veil.classList.add('active');
+  setTimeout(()=>{
+    document.getElementById('month-select').style.display='none';
+    const ct=document.getElementById('content');
+    ct.classList.add('entering');
+    showContent(m);
+    window.scrollTo({top:0,behavior:'instant'});
+    // Veil out + content fade in
+    requestAnimationFrame(()=>{
+      veil.classList.remove('active');
+      requestAnimationFrame(()=>ct.classList.remove('entering'));
+    });
+  },350);
 }
 
 function renderWeather(w){
@@ -1003,10 +1002,16 @@ function toast(m){
   document.body.appendChild(t);setTimeout(()=>t.remove(),2000);
 }
 function resetMonth(){
-  document.getElementById('content').classList.add('hidden');
-  document.querySelectorAll('.month-btn').forEach(b=>b.classList.remove('selected'));
-  history.replaceState(null,'',location.pathname);
-  document.getElementById('month-select').scrollIntoView({behavior:'smooth'});
+  const veil=document.getElementById('page-veil');
+  veil.classList.add('active');
+  setTimeout(()=>{
+    document.getElementById('content').classList.add('hidden');
+    document.querySelectorAll('.month-btn').forEach(b=>b.classList.remove('selected'));
+    document.getElementById('month-select').style.display='';
+    history.replaceState(null,'',location.pathname);
+    window.scrollTo({top:0,behavior:'instant'});
+    requestAnimationFrame(()=>veil.classList.remove('active'));
+  },350);
 }
 
 function initReveal(){
@@ -1020,42 +1025,6 @@ window.addEventListener('scroll',()=>{
   document.getElementById('back-top').classList.toggle('visible',window.scrollY>600);
 });
 
-function runIntro(){
-  const overlay = document.getElementById('intro-overlay');
-  const title = document.getElementById('intro-title');
-  const line = document.getElementById('intro-line');
-  const sub = document.getElementById('intro-sub');
-
-  const text = 'くすぶるハウス';
-  text.split('').forEach((ch, i) => {
-    const span = document.createElement('span');
-    span.className = 'intro-char';
-    span.textContent = ch;
-    span.style.transitionDelay = (0.3 + i * 0.1) + 's';
-    title.appendChild(span);
-  });
-
-  // Step 1: chars appear
-  requestAnimationFrame(() => {
-    title.querySelectorAll('.intro-char').forEach(c => c.classList.add('show'));
-  });
-
-  // Step 2: line
-  setTimeout(() => line.classList.add('show'), 900);
-
-  // Step 3: subtitle
-  setTimeout(() => sub.classList.add('show'), 1300);
-
-  // Step 4: dissolve → reveal month select
-  setTimeout(() => {
-    overlay.classList.add('dissolve');
-    document.body.classList.remove('no-scroll');
-  }, 2800);
-
-  // Step 5: remove
-  setTimeout(() => overlay.remove(), 4400);
-}
-
 document.addEventListener('DOMContentLoaded',()=>{
   buildMonthGrid();lucide.createIcons();
   const p=new URLSearchParams(location.search);
@@ -1063,12 +1032,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(p.get('lang')==='en')setLang('en');
 
   if(m&&MONTHS[m]){
-    // Direct link: skip intro, show content immediately
-    document.getElementById('intro-overlay').remove();
-    document.body.classList.remove('no-scroll');
     selectMonth(m, true);
-  } else {
-    runIntro();
   }
   initReveal();
 });
