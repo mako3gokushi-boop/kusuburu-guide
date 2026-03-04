@@ -55,6 +55,38 @@
       letter-spacing: 0.02em;
     }
 
+    /* ===== INTRO OVERLAY (page load) ===== */
+    .intro-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: #faf9f7;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      pointer-events: auto;
+    }
+    .intro-overlay.dissolve {
+      opacity: 0; pointer-events: none;
+      transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .intro-content { text-align: center }
+    .intro-char {
+      display: inline-block;
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .intro-char.show { opacity: 1; transform: translateY(0) }
+    .intro-line {
+      width: 0; height: 1px;
+      background: rgba(42,37,32,0.12);
+      margin: 24px auto;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .intro-line.show { width: 56px }
+    .intro-sub {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    .intro-sub.show { opacity: 1 }
+
     /* ===== TRANSITION OVERLAY (month select → content) ===== */
     .transition-overlay {
       position: fixed; inset: 0; z-index: 200;
@@ -470,7 +502,16 @@
     }
   </style>
 </head>
-<body>
+<body class="no-scroll">
+
+  <!-- ===== INTRO OVERLAY (page load) ===== -->
+  <div class="intro-overlay" id="intro-overlay">
+    <div class="intro-content">
+      <p class="font-display" id="intro-title" style="font-size:clamp(24px,6vw,40px);font-weight:400;color:var(--text-dark);letter-spacing:0.12em;line-height:1.6"></p>
+      <div class="intro-line" id="intro-line"></div>
+      <p class="intro-sub" id="intro-sub" style="font-size:10px;letter-spacing:0.25em;color:var(--text-muted)">KUSUBURU HOUSE — 燻家</p>
+    </div>
+  </div>
 
   <!-- ===== TRANSITION OVERLAY (plays on month select) ===== -->
   <div class="transition-overlay" id="trans-overlay">
@@ -1079,13 +1120,56 @@ function playTransition(monthName, callback){
   }, 3500);
 }
 
+function runIntro(){
+  const overlay = document.getElementById('intro-overlay');
+  const title = document.getElementById('intro-title');
+  const line = document.getElementById('intro-line');
+  const sub = document.getElementById('intro-sub');
+
+  const text = 'くすぶるハウス';
+  text.split('').forEach((ch, i) => {
+    const span = document.createElement('span');
+    span.className = 'intro-char';
+    span.textContent = ch;
+    span.style.transitionDelay = (0.3 + i * 0.1) + 's';
+    title.appendChild(span);
+  });
+
+  // Step 1: chars appear
+  requestAnimationFrame(() => {
+    title.querySelectorAll('.intro-char').forEach(c => c.classList.add('show'));
+  });
+
+  // Step 2: line
+  setTimeout(() => line.classList.add('show'), 900);
+
+  // Step 3: subtitle
+  setTimeout(() => sub.classList.add('show'), 1300);
+
+  // Step 4: dissolve → reveal month select
+  setTimeout(() => {
+    overlay.classList.add('dissolve');
+    document.body.classList.remove('no-scroll');
+  }, 2800);
+
+  // Step 5: remove
+  setTimeout(() => overlay.remove(), 4400);
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   buildMonthGrid();lucide.createIcons();
   const p=new URLSearchParams(location.search);
   const m=parseInt(p.get('m'));
   if(p.get('lang')==='en')setLang('en');
-  // Direct link: skip animation
-  if(m&&MONTHS[m]) selectMonth(m, true);
+
+  if(m&&MONTHS[m]){
+    // Direct link: skip intro, show content immediately
+    document.getElementById('intro-overlay').remove();
+    document.body.classList.remove('no-scroll');
+    selectMonth(m, true);
+  } else {
+    runIntro();
+  }
   initReveal();
 });
 </script>
