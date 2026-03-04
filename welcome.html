@@ -10,20 +10,21 @@
   <meta property="og:image" content="https://kusuburu-house.com/img/ogp.jpg">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            display: ['"Zen Maru Gothic"', 'sans-serif'],
+            display: ['"Shippori Mincho"', 'serif'],
             body: ['"Noto Sans JP"', 'sans-serif'],
+            soft: ['"Zen Maru Gothic"', 'sans-serif'],
           },
           colors: {
-            kwood: {
-              50:'#faf8f5',100:'#f0ebe3',200:'#e0d5c5',300:'#c9a96e',
-              400:'#b8934f',500:'#96763a',600:'#7a5d2e',700:'#5e4623',
-              800:'#3d2e17',900:'#2a1f10',950:'#1a1410'
+            sand: {
+              50:'#faf9f7',100:'#f5f3ef',200:'#e8e4dc',300:'#d4cec3',
+              400:'#b8b0a0',500:'#9a9080',600:'#7a7060',700:'#5c5448',
+              800:'#3d3832',900:'#2a2520',950:'#1a1714'
             }
           }
         }
@@ -32,297 +33,585 @@
   </script>
   <style>
     :root {
-      --accent:#b8934f;
-      --accent-glow:rgba(184,147,79,0.25);
-      --surface:#faf8f5;
-      --surface-alt:#f0ebe3;
-      --text-primary:#1a1410;
-      --text-secondary:#5e4623;
-      --text-muted:#8c8377;
-      --radius-md:12px;
-      --radius-lg:16px;
-      --radius-pill:999px;
+      --surface: #faf9f7;
+      --surface-warm: #f5f3ef;
+      --text-dark: #2a2520;
+      --text-body: #5c5448;
+      --text-muted: #9a9080;
+      --accent: #7a7060;
+      --accent-warm: #b8934f;
+      --border-light: rgba(42,37,32,0.06);
+      --border-medium: rgba(42,37,32,0.12);
     }
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0}
-    html{scroll-behavior:smooth}
-    body{font-family:'Noto Sans JP',sans-serif;background:var(--surface);color:var(--text-primary);overflow-x:hidden}
-    .font-display{font-family:'Zen Maru Gothic',sans-serif}
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0 }
+    html { scroll-behavior: smooth }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--surface);
+      color: var(--text-dark);
+      overflow-x: hidden;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+
+    /* ===== TYPOGRAPHY ===== */
+    .font-display { font-family: 'Shippori Mincho', serif }
+    .font-soft { font-family: 'Zen Maru Gothic', sans-serif }
 
     /* ===== HERO ===== */
-    .hero{
-      position:relative;min-height:85vh;display:flex;flex-direction:column;
-      justify-content:flex-end;padding:0 24px 48px;overflow:hidden;
+    .hero {
+      position: relative;
+      height: 100vh; height: 100svh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      overflow: hidden;
     }
-    .hero-img{
-      position:absolute;inset:0;
-      background:url('https://kusuburu-house.com/img/main-pc.jpg') center/cover no-repeat;
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: url('https://kusuburu-house.com/img/main-pc.jpg') center/cover no-repeat;
+      background-color: #2a2520;
     }
-    .hero-img::after{
-      content:'';position:absolute;inset:0;
-      background:linear-gradient(to bottom,rgba(26,20,16,0.2) 0%,rgba(26,20,16,0.55) 60%,rgba(26,20,16,0.85) 100%);
+    .hero-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(42,37,32,0.15) 0%,
+        rgba(42,37,32,0.25) 40%,
+        rgba(42,37,32,0.55) 100%
+      );
     }
-    .hero-content{position:relative;z-index:2;max-width:540px;margin:0 auto;text-align:center}
-    .hero-title{
-      font-size:clamp(32px,7vw,52px);font-weight:700;line-height:1.2;
-      color:white;letter-spacing:0.02em;
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center; padding: 0 32px;
     }
-    .hero-sub{color:rgba(255,255,255,0.75);font-size:14px;margin-top:12px}
-    .hero-lang{position:absolute;top:16px;right:24px;z-index:10;display:flex;gap:6px}
+    .hero-scroll {
+      position: absolute; bottom: 40px; left: 50%;
+      transform: translateX(-50%); z-index: 2;
+    }
+    .hero-scroll span {
+      display: block; width: 1px; height: 48px;
+      background: rgba(255,255,255,0.3);
+      margin: 12px auto 0;
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0% { transform: scaleY(0); transform-origin: top }
+      50% { transform: scaleY(1); transform-origin: top }
+      51% { transform-origin: bottom }
+      100% { transform: scaleY(0); transform-origin: bottom }
+    }
 
-    .lang-btn{
-      padding:6px 16px;border-radius:var(--radius-pill);font-size:12px;font-weight:600;
-      cursor:pointer;transition:all 0.3s;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:rgba(255,255,255,0.7);
+    /* ===== LANG TOGGLE ===== */
+    .lang-toggle {
+      position: fixed; top: 20px; right: 20px; z-index: 50;
+      display: flex; gap: 2px;
+      background: rgba(42,37,32,0.4); backdrop-filter: blur(12px);
+      border-radius: 999px; padding: 3px;
     }
-    .lang-btn.active{background:rgba(255,255,255,0.15);color:white;border-color:rgba(255,255,255,0.5);backdrop-filter:blur(8px)}
-    .lang-btn:hover{border-color:rgba(255,255,255,0.5)}
-
-    .scroll-hint{
-      position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:2;
-      animation:bounce 2s infinite;color:rgba(255,255,255,0.5);
+    .lang-btn {
+      padding: 6px 16px; border-radius: 999px;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+      cursor: pointer; transition: all 0.3s;
+      border: none; background: transparent;
+      color: rgba(255,255,255,0.6);
     }
-    @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
-
-    /* ===== MONTH SELECT ===== */
-    .month-section{background:var(--kwood-950,#1a1410);padding:48px 24px 56px}
-    .month-grid{
-      display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
-      max-width:400px;margin:0 auto;
+    .lang-btn.active {
+      background: rgba(255,255,255,0.2);
+      color: white;
     }
-    .month-btn{
-      padding:16px 8px;border-radius:var(--radius-md);font-weight:600;font-size:15px;
-      background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);
-      border:1.5px solid rgba(255,255,255,0.08);cursor:pointer;
-      transition:all 0.3s ease;
-    }
-    .month-btn:hover{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.85);border-color:rgba(255,255,255,0.15)}
-    .month-btn:active{transform:scale(0.96)}
-    .month-btn.selected{
-      background:var(--accent);color:white;
-      border-color:var(--accent);
-      box-shadow:0 0 24px var(--accent-glow);
-    }
-    .month-btn.off-season{
-      background:rgba(255,255,255,0.02);color:rgba(255,255,255,0.2);
-      border-color:transparent;cursor:default;
-    }
-    .month-btn.off-season:hover{background:rgba(255,255,255,0.02);color:rgba(255,255,255,0.2)}
 
     /* ===== SECTIONS ===== */
-    .sec{padding:56px 24px}
-    .sec-alt{background:var(--surface-alt)}
-    .sec-dark{background:var(--kwood-950,#1a1410);color:white}
-    .sec-inner{max-width:540px;margin:0 auto}
+    .sec {
+      padding: 80px 24px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .sec-wide {
+      max-width: 960px;
+    }
+    .sec-full {
+      max-width: none;
+      padding-left: 0; padding-right: 0;
+    }
+    .sec-warm { background: var(--surface-warm) }
+    .sec-dark { background: var(--text-dark); color: white }
 
-    .sec-label{
-      font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;
-      color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:8px;
+    .sec-label {
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
     }
-    .sec-label i{width:16px;height:16px}
-    .sec-heading{
-      font-size:clamp(22px,5vw,28px);font-weight:700;line-height:1.3;margin-bottom:20px;
+    .sec-title {
+      font-size: clamp(24px, 5vw, 36px);
+      font-weight: 400; line-height: 1.5;
+      letter-spacing: 0.05em;
+    }
+    .sec-divider {
+      width: 40px; height: 1px;
+      background: var(--border-medium);
+      margin: 24px 0;
+    }
+    .sec-body {
+      font-size: 14px; line-height: 2.1;
+      color: var(--text-body);
+      font-weight: 300;
     }
 
-    /* ===== CARDS ===== */
-    .card-premium{
-      background:white;border-radius:var(--radius-lg);
-      box-shadow:0 1px 2px rgba(26,20,16,0.04),0 8px 24px rgba(26,20,16,0.06);
-      overflow:hidden;
+    /* ===== MONTH SELECT ===== */
+    .month-section {
+      background: var(--text-dark);
+      padding: 80px 24px;
     }
+    .month-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 8px; max-width: 360px; margin: 0 auto;
+    }
+    .month-btn {
+      padding: 14px 8px; border-radius: 4px;
+      font-size: 13px; font-weight: 400; letter-spacing: 0.05em;
+      background: transparent;
+      color: rgba(255,255,255,0.45);
+      border: 1px solid rgba(255,255,255,0.08);
+      cursor: pointer; transition: all 0.4s ease;
+    }
+    .month-btn:hover {
+      color: rgba(255,255,255,0.8);
+      border-color: rgba(255,255,255,0.2);
+    }
+    .month-btn.selected {
+      color: white;
+      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.08);
+    }
+    .month-btn.off-season {
+      color: rgba(255,255,255,0.15);
+      border-color: transparent;
+      cursor: default;
+    }
+    .month-btn.off-season:hover {
+      color: rgba(255,255,255,0.15);
+      border-color: transparent;
+    }
+
+    /* ===== IMPORTANT NOTICE (Rental Car) ===== */
+    .notice-card {
+      background: white;
+      border: 1px solid var(--border-light);
+      padding: 40px 32px;
+    }
+    .notice-icon {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: #f0e6d3;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .notice-icon i { width: 20px; height: 20px; color: #96763a }
+
+    /* ===== FERRY TABLE ===== */
+    .ferry-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 13px;
+    }
+    .ferry-table th {
+      text-align: left; padding: 12px 16px;
+      font-weight: 500; font-size: 11px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-medium);
+    }
+    .ferry-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-body);
+    }
+    .ferry-table tr:last-child td { border-bottom: none }
+    .ferry-badge {
+      display: inline-block;
+      padding: 2px 10px; border-radius: 999px;
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+    .ferry-fast { background: #e8e4dc; color: var(--text-dark) }
+    .ferry-slow { background: #f5f3ef; color: var(--text-body) }
 
     /* ===== WEATHER ===== */
-    .weather-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center}
-    .weather-val{font-size:clamp(28px,6vw,36px);font-weight:700;line-height:1}
-    .weather-unit{font-size:14px;font-weight:400}
-    .weather-meta{font-size:11px;color:var(--text-muted);margin-top:4px}
+    .weather-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--border-light);
+    }
+    .weather-cell {
+      background: white; padding: 28px 16px; text-align: center;
+    }
+    .weather-val {
+      font-size: clamp(28px, 6vw, 40px);
+      font-weight: 300; line-height: 1;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+    }
+    .weather-unit { font-size: 14px; font-weight: 300 }
+    .weather-label {
+      font-size: 10px; letter-spacing: 0.15em;
+      color: var(--text-muted); margin-top: 8px;
+      text-transform: uppercase;
+    }
 
     /* ===== FOOD ===== */
-    .food-banner{
-      position:relative;aspect-ratio:16/9;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px;
+    .food-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px }
+    .food-grid img {
+      width: 100%; aspect-ratio: 1; object-fit: cover;
     }
-    .food-banner img{width:100%;height:100%;object-fit:cover}
-    .food-banner::after{
-      content:'';position:absolute;inset:0;
-      background:linear-gradient(to top,rgba(26,20,16,0.5) 0%,transparent 50%);
-    }
-    .food-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .food-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius-md)}
 
     /* ===== SPOTS ===== */
-    .spot-scroll{
-      display:flex;gap:16px;overflow-x:auto;padding:0 24px 20px;
-      -webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;
-      margin:0 -24px;
+    .spot-scroll {
+      display: flex; gap: 20px; overflow-x: auto;
+      padding: 0 24px 20px;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
     }
-    .spot-scroll::-webkit-scrollbar{display:none}
-    .spot-scroll>*{scroll-snap-align:start}
-    .spot-card{
-      min-width:280px;border-radius:var(--radius-lg);overflow:hidden;flex-shrink:0;
-      background:white;box-shadow:0 2px 12px rgba(26,20,16,0.08);
+    .spot-scroll::-webkit-scrollbar { display: none }
+    .spot-card {
+      min-width: 300px; flex-shrink: 0;
+      scroll-snap-align: start;
     }
-    .spot-visual{
-      height:180px;background-size:cover;background-position:center;
-      display:flex;align-items:center;justify-content:center;position:relative;
+    .spot-visual {
+      height: 200px; background-size: cover;
+      background-position: center; position: relative;
+      margin-bottom: 16px;
     }
-    .spot-visual::after{
-      content:'';position:absolute;inset:0;
-      background:linear-gradient(to top,rgba(0,0,0,0.35) 0%,transparent 60%);
+    .spot-info { padding: 0 4px }
+
+    /* ===== ACTIVITIES SECTION ===== */
+    .act-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4px;
     }
-    .spot-icon{
-      position:relative;z-index:1;width:48px;height:48px;
-      background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);
-      border-radius:50%;display:flex;align-items:center;justify-content:center;
-      border:1px solid rgba(255,255,255,0.2);
+    .act-card {
+      position: relative; aspect-ratio: 4/3; overflow: hidden;
     }
-    .spot-icon i{width:22px;height:22px;color:white}
-    .spot-name{
-      position:absolute;bottom:12px;left:16px;z-index:2;
-      color:white;font-weight:700;font-size:15px;
-      text-shadow:0 1px 4px rgba(0,0,0,0.4);
+    .act-card img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .act-card:hover img { transform: scale(1.03) }
+    .act-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      justify-content: flex-end; padding: 16px;
+      background: linear-gradient(to top, rgba(42,37,32,0.6) 0%, transparent 60%);
     }
 
-    /* ===== ACTIVITIES ===== */
-    .act-card{
-      border-radius:var(--radius-lg);overflow:hidden;position:relative;
-      aspect-ratio:4/3;
+    /* ===== ISLAND ACTIVITIES & SERVICES ===== */
+    .service-card {
+      display: flex; gap: 20px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border-light);
     }
-    .act-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease}
-    .act-card:hover img{transform:scale(1.04)}
-    .act-overlay{
-      position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
-      padding:16px;background:linear-gradient(to top,rgba(26,20,16,0.7) 0%,transparent 55%);
+    .service-card:last-child { border-bottom: none }
+    .service-img {
+      width: 100px; height: 100px; flex-shrink: 0;
+      object-fit: cover;
+      background: var(--surface-warm);
     }
-    .act-overlay h4{color:white;font-weight:700;font-size:14px}
-    .act-overlay p{color:rgba(255,255,255,0.8);font-size:11px;margin-top:2px}
-
-    /* ===== CHECKLIST ===== */
-    .check-row{
-      display:flex;align-items:center;gap:14px;padding:12px 0;
-      border-bottom:1px solid rgba(26,20,16,0.06);font-size:14px;
+    .service-link {
+      font-size: 12px; color: var(--text-muted);
+      text-decoration: none; letter-spacing: 0.05em;
+      transition: color 0.3s;
+      display: inline-flex; align-items: center; gap: 4px;
     }
-    .check-row:last-child{border-bottom:none}
-    .check-row input[type="checkbox"]{
-      appearance:none;-webkit-appearance:none;width:22px;height:22px;flex-shrink:0;
-      border:2px solid #c4bfb5;border-radius:6px;cursor:pointer;
-      display:flex;align-items:center;justify-content:center;transition:all 0.2s;
-    }
-    .check-row input:checked{background:var(--accent);border-color:var(--accent)}
-    .check-row input:checked::after{content:'✓';color:white;font-size:13px;font-weight:700}
-    .check-row.checked label{text-decoration:line-through;color:var(--text-muted)}
+    .service-link:hover { color: var(--text-dark) }
 
     /* ===== EVENTS ===== */
-    .event-item{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid rgba(26,20,16,0.06)}
-    .event-item:last-child{border-bottom:none}
-    .event-dot{
-      width:10px;height:10px;border-radius:50%;background:var(--accent);
-      flex-shrink:0;margin-top:5px;
+    .event-item {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .event-item:last-child { border-bottom: none }
+
+    /* ===== CHECKLIST ===== */
+    .check-row {
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 14px; font-weight: 300;
+    }
+    .check-row:last-child { border-bottom: none }
+    .check-row input[type="checkbox"] {
+      appearance: none; -webkit-appearance: none;
+      width: 20px; height: 20px; flex-shrink: 0;
+      border: 1px solid var(--border-medium);
+      border-radius: 2px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .check-row input:checked {
+      background: var(--text-dark);
+      border-color: var(--text-dark);
+    }
+    .check-row input:checked::after {
+      content: '✓'; color: white; font-size: 11px; font-weight: 600;
+    }
+    .check-row.checked label {
+      text-decoration: line-through; color: var(--text-muted);
+    }
+
+    /* ===== TIPS ===== */
+    .tips-card {
+      background: var(--surface-warm);
+      border-left: 2px solid var(--accent);
+      padding: 32px;
     }
 
     /* ===== BUTTONS ===== */
-    .btn-primary{
-      display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      padding:14px 28px;border-radius:var(--radius-pill);font-size:14px;font-weight:600;
-      background:var(--text-primary);color:white;border:none;cursor:pointer;
-      transition:all 0.3s ease;
+    .btn-dark {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px 32px; border-radius: 999px;
+      font-size: 12px; font-weight: 500; letter-spacing: 0.1em;
+      background: var(--text-dark); color: white;
+      border: none; cursor: pointer; transition: opacity 0.3s;
     }
-    .btn-primary:hover{opacity:0.85}
-    .btn-secondary{
-      display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      padding:14px 28px;border-radius:var(--radius-pill);font-size:14px;font-weight:600;
-      background:transparent;color:var(--text-primary);
-      border:1.5px solid rgba(26,20,16,0.15);cursor:pointer;
-      transition:all 0.3s ease;
+    .btn-dark:hover { opacity: 0.8 }
+    .btn-outline {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px 32px; border-radius: 999px;
+      font-size: 12px; font-weight: 500; letter-spacing: 0.1em;
+      background: transparent; color: var(--text-dark);
+      border: 1px solid var(--border-medium);
+      cursor: pointer; transition: all 0.3s;
     }
-    .btn-secondary:hover{border-color:var(--text-primary)}
+    .btn-outline:hover { border-color: var(--text-dark) }
 
-    .map-pill{
-      display:inline-flex;align-items:center;gap:4px;
-      padding:6px 12px;border-radius:var(--radius-pill);
-      background:rgba(26,20,16,0.05);color:var(--text-secondary);
-      font-size:11px;font-weight:600;text-decoration:none;
-      transition:background 0.2s;
+    .map-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 12px; border-radius: 999px;
+      font-size: 10px; font-weight: 500; letter-spacing: 0.05em;
+      color: var(--text-muted); text-decoration: none;
+      border: 1px solid var(--border-light);
+      transition: all 0.3s;
     }
-    .map-pill:hover{background:rgba(26,20,16,0.1)}
+    .map-pill:hover { border-color: var(--text-dark); color: var(--text-dark) }
 
-    /* ===== TIPS CARD ===== */
-    .tips-card{
-      background:rgba(184,147,79,0.08);border:1px solid rgba(184,147,79,0.15);
-      border-radius:var(--radius-lg);padding:24px;
+    /* ===== REVEAL ===== */
+    .reveal {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
     }
-
-    /* ===== REVEAL ANIMATION ===== */
-    .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}
-    .reveal.visible{opacity:1;transform:translateY(0)}
-    .reveal-d1{transition-delay:0.1s}
-    .reveal-d2{transition-delay:0.2s}
-    .reveal-d3{transition-delay:0.3s}
+    .reveal.visible { opacity: 1; transform: translateY(0) }
+    .reveal-d1 { transition-delay: 0.15s }
+    .reveal-d2 { transition-delay: 0.3s }
 
     /* ===== TOAST ===== */
-    .toast{
-      position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:100;
-      background:var(--text-primary);color:white;padding:12px 28px;border-radius:var(--radius-pill);
-      font-size:13px;font-weight:500;
-      animation:toastIn 0.3s ease,toastOut 0.3s ease 1.5s forwards;
+    .toast {
+      position: fixed; bottom: 80px; left: 50%;
+      transform: translateX(-50%); z-index: 100;
+      background: var(--text-dark); color: white;
+      padding: 12px 32px; border-radius: 999px;
+      font-size: 12px; font-weight: 400; letter-spacing: 0.05em;
+      animation: toastIn 0.3s ease, toastOut 0.3s ease 1.5s forwards;
     }
-    @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-    @keyframes toastOut{from{opacity:1}to{opacity:0}}
+    @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(16px) } to { opacity: 1; transform: translateX(-50%) translateY(0) } }
+    @keyframes toastOut { from { opacity: 1 } to { opacity: 0 } }
 
     /* ===== BACK TOP ===== */
-    .back-top{
-      position:fixed;bottom:24px;right:24px;z-index:50;
-      width:48px;height:48px;border-radius:50%;
-      background:var(--text-primary);color:white;border:none;cursor:pointer;
-      box-shadow:0 4px 16px rgba(26,20,16,0.25);
-      display:none;align-items:center;justify-content:center;
-      transition:all 0.3s ease;
+    .back-top {
+      position: fixed; bottom: 24px; right: 24px; z-index: 50;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--text-dark); color: white;
+      border: none; cursor: pointer;
+      display: none; align-items: center; justify-content: center;
+      transition: all 0.3s;
     }
-    .back-top:hover{transform:scale(1.05)}
-    .back-top.visible{display:flex}
+    .back-top.visible { display: flex }
 
-    /* ===== LANG TOGGLE ===== */
-    [data-lang="en"]{display:none}
-    body.lang-en [data-lang="ja"]{display:none}
-    body.lang-en [data-lang="en"]{display:block}
-    body.lang-en span[data-lang="en"]{display:inline}
-    body.lang-en a[data-lang="en"]{display:inline-flex}
+    /* ===== LANG TOGGLE CONTENT ===== */
+    [data-lang="en"] { display: none }
+    body.lang-en [data-lang="ja"] { display: none }
+    body.lang-en [data-lang="en"] { display: block }
+    body.lang-en span[data-lang="en"] { display: inline }
+    body.lang-en a[data-lang="en"] { display: inline-flex }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      background: var(--text-dark); color: white;
+      padding: 80px 24px 48px; text-align: center;
+    }
 
     /* ===== RESPONSIVE ===== */
-    @media(min-width:768px){
-      .hero{min-height:90vh;padding-bottom:80px}
-      .sec{padding:80px 40px}
-      .month-grid{grid-template-columns:repeat(3,1fr);gap:14px;max-width:420px}
-      .spot-card{min-width:320px}
-      .spot-visual{height:200px}
+    @media (min-width: 768px) {
+      .sec { padding: 120px 40px }
+      .spot-card { min-width: 340px }
+      .service-img { width: 140px; height: 140px }
     }
   </style>
 </head>
 <body>
 
+  <!-- ===== LANGUAGE TOGGLE (FIXED) ===== -->
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('ja')" id="btn-ja">JP</button>
+    <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+  </div>
+
   <!-- ===== HERO ===== -->
   <header class="hero">
-    <div class="hero-img" role="img" aria-label="くすぶるハウス外観"></div>
-    <div class="hero-lang">
-      <button class="lang-btn active" onclick="setLang('ja')" id="btn-ja">JP</button>
-      <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
-    </div>
+    <div class="hero-bg" role="img" aria-label="隠岐の島の風景"></div>
     <div class="hero-content">
-      <p style="font-size:12px;letter-spacing:0.2em;color:rgba(255,255,255,0.5);margin-bottom:16px">KUSUBURU HOUSE</p>
-      <h1 class="hero-title font-display" data-lang="ja">くすぶると過ごす<br>隠岐の島</h1>
-      <h1 class="hero-title font-display" data-lang="en">Your Oki Island<br>Guide</h1>
-      <p class="hero-sub" data-lang="ja">あなたの来島月に合わせた島旅ガイド</p>
-      <p class="hero-sub" data-lang="en">A personalized guide for your island stay</p>
+      <p style="font-size:11px;letter-spacing:0.3em;color:rgba(255,255,255,0.5);margin-bottom:24px;font-weight:400">KUSUBURU HOUSE</p>
+      <h1 class="font-display" style="font-size:clamp(28px,7vw,48px);font-weight:400;color:white;line-height:1.6;letter-spacing:0.08em" data-lang="ja">
+        くすぶると過ごす<br>隠岐の島
+      </h1>
+      <h1 class="font-display" style="font-size:clamp(28px,7vw,48px);font-weight:400;color:white;line-height:1.6;letter-spacing:0.08em" data-lang="en">
+        Your Oki Island<br>Guide
+      </h1>
+      <p style="font-size:13px;color:rgba(255,255,255,0.55);margin-top:20px;font-weight:300;letter-spacing:0.08em" data-lang="ja">あなたの来島月に合わせた島旅ガイド</p>
+      <p style="font-size:13px;color:rgba(255,255,255,0.55);margin-top:20px;font-weight:300;letter-spacing:0.08em" data-lang="en">A personalized guide for your island stay</p>
     </div>
-    <div class="scroll-hint"><i data-lucide="chevron-down" style="width:24px;height:24px"></i></div>
+    <div class="hero-scroll">
+      <p style="font-size:9px;letter-spacing:0.2em;color:rgba(255,255,255,0.35);text-transform:uppercase">Scroll</p>
+      <span></span>
+    </div>
   </header>
+
+  <!-- ===== IMPORTANT: RENTAL CAR ===== -->
+  <section class="sec reveal" style="padding-bottom:40px">
+    <div class="notice-card">
+      <div class="notice-icon"><i data-lucide="car"></i></div>
+      <p class="sec-label" data-lang="ja">大切なお知らせ</p>
+      <p class="sec-label" data-lang="en">Important Notice</p>
+      <h2 class="font-display sec-title" style="font-size:clamp(20px,4vw,26px);margin-bottom:16px">
+        <span data-lang="ja">レンタカーのご予約はお早めに</span>
+        <span data-lang="en">Book Your Rental Car Early</span>
+      </h2>
+      <div class="sec-body" style="margin-bottom:24px">
+        <p data-lang="ja">
+          隠岐の島はレンタカーの台数が非常に限られています。
+          過去には、直前にレンタカーの予約が取れず、島内での移動手段を確保できなかったため、
+          やむなく<strong style="font-weight:500">宿泊自体をキャンセル</strong>されたお客様もいらっしゃいました。
+        </p>
+        <p data-lang="en">
+          Rental cars on Oki Island are very limited. In the past, a guest had to
+          <strong style="font-weight:500">cancel their entire stay</strong> because they couldn't
+          secure a rental car at the last minute.
+        </p>
+      </div>
+      <div class="sec-body" style="margin-bottom:28px">
+        <p data-lang="ja">宿のご予約と同時に、レンタカーもご予約されることを強くおすすめします。</p>
+        <p data-lang="en">We strongly recommend booking your rental car at the same time as your accommodation.</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <a href="#" class="btn-outline" style="font-size:11px;padding:10px 20px">
+          <span data-lang="ja">隠岐レンタカー A</span>
+          <span data-lang="en">Oki Rent-a-Car A</span>
+          <i data-lucide="external-link" style="width:12px;height:12px"></i>
+        </a>
+        <a href="#" class="btn-outline" style="font-size:11px;padding:10px 20px">
+          <span data-lang="ja">隠岐レンタカー B</span>
+          <span data-lang="en">Oki Rent-a-Car B</span>
+          <i data-lucide="external-link" style="width:12px;height:12px"></i>
+        </a>
+        <a href="#" class="btn-outline" style="font-size:11px;padding:10px 20px">
+          <span data-lang="ja">隠岐レンタカー C</span>
+          <span data-lang="en">Oki Rent-a-Car C</span>
+          <i data-lucide="external-link" style="width:12px;height:12px"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FERRY TIMETABLE ===== -->
+  <section class="sec sec-warm reveal" style="padding-top:60px">
+    <p class="sec-label" data-lang="ja">アクセス</p>
+    <p class="sec-label" data-lang="en">Access</p>
+    <h2 class="font-display sec-title" style="margin-bottom:8px">
+      <span data-lang="ja">フェリー時刻表</span>
+      <span data-lang="en">Ferry Timetable</span>
+    </h2>
+    <div class="sec-divider"></div>
+    <p class="sec-body" style="margin-bottom:32px">
+      <span data-lang="ja">隠岐の島へは、七類港（松江市）または境港から出発します。季節によりダイヤが変わりますので、最新情報は隠岐汽船をご確認ください。</span>
+      <span data-lang="en">Ferries to Oki depart from Shichirui Port (Matsue) or Sakaiminato. Schedules vary by season — check Oki Kisen for the latest.</span>
+    </p>
+
+    <div style="margin-bottom:24px">
+      <p style="font-size:12px;font-weight:500;letter-spacing:0.1em;color:var(--text-dark);margin-bottom:12px">
+        <span data-lang="ja">七類港 → 隠岐（島後・西郷港）</span>
+        <span data-lang="en">Shichirui → Oki (Saigo Port)</span>
+      </p>
+      <div style="background:white;overflow:hidden">
+        <table class="ferry-table">
+          <thead>
+            <tr>
+              <th><span data-lang="ja">便</span><span data-lang="en">Type</span></th>
+              <th><span data-lang="ja">出発</span><span data-lang="en">Depart</span></th>
+              <th><span data-lang="ja">到着</span><span data-lang="en">Arrive</span></th>
+              <th><span data-lang="ja">所要</span><span data-lang="en">Duration</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="ferry-badge ferry-fast">高速船</span></td>
+              <td>07:00</td><td>08:15</td><td>約1時間15分</td>
+            </tr>
+            <tr>
+              <td><span class="ferry-badge ferry-slow">フェリー</span></td>
+              <td>09:00</td><td>11:30</td><td>約2時間30分</td>
+            </tr>
+            <tr>
+              <td><span class="ferry-badge ferry-fast">高速船</span></td>
+              <td>14:30</td><td>15:45</td><td>約1時間15分</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="margin-bottom:24px">
+      <p style="font-size:12px;font-weight:500;letter-spacing:0.1em;color:var(--text-dark);margin-bottom:12px">
+        <span data-lang="ja">境港 → 隠岐（島後・西郷港）</span>
+        <span data-lang="en">Sakaiminato → Oki (Saigo Port)</span>
+      </p>
+      <div style="background:white;overflow:hidden">
+        <table class="ferry-table">
+          <thead>
+            <tr>
+              <th><span data-lang="ja">便</span><span data-lang="en">Type</span></th>
+              <th><span data-lang="ja">出発</span><span data-lang="en">Depart</span></th>
+              <th><span data-lang="ja">到着</span><span data-lang="en">Arrive</span></th>
+              <th><span data-lang="ja">所要</span><span data-lang="en">Duration</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="ferry-badge ferry-slow">フェリー</span></td>
+              <td>09:00</td><td>11:30</td><td>約2時間30分</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p style="font-size:11px;color:var(--text-muted);margin-bottom:16px">
+      <span data-lang="ja">※ 上記は参考ダイヤです。季節により変動があります。</span>
+      <span data-lang="en">※ Schedules shown are reference only. Seasonal changes apply.</span>
+    </p>
+    <a href="https://www.oki-kisen.co.jp/" target="_blank" class="btn-outline" style="font-size:11px;padding:10px 20px">
+      <span data-lang="ja">隠岐汽船 公式サイト</span>
+      <span data-lang="en">Oki Kisen Official</span>
+      <i data-lucide="external-link" style="width:12px;height:12px"></i>
+    </a>
+  </section>
 
   <!-- ===== MONTH SELECTOR ===== -->
   <section class="month-section" id="month-select">
     <div style="max-width:540px;margin:0 auto;text-align:center">
-      <p style="font-size:11px;letter-spacing:0.15em;color:rgba(255,255,255,0.35);margin-bottom:8px;text-transform:uppercase">Select Month</p>
-      <h2 class="font-display" style="font-size:clamp(22px,5vw,28px);font-weight:700;color:white;margin-bottom:8px">
+      <p class="sec-label" style="color:rgba(255,255,255,0.3)">Select Month</p>
+      <h2 class="font-display" style="font-size:clamp(22px,5vw,32px);font-weight:400;color:white;letter-spacing:0.08em;margin-bottom:8px">
         <span data-lang="ja">何月に隠岐の島へ？</span>
         <span data-lang="en">When are you visiting?</span>
       </h2>
-      <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:32px">
+      <p style="font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:40px;letter-spacing:0.08em">
         <span data-lang="ja">営業期間：3月中旬 — 11月下旬</span>
         <span data-lang="en">Open: Mid-March — Late November</span>
       </p>
@@ -330,132 +619,234 @@
     </div>
   </section>
 
-  <!-- ===== CONTENT ===== -->
+  <!-- ===== MONTH CONTENT ===== -->
   <div id="content" class="hidden">
 
     <!-- Month Header -->
-    <section class="sec sec-alt" id="month-header">
-      <div class="sec-inner" style="text-align:center">
-        <div id="month-badge" style="display:inline-block;padding:6px 20px;border-radius:var(--radius-pill);font-size:13px;font-weight:700;color:white;background:var(--accent);margin-bottom:12px"></div>
-        <h2 class="font-display" style="font-size:clamp(24px,5vw,32px);font-weight:700;line-height:1.3" id="month-tagline"></h2>
-      </div>
+    <section class="sec" style="text-align:center;padding-bottom:40px">
+      <div id="month-badge" style="display:inline-block;padding:6px 24px;border-radius:999px;font-size:11px;font-weight:500;letter-spacing:0.15em;color:var(--text-dark);border:1px solid var(--border-medium);margin-bottom:20px"></div>
+      <h2 class="font-display sec-title" id="month-tagline" style="letter-spacing:0.08em"></h2>
     </section>
 
     <!-- Weather -->
-    <section class="sec reveal" id="sec-weather">
-      <div class="sec-inner">
-        <div class="sec-label"><i data-lucide="thermometer"></i><span data-lang="ja">気候</span><span data-lang="en">CLIMATE</span></div>
-        <div class="weather-grid" id="weather-cards"></div>
-        <p style="font-size:10px;color:var(--text-muted);text-align:center;margin-top:16px" data-lang="ja">気象庁 平年値 1991–2020</p>
-        <p style="font-size:10px;color:var(--text-muted);text-align:center;margin-top:16px" data-lang="en">JMA Normal Values 1991–2020</p>
-      </div>
+    <section class="reveal" style="padding:0 24px 80px;max-width:720px;margin:0 auto" id="sec-weather">
+      <p class="sec-label"><i data-lucide="thermometer" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">気候</span><span data-lang="en">Climate</span></p>
+      <div class="weather-grid" id="weather-cards" style="margin-top:16px"></div>
+      <p style="font-size:10px;color:var(--text-muted);text-align:right;margin-top:12px" data-lang="ja">気象庁 平年値 1991–2020</p>
+      <p style="font-size:10px;color:var(--text-muted);text-align:right;margin-top:12px" data-lang="en">JMA Normal Values 1991–2020</p>
     </section>
 
     <!-- Clothing -->
-    <section class="sec sec-alt reveal" id="sec-clothing">
-      <div class="sec-inner">
-        <div class="sec-label"><i data-lucide="shirt"></i><span data-lang="ja">おすすめの服装</span><span data-lang="en">WHAT TO WEAR</span></div>
-        <p id="clothing-text-ja" style="font-size:15px;line-height:1.9;color:var(--text-secondary)" data-lang="ja"></p>
-        <p id="clothing-text-en" style="font-size:15px;line-height:1.9;color:var(--text-secondary)" data-lang="en"></p>
-      </div>
+    <section class="sec sec-warm reveal" id="sec-clothing">
+      <p class="sec-label"><i data-lucide="shirt" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">服装</span><span data-lang="en">What to Wear</span></p>
+      <div class="sec-divider"></div>
+      <p id="clothing-text-ja" class="sec-body" data-lang="ja"></p>
+      <p id="clothing-text-en" class="sec-body" data-lang="en"></p>
     </section>
 
     <!-- Food -->
     <section class="sec reveal" id="sec-food">
-      <div class="sec-inner">
-        <div class="sec-label"><i data-lucide="utensils"></i><span data-lang="ja">旬の味覚</span><span data-lang="en">SEASONAL FLAVORS</span></div>
-        <h3 class="sec-heading" data-lang="ja">この季節の食卓</h3>
-        <h3 class="sec-heading" data-lang="en">Island Dining This Season</h3>
-        <p id="food-text-ja" style="font-size:15px;line-height:1.9;color:var(--text-secondary);margin-bottom:24px" data-lang="ja"></p>
-        <p id="food-text-en" style="font-size:15px;line-height:1.9;color:var(--text-secondary);margin-bottom:24px" data-lang="en"></p>
-        <div class="food-grid" id="food-photos"></div>
-        <p style="font-size:11px;color:var(--text-muted);margin-top:12px" data-lang="ja">くすぶるハウスの夕食（1泊2食付きプラン）</p>
-        <p style="font-size:11px;color:var(--text-muted);margin-top:12px" data-lang="en">Dinner at Kusuburu House (2-meal plan)</p>
-      </div>
+      <p class="sec-label"><i data-lucide="utensils" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">旬の味覚</span><span data-lang="en">Seasonal Flavors</span></p>
+      <h3 class="font-display sec-title" style="font-size:clamp(20px,4vw,28px);margin-bottom:8px">
+        <span data-lang="ja">この季節の食卓</span>
+        <span data-lang="en">Island Dining This Season</span>
+      </h3>
+      <div class="sec-divider"></div>
+      <p id="food-text-ja" class="sec-body" style="margin-bottom:32px" data-lang="ja"></p>
+      <p id="food-text-en" class="sec-body" style="margin-bottom:32px" data-lang="en"></p>
+      <div class="food-grid" id="food-photos"></div>
+      <p style="font-size:10px;color:var(--text-muted);margin-top:12px" data-lang="ja">くすぶるハウスの夕食（1泊2食付きプラン）</p>
+      <p style="font-size:10px;color:var(--text-muted);margin-top:12px" data-lang="en">Dinner at Kusuburu House (2-meal plan)</p>
     </section>
 
     <!-- Spots -->
-    <section class="sec sec-alt reveal" id="sec-spots">
-      <div class="sec-inner" style="margin-bottom:20px">
-        <div class="sec-label"><i data-lucide="compass"></i><span data-lang="ja">島後の観光スポット</span><span data-lang="en">SIGHTSEEING — DOGO ISLAND</span></div>
-        <h3 class="sec-heading" data-lang="ja">隠岐の絶景を巡る</h3>
-        <h3 class="sec-heading" data-lang="en">Explore Oki's Landscapes</h3>
+    <section class="sec-warm reveal" style="padding:80px 0" id="sec-spots">
+      <div style="max-width:720px;margin:0 auto;padding:0 24px 24px">
+        <p class="sec-label"><i data-lucide="compass" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">観光</span><span data-lang="en">Sightseeing</span></p>
+        <h3 class="font-display sec-title" style="font-size:clamp(20px,4vw,28px)">
+          <span data-lang="ja">隠岐の絶景を巡る</span>
+          <span data-lang="en">Explore Oki's Landscapes</span>
+        </h3>
+        <div class="sec-divider"></div>
       </div>
       <div class="spot-scroll" id="spots-row"></div>
     </section>
 
     <!-- Events -->
     <section class="sec reveal" id="sec-events">
-      <div class="sec-inner">
-        <div class="sec-label"><i data-lucide="calendar-heart"></i><span data-lang="ja">この時期のイベント</span><span data-lang="en">EVENTS THIS MONTH</span></div>
-        <div id="events-list"></div>
-      </div>
+      <p class="sec-label"><i data-lucide="calendar-heart" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">イベント</span><span data-lang="en">Events</span></p>
+      <div class="sec-divider"></div>
+      <div id="events-list"></div>
     </section>
 
-    <!-- Activities -->
-    <section class="sec sec-alt reveal" id="sec-activities">
-      <div class="sec-inner">
-        <div class="sec-label"><i data-lucide="sparkles"></i><span data-lang="ja">くすぶるハウスでの過ごし方</span><span data-lang="en">AT KUSUBURU HOUSE</span></div>
-        <h3 class="sec-heading" data-lang="ja">島時間を、まるごと</h3>
-        <h3 class="sec-heading" data-lang="en">Embrace Island Time</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="activities-grid"></div>
-      </div>
+    <!-- Activities at Kusuburu -->
+    <section class="sec sec-warm reveal" id="sec-activities">
+      <p class="sec-label"><i data-lucide="sparkles" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">宿での過ごし方</span><span data-lang="en">At Kusuburu House</span></p>
+      <h3 class="font-display sec-title" style="font-size:clamp(20px,4vw,28px);margin-bottom:8px">
+        <span data-lang="ja">島時間を、まるごと</span>
+        <span data-lang="en">Embrace Island Time</span>
+      </h3>
+      <div class="sec-divider"></div>
+      <div class="act-grid" id="activities-grid"></div>
     </section>
 
     <!-- Tips -->
     <section class="sec reveal" id="sec-tips">
-      <div class="sec-inner">
-        <div class="tips-card">
-          <div class="sec-label"><i data-lucide="lightbulb"></i><span data-lang="ja">ひとことアドバイス</span><span data-lang="en">INSIDER TIP</span></div>
-          <p id="tips-text-ja" style="font-size:15px;line-height:1.9;color:var(--text-secondary)" data-lang="ja"></p>
-          <p id="tips-text-en" style="font-size:15px;line-height:1.9;color:var(--text-secondary)" data-lang="en"></p>
-        </div>
+      <div class="tips-card">
+        <p class="sec-label"><i data-lucide="lightbulb" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">ひとこと</span><span data-lang="en">Insider Tip</span></p>
+        <p id="tips-text-ja" class="sec-body" style="margin-top:12px" data-lang="ja"></p>
+        <p id="tips-text-en" class="sec-body" style="margin-top:12px" data-lang="en"></p>
       </div>
     </section>
 
     <!-- Packing -->
-    <section class="sec sec-alt reveal" id="sec-packing">
-      <div class="sec-inner">
-        <div class="sec-label"><i data-lucide="luggage"></i><span data-lang="ja">持ち物チェックリスト</span><span data-lang="en">PACKING CHECKLIST</span></div>
-        <div class="card-premium" style="padding:20px 24px">
-          <div id="packing-list"></div>
-        </div>
-      </div>
+    <section class="sec sec-warm reveal" id="sec-packing">
+      <p class="sec-label"><i data-lucide="luggage" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">持ち物</span><span data-lang="en">Packing Checklist</span></p>
+      <div class="sec-divider"></div>
+      <div style="background:white;padding:24px 28px" id="packing-list"></div>
     </section>
 
-    <!-- Actions -->
-    <section class="sec" style="padding-top:24px">
-      <div class="sec-inner" style="display:flex;gap:12px">
-        <button onclick="shareGuide()" class="btn-primary" style="flex:1">
-          <i data-lucide="share-2" style="width:16px;height:16px"></i>
+    <!-- Share / Change -->
+    <section class="sec" style="padding-top:24px;padding-bottom:40px">
+      <div style="display:flex;gap:12px">
+        <button onclick="shareGuide()" class="btn-dark" style="flex:1">
+          <i data-lucide="share-2" style="width:14px;height:14px"></i>
           <span data-lang="ja">共有する</span><span data-lang="en">Share</span>
         </button>
-        <button onclick="resetMonth()" class="btn-secondary" style="flex:1">
-          <i data-lucide="calendar" style="width:16px;height:16px"></i>
+        <button onclick="resetMonth()" class="btn-outline" style="flex:1">
+          <i data-lucide="calendar" style="width:14px;height:14px"></i>
           <span data-lang="ja">月を変更</span><span data-lang="en">Change</span>
         </button>
       </div>
     </section>
   </div>
 
+  <!-- ===== ISLAND ACTIVITIES & SERVICES ===== -->
+  <section class="sec reveal" id="sec-services">
+    <p class="sec-label"><i data-lucide="map" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">島のおすすめ</span><span data-lang="en">Island Guide</span></p>
+    <h2 class="font-display sec-title" style="margin-bottom:8px">
+      <span data-lang="ja">隠岐の島を楽しむ</span>
+      <span data-lang="en">Enjoy Oki Island</span>
+    </h2>
+    <div class="sec-divider"></div>
+    <p class="sec-body" style="margin-bottom:32px">
+      <span data-lang="ja">くすぶるハウス周辺のおすすめスポットやアクティビティをご紹介します。</span>
+      <span data-lang="en">Discover activities and services near Kusuburu House.</span>
+    </p>
+
+    <div id="services-list">
+      <!-- Dining -->
+      <div class="service-card">
+        <div class="service-img" style="background:linear-gradient(135deg,#e8e4dc,#d4cec3);display:flex;align-items:center;justify-content:center">
+          <i data-lucide="utensils-crossed" style="width:28px;height:28px;color:var(--text-muted)"></i>
+        </div>
+        <div>
+          <p style="font-size:10px;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase">Dining</p>
+          <h4 style="font-size:15px;font-weight:500;margin-bottom:6px">
+            <span data-lang="ja">味乃蔵</span>
+            <span data-lang="en">Ajinokura</span>
+          </h4>
+          <p class="sec-body" style="margin-bottom:10px;font-size:13px">
+            <span data-lang="ja">地元の魚介を使った定食が人気の食堂。隠岐そばもおすすめ。</span>
+            <span data-lang="en">Popular local restaurant known for seafood set meals and Oki soba.</span>
+          </p>
+          <a href="#" class="service-link">
+            <span data-lang="ja">詳しくはこちら</span>
+            <span data-lang="en">Learn more</span>
+            <i data-lucide="arrow-right" style="width:12px;height:12px"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Experience -->
+      <div class="service-card">
+        <div class="service-img" style="background:linear-gradient(135deg,#d4cec3,#b8b0a0);display:flex;align-items:center;justify-content:center">
+          <i data-lucide="waves" style="width:28px;height:28px;color:var(--text-muted)"></i>
+        </div>
+        <div>
+          <p style="font-size:10px;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase">Experience</p>
+          <h4 style="font-size:15px;font-weight:500;margin-bottom:6px">
+            <span data-lang="ja">シーカヤック体験</span>
+            <span data-lang="en">Sea Kayaking</span>
+          </h4>
+          <p class="sec-body" style="margin-bottom:10px;font-size:13px">
+            <span data-lang="ja">透明度抜群の海をカヤックで巡る。初心者も安心のガイド付き。</span>
+            <span data-lang="en">Explore crystal-clear waters by kayak. Guide included, beginners welcome.</span>
+          </p>
+          <a href="#" class="service-link">
+            <span data-lang="ja">詳しくはこちら</span>
+            <span data-lang="en">Learn more</span>
+            <i data-lucide="arrow-right" style="width:12px;height:12px"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Relaxation -->
+      <div class="service-card">
+        <div class="service-img" style="background:linear-gradient(135deg,#e8e4dc,#d4cec3);display:flex;align-items:center;justify-content:center">
+          <i data-lucide="flame" style="width:28px;height:28px;color:var(--text-muted)"></i>
+        </div>
+        <div>
+          <p style="font-size:10px;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase">Hot Spring</p>
+          <h4 style="font-size:15px;font-weight:500;margin-bottom:6px">
+            <span data-lang="ja">隠岐温泉 GOKA</span>
+            <span data-lang="en">Oki Onsen GOKA</span>
+          </h4>
+          <p class="sec-body" style="margin-bottom:10px;font-size:13px">
+            <span data-lang="ja">隠岐唯一の天然温泉。宿から車で約15分。露天風呂から日本海を一望。</span>
+            <span data-lang="en">Oki's only natural hot spring. 15 min by car. Ocean views from the open-air bath.</span>
+          </p>
+          <a href="#" class="service-link">
+            <span data-lang="ja">詳しくはこちら</span>
+            <span data-lang="en">Learn more</span>
+            <i data-lucide="arrow-right" style="width:12px;height:12px"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Shopping -->
+      <div class="service-card">
+        <div class="service-img" style="background:linear-gradient(135deg,#d4cec3,#b8b0a0);display:flex;align-items:center;justify-content:center">
+          <i data-lucide="shopping-bag" style="width:28px;height:28px;color:var(--text-muted)"></i>
+        </div>
+        <div>
+          <p style="font-size:10px;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase">Shopping</p>
+          <h4 style="font-size:15px;font-weight:500;margin-bottom:6px">
+            <span data-lang="ja">隠岐の島お土産センター</span>
+            <span data-lang="en">Oki Souvenir Center</span>
+          </h4>
+          <p class="sec-body" style="margin-bottom:10px;font-size:13px">
+            <span data-lang="ja">西郷港ターミナル内。岩ガキの干物、隠岐そば、地酒など島の名産品が揃う。</span>
+            <span data-lang="en">Inside Saigo Port Terminal. Local specialties including dried rock oysters, Oki soba, and island sake.</span>
+          </p>
+          <a href="#" class="service-link">
+            <span data-lang="ja">詳しくはこちら</span>
+            <span data-lang="en">Learn more</span>
+            <i data-lucide="arrow-right" style="width:12px;height:12px"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== FOOTER ===== -->
-  <footer style="background:#1a1410;padding:64px 24px 40px;text-align:center">
-    <p class="font-display" style="font-size:22px;font-weight:700;color:white;margin-bottom:4px">くすぶるハウス</p>
-    <p style="font-size:11px;letter-spacing:0.15em;color:rgba(255,255,255,0.3);margin-bottom:32px">KUSUBURU HOUSE — 燻家</p>
-    <div style="display:flex;flex-direction:column;gap:4px;font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:32px">
+  <footer class="site-footer">
+    <p class="font-display" style="font-size:clamp(20px,4vw,28px);font-weight:400;letter-spacing:0.1em;margin-bottom:4px">くすぶるハウス</p>
+    <p style="font-size:10px;letter-spacing:0.25em;color:rgba(255,255,255,0.25);margin-bottom:48px">KUSUBURU HOUSE — 燻家</p>
+    <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:2.2;margin-bottom:48px;letter-spacing:0.05em">
       <p>島根県隠岐郡隠岐の島町南方 1227-1</p>
       <p>Check-in 16:00–21:00 / Check-out 10:00</p>
     </div>
-    <div style="display:flex;justify-content:center;gap:24px;margin-bottom:40px">
-      <a href="https://kusuburu-house.com" target="_blank" style="color:rgba(255,255,255,0.5);font-size:13px;text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Website</a>
-      <a href="https://lin.ee/a4uWMOX" target="_blank" style="color:rgba(255,255,255,0.5);font-size:13px;text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">LINE</a>
-      <a href="mailto:info@kusuburu-house.com" style="color:rgba(255,255,255,0.5);font-size:13px;text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Email</a>
+    <div style="display:flex;justify-content:center;gap:32px;margin-bottom:48px">
+      <a href="https://kusuburu-house.com" target="_blank" style="color:rgba(255,255,255,0.4);font-size:11px;text-decoration:none;letter-spacing:0.1em;transition:color 0.3s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Website</a>
+      <a href="https://lin.ee/a4uWMOX" target="_blank" style="color:rgba(255,255,255,0.4);font-size:11px;text-decoration:none;letter-spacing:0.1em;transition:color 0.3s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">LINE</a>
+      <a href="mailto:info@kusuburu-house.com" style="color:rgba(255,255,255,0.4);font-size:11px;text-decoration:none;letter-spacing:0.1em;transition:color 0.3s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Email</a>
     </div>
-    <p style="font-size:10px;color:rgba(255,255,255,0.2)">Weather: Japan Meteorological Agency 1991–2020 normals</p>
+    <p style="font-size:9px;color:rgba(255,255,255,0.15);letter-spacing:0.1em">Weather: Japan Meteorological Agency 1991–2020 normals</p>
   </footer>
 
   <button class="back-top" id="back-top" onclick="document.getElementById('month-select').scrollIntoView({behavior:'smooth'})">
-    <i data-lucide="chevron-up" style="width:20px;height:20px"></i>
+    <i data-lucide="chevron-up" style="width:18px;height:18px"></i>
   </button>
 
 <script>
@@ -474,14 +865,14 @@ const MONTHS = {
 };
 
 const SPOTS = [
-  {id:'rosoku',icon:'flame',name:{ja:'ローソク島',en:'Candle Island'},desc:{ja:'夕日が岩の先端に灯ると、巨大なローソクに火が灯ったような幻想的な光景。遊覧船で海上から鑑賞。',en:'When the setting sun sits atop this 20m rock spire, it looks like a giant lit candle. Best seen from a sightseeing boat.'},season:{ja:'4月〜10月',en:'Apr–Oct'},gradient:'linear-gradient(135deg,#d4945a,#c9a96e)',map:'https://www.google.com/maps/search/ローソク島+隠岐の島',photo:''},
-  {id:'shirashima',icon:'waves',name:{ja:'白島海岸',en:'Shirashima Coast'},desc:{ja:'白い岩肌とエメラルドグリーンの海が織りなす絶景。展望台から奇岩群を一望。',en:'White cliffs and emerald-green seas. Panoramic views of rock formations from the observation deck.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#5aadcc,#3d8fb0)',map:'https://www.google.com/maps/search/白島海岸+隠岐の島',photo:''},
-  {id:'dangyo',icon:'droplets',name:{ja:'壇鏡の滝',en:'Dangyo Falls'},desc:{ja:'日本の滝百選・名水百選。高さ40mの雄滝と雌滝が神社の左右に流れ落ちる。',en:'Top 100 Waterfalls & Spring Waters of Japan. Two 40m falls cascade beside Dangyo Shrine.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#4a9a4a,#2d5e2d)',map:'https://www.google.com/maps/search/壇鏡の滝+隠岐の島',photo:''},
-  {id:'jodogaura',icon:'anchor',name:{ja:'浄土ヶ浦',en:'Jodogaura Coast'},desc:{ja:'極楽浄土のような世界観。5時代7種の岩石が織りなす地質の宝庫。',en:'An otherworldly landscape. A geological treasure with 7 rock types from 5 eras.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#5a8cc4,#3d6894)',map:'https://www.google.com/maps/search/浄土ヶ浦+隠岐の島',photo:''},
-  {id:'chichi',icon:'tree-pine',name:{ja:'乳房杉',en:'Chichi-sugi Cedar'},desc:{ja:'樹齢800年超。15本の幹から24個の乳房状の根が垂れ下がる神秘的な巨木。',en:'Over 800 years old. 24 aerial roots hang from 15 divided trunks — a mystical ancient tree.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#3a7a3a,#1d4620)',map:'https://www.google.com/maps/search/乳房杉+隠岐の島',photo:''},
-  {id:'tokage',icon:'mountain',name:{ja:'トカゲ岩',en:'Tokage Rock'},desc:{ja:'山の斜面に現れたトカゲ形の巨大な自然岩。展望所から眺めると圧巻。',en:'A giant natural rock shaped like a lizard climbing the mountainside. Stunning from the viewpoint.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#8c8377,#5e5850)',map:'https://www.google.com/maps/search/トカゲ岩+隠岐の島',photo:''},
-  {id:'naku',icon:'sunset',name:{ja:'那久岬',en:'Naku Cape'},desc:{ja:'高台の展望台から島前を一望。夕日の名所として知られる静かな岬。',en:'Hilltop viewpoint overlooking the Dozen Islands. A quiet cape known for stunning sunsets.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#d4945a,#5aadcc)',map:'https://www.google.com/maps/search/那久岬+隠岐の島',photo:''},
-  {id:'yaosugi',icon:'landmark',name:{ja:'玉若酢命神社・八百杉',en:'Tamawakasu Shrine'},desc:{ja:'隠岐の総社。境内の八百杉は樹高38m、県下一の巨木。パワースポット。',en:'Grand shrine of Oki. The 38m Yao-sugi is the tallest tree in Shimane. A popular power spot.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#96763a,#5e4623)',map:'https://www.google.com/maps/search/玉若酢命神社+隠岐の島',photo:''}
+  {id:'rosoku',icon:'flame',name:{ja:'ローソク島',en:'Candle Island'},desc:{ja:'夕日が岩の先端に灯ると、巨大なローソクに火が灯ったような幻想的な光景。遊覧船で海上から鑑賞。',en:'When the setting sun sits atop this 20m rock spire, it looks like a giant lit candle. Best seen from a sightseeing boat.'},season:{ja:'4月〜10月',en:'Apr–Oct'},gradient:'linear-gradient(135deg,#d4cec3,#b8b0a0)',map:'https://www.google.com/maps/search/ローソク島+隠岐の島',photo:''},
+  {id:'shirashima',icon:'waves',name:{ja:'白島海岸',en:'Shirashima Coast'},desc:{ja:'白い岩肌とエメラルドグリーンの海が織りなす絶景。展望台から奇岩群を一望。',en:'White cliffs and emerald-green seas. Panoramic views of rock formations from the observation deck.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#b8b0a0,#9a9080)',map:'https://www.google.com/maps/search/白島海岸+隠岐の島',photo:''},
+  {id:'dangyo',icon:'droplets',name:{ja:'壇鏡の滝',en:'Dangyo Falls'},desc:{ja:'日本の滝百選・名水百選。高さ40mの雄滝と雌滝が神社の左右に流れ落ちる。',en:'Top 100 Waterfalls & Spring Waters of Japan. Two 40m falls cascade beside Dangyo Shrine.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#9a9080,#7a7060)',map:'https://www.google.com/maps/search/壇鏡の滝+隠岐の島',photo:''},
+  {id:'jodogaura',icon:'anchor',name:{ja:'浄土ヶ浦',en:'Jodogaura Coast'},desc:{ja:'極楽浄土のような世界観。5時代7種の岩石が織りなす地質の宝庫。',en:'An otherworldly landscape. A geological treasure with 7 rock types from 5 eras.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#d4cec3,#b8b0a0)',map:'https://www.google.com/maps/search/浄土ヶ浦+隠岐の島',photo:''},
+  {id:'chichi',icon:'tree-pine',name:{ja:'乳房杉',en:'Chichi-sugi Cedar'},desc:{ja:'樹齢800年超。15本の幹から24個の乳房状の根が垂れ下がる神秘的な巨木。',en:'Over 800 years old. 24 aerial roots hang from 15 divided trunks — a mystical ancient tree.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#9a9080,#7a7060)',map:'https://www.google.com/maps/search/乳房杉+隠岐の島',photo:''},
+  {id:'tokage',icon:'mountain',name:{ja:'トカゲ岩',en:'Tokage Rock'},desc:{ja:'山の斜面に現れたトカゲ形の巨大な自然岩。展望所から眺めると圧巻。',en:'A giant natural rock shaped like a lizard climbing the mountainside. Stunning from the viewpoint.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#b8b0a0,#9a9080)',map:'https://www.google.com/maps/search/トカゲ岩+隠岐の島',photo:''},
+  {id:'naku',icon:'sunset',name:{ja:'那久岬',en:'Naku Cape'},desc:{ja:'高台の展望台から島前を一望。夕日の名所として知られる静かな岬。',en:'Hilltop viewpoint overlooking the Dozen Islands. A quiet cape known for stunning sunsets.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#d4cec3,#9a9080)',map:'https://www.google.com/maps/search/那久岬+隠岐の島',photo:''},
+  {id:'yaosugi',icon:'landmark',name:{ja:'玉若酢命神社・八百杉',en:'Tamawakasu Shrine'},desc:{ja:'隠岐の総社。境内の八百杉は樹高38m、県下一の巨木。パワースポット。',en:'Grand shrine of Oki. The 38m Yao-sugi is the tallest tree in Shimane. A popular power spot.'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#7a7060,#5c5448)',map:'https://www.google.com/maps/search/玉若酢命神社+隠岐の島',photo:''}
 ];
 
 const ACTIVITIES = [
@@ -495,7 +886,7 @@ const PACKING = {
   heavy_coat:{ja:'厚手のコート / ダウン',en:'Heavy coat / down jacket'},warm_jacket:{ja:'暖かいジャケット',en:'Warm jacket'},light_jacket:{ja:'薄手のジャケット',en:'Light jacket'},layers:{ja:'重ね着用の服',en:'Layering clothes'},light_clothes:{ja:'薄手の服',en:'Light clothing'},light_layer:{ja:'薄手の羽織（夜用）',en:'Light layer for evenings'},scarf_gloves:{ja:'マフラー・手袋',en:'Scarf & gloves'},rain_gear:{ja:'レインウェア',en:'Rain gear'},umbrella:{ja:'折りたたみ傘',en:'Folding umbrella'},sunscreen:{ja:'日焼け止め',en:'Sunscreen'},hat_sunglasses:{ja:'帽子・サングラス',en:'Hat & sunglasses'},sunglasses:{ja:'サングラス',en:'Sunglasses'},swimwear:{ja:'水着',en:'Swimwear'},rash_guard:{ja:'ラッシュガード',en:'Rash guard'},sandals:{ja:'サンダル',en:'Sandals'},insect_repellent:{ja:'虫よけスプレー',en:'Insect repellent'},walking_shoes:{ja:'歩きやすい靴',en:'Walking shoes'},onsen_set:{ja:'温泉セット',en:'Hot spring kit'},camera:{ja:'カメラ',en:'Camera'},cash:{ja:'現金（ATMが限られます）',en:'Cash (few ATMs)'},meds:{ja:'常備薬',en:'Medications'},charger:{ja:'充電器',en:'Charger'}
 };
 
-const SEASON_COLORS = {spring:{accent:'#c4728e'},summer:{accent:'#3d8fb0'},autumn:{accent:'#b87a42'}};
+const SEASON_COLORS = {spring:{accent:'#8a6d5b'},summer:{accent:'#5c7a6d'},autumn:{accent:'#96763a'}};
 
 let currentMonth = null, currentLang = 'ja';
 
@@ -518,7 +909,7 @@ function buildMonthGrid(){
     g.appendChild(b);
   });
   const n=document.createElement('p');
-  n.style.cssText='grid-column:span 3;text-align:center;color:rgba(255,255,255,0.25);font-size:11px;margin-top:8px';
+  n.style.cssText='grid-column:span 3;text-align:center;color:rgba(255,255,255,0.2);font-size:10px;margin-top:12px;letter-spacing:0.1em';
   n.innerHTML='<span data-lang="ja">12–2月は冬季休業</span><span data-lang="en">Closed Dec–Feb</span>';
   g.appendChild(n);
 }
@@ -547,14 +938,14 @@ function selectMonth(m){
   lucide.createIcons();
   initReveal();
   history.replaceState(null,'',`?m=${m}`);
-  setTimeout(()=>document.getElementById('month-header').scrollIntoView({behavior:'smooth',block:'start'}),100);
+  setTimeout(()=>document.querySelector('#content .sec, #content [class*="reveal"]').scrollIntoView({behavior:'smooth',block:'start'}),100);
 }
 
 function renderWeather(w){
   document.getElementById('weather-cards').innerHTML=`
-    <div><div class="weather-val" style="color:var(--accent)">${w.avg}<span class="weather-unit">°C</span></div><div class="weather-meta"><span data-lang="ja">平均気温</span><span data-lang="en">Avg</span></div><div class="weather-meta" style="margin-top:2px"><span data-lang="ja">${w.high}° / ${w.low}°</span><span data-lang="en">${w.high}° / ${w.low}°</span></div></div>
-    <div><div class="weather-val" style="color:#5a8cc4">${w.rain}<span class="weather-unit">mm</span></div><div class="weather-meta"><span data-lang="ja">降水量</span><span data-lang="en">Rain</span></div></div>
-    <div><div class="weather-val" style="color:#d4945a">${w.sun}<span class="weather-unit">h</span></div><div class="weather-meta"><span data-lang="ja">日照時間</span><span data-lang="en">Sun</span></div></div>`;
+    <div class="weather-cell"><div class="weather-val">${w.avg}<span class="weather-unit">°</span></div><div class="weather-label"><span data-lang="ja">平均</span><span data-lang="en">Avg</span></div><div style="font-size:11px;color:var(--text-muted);margin-top:6px">${w.high}° / ${w.low}°</div></div>
+    <div class="weather-cell"><div class="weather-val">${w.rain}<span class="weather-unit">mm</span></div><div class="weather-label"><span data-lang="ja">降水</span><span data-lang="en">Rain</span></div></div>
+    <div class="weather-cell"><div class="weather-val">${w.sun}<span class="weather-unit">h</span></div><div class="weather-label"><span data-lang="ja">日照</span><span data-lang="en">Sun</span></div></div>`;
 }
 
 function renderFoodPhotos(p){
@@ -564,18 +955,18 @@ function renderFoodPhotos(p){
 function renderSpots(){
   document.getElementById('spots-row').innerHTML=SPOTS.map(s=>{
     const bg=s.photo?`background-image:url('${s.photo}')`:`background:${s.gradient}`;
-    return `<div class="spot-card"><div class="spot-visual" style="${bg}"><div class="spot-icon"><i data-lucide="${s.icon}"></i></div><div class="spot-name"><span data-lang="ja">${s.name.ja}</span><span data-lang="en">${s.name.en}</span></div></div><div style="padding:14px 16px"><p style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:10px"><span data-lang="ja">${s.desc.ja}</span><span data-lang="en">${s.desc.en}</span></p><div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--text-muted)"><span data-lang="ja">${s.season.ja}</span><span data-lang="en">${s.season.en}</span></span><a href="${s.map}" target="_blank" class="map-pill"><i data-lucide="map-pin" style="width:12px;height:12px"></i>Map</a></div></div></div>`;
+    return `<div class="spot-card"><div class="spot-visual" style="${bg}"></div><div class="spot-info"><h4 style="font-size:14px;font-weight:500;margin-bottom:6px"><span data-lang="ja">${s.name.ja}</span><span data-lang="en">${s.name.en}</span></h4><p style="font-size:12px;color:var(--text-body);line-height:1.8;margin-bottom:10px"><span data-lang="ja">${s.desc.ja}</span><span data-lang="en">${s.desc.en}</span></p><div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:10px;color:var(--text-muted);letter-spacing:0.05em"><span data-lang="ja">${s.season.ja}</span><span data-lang="en">${s.season.en}</span></span><a href="${s.map}" target="_blank" class="map-pill"><i data-lucide="map-pin" style="width:10px;height:10px"></i>Map</a></div></div></div>`;
   }).join('');
 }
 
 function renderEvents(ev){
   const c=document.getElementById('events-list');
-  if(!ev||!ev.length){c.innerHTML=`<p style="font-size:14px;color:var(--text-muted);padding:8px 0"><span data-lang="ja">大きなイベントはありませんが、島のゆったりした日常を楽しめます。</span><span data-lang="en">No major events, but enjoy the relaxed island pace.</span></p>`;return}
-  c.innerHTML=ev.map(e=>`<div class="event-item"><div class="event-dot"></div><div><p style="font-size:14px;line-height:1.6" data-lang="ja">${e.ja}</p><p style="font-size:14px;line-height:1.6" data-lang="en">${e.en}</p></div></div>`).join('');
+  if(!ev||!ev.length){c.innerHTML=`<p class="sec-body" style="padding:8px 0"><span data-lang="ja">大きなイベントはありませんが、島のゆったりした日常を楽しめます。</span><span data-lang="en">No major events, but enjoy the relaxed island pace.</span></p>`;return}
+  c.innerHTML=ev.map(e=>`<div class="event-item"><p class="sec-body" data-lang="ja">${e.ja}</p><p class="sec-body" data-lang="en">${e.en}</p></div>`).join('');
 }
 
 function renderActivities(){
-  document.getElementById('activities-grid').innerHTML=ACTIVITIES.map(a=>`<div class="act-card"><img src="${a.img}" alt="${a.name.ja}" loading="lazy"><div class="act-overlay"><h4><span data-lang="ja">${a.name.ja}</span><span data-lang="en">${a.name.en}</span></h4><p><span data-lang="ja">${a.desc.ja}</span><span data-lang="en">${a.desc.en}</span></p></div></div>`).join('');
+  document.getElementById('activities-grid').innerHTML=ACTIVITIES.map(a=>`<div class="act-card"><img src="${a.img}" alt="${a.name.ja}" loading="lazy"><div class="act-overlay"><h4 style="color:white;font-weight:500;font-size:13px"><span data-lang="ja">${a.name.ja}</span><span data-lang="en">${a.name.en}</span></h4><p style="color:rgba(255,255,255,0.7);font-size:10px;margin-top:2px"><span data-lang="ja">${a.desc.ja}</span><span data-lang="en">${a.desc.en}</span></p></div></div>`).join('');
 }
 
 function renderPacking(items){
@@ -608,7 +999,6 @@ function resetMonth(){
   document.getElementById('month-select').scrollIntoView({behavior:'smooth'});
 }
 
-// Scroll reveal
 function initReveal(){
   const obs=new IntersectionObserver((entries)=>{
     entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});
@@ -625,6 +1015,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const p=new URLSearchParams(location.search);
   const m=parseInt(p.get('m'));if(m&&MONTHS[m])selectMonth(m);
   if(p.get('lang')==='en')setLang('en');
+  initReveal();
 });
 </script>
 </body>
