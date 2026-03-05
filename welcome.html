@@ -681,6 +681,134 @@
       </div>
     </section>
 
+    <!-- Island Size Map -->
+    <section class="sec reveal" id="sec-map" style="padding-top:48px;padding-bottom:48px">
+      <p class="sec-label">
+        <i data-lucide="map" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i>
+        <span data-lang="ja">島のサイズ感</span>
+        <span data-lang="en">Island Scale</span>
+      </p>
+      <h3 class="font-display sec-title" style="font-size:clamp(18px,3.5vw,24px);margin-bottom:4px">
+        <span data-lang="ja">隠岐の島は想像より大きい</span>
+        <span data-lang="en">Oki Island is Bigger Than You Think</span>
+      </h3>
+      <p class="sec-body" style="margin-bottom:16px">
+        <span data-lang="ja">島一周 約80km — レンタカーでの移動が基本です。</span>
+        <span data-lang="en">~80km around the island — a rental car is essential for getting around.</span>
+      </p>
+      <div class="sec-divider"></div>
+
+      <div style="display:flex;justify-content:center;padding:16px 0">
+        <svg viewBox="0 0 400 465" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:380px;height:auto;font-family:'Noto Sans JP','Helvetica Neue',sans-serif">
+
+          <!-- Water -->
+          <rect width="400" height="465" rx="16" fill="#dce8ef" opacity="0.35"/>
+
+          <!-- Island -->
+          <path d="M 205,400 C 215,406 232,410 248,398 C 272,380 312,355 340,322 C 362,295 376,258 373,218 C 370,178 356,138 332,105 C 308,72 272,48 238,38 C 204,28 172,32 142,48 C 114,64 90,92 72,128 C 54,164 44,200 42,238 C 40,276 48,312 65,342 C 82,372 122,393 168,402 C 185,405 196,404 205,400 Z"
+            fill="#ebe7df" stroke="#c5bdb0" stroke-width="1.5"/>
+
+          <!-- Inner mountain hint -->
+          <ellipse cx="212" cy="215" rx="65" ry="45" fill="#dfd9cf" opacity="0.35"/>
+          <text x="212" y="220" text-anchor="middle" font-size="8" fill="#b8b0a0" opacity="0.6">
+            <tspan data-lang="ja">大満寺山 607m</tspan><tspan data-lang="en">Mt. Damanji 607m</tspan>
+          </text>
+
+          <!-- ===== ROUTE LINES ===== -->
+
+          <!-- 西郷港 → くすぶる (15分) -->
+          <path d="M 218,378 Q 272,342 290,288" fill="none" stroke="#96763a" stroke-width="1.3" stroke-dasharray="5 3" opacity="0.6"/>
+          <rect x="242" y="325" width="46" height="16" rx="8" fill="white" opacity="0.9"/>
+          <text x="265" y="336" text-anchor="middle" font-size="8.5" font-weight="500" fill="#96763a">
+            <tspan data-lang="ja">車15分</tspan><tspan data-lang="en">15 min</tspan>
+          </text>
+
+          <!-- 西郷港 → 空港 (20分) -->
+          <path d="M 202,378 Q 160,330 140,268" fill="none" stroke="#96763a" stroke-width="1.3" stroke-dasharray="5 3" opacity="0.6"/>
+          <rect x="143" y="305" width="46" height="16" rx="8" fill="white" opacity="0.9"/>
+          <text x="166" y="316" text-anchor="middle" font-size="8.5" font-weight="500" fill="#96763a">
+            <tspan data-lang="ja">車20分</tspan><tspan data-lang="en">20 min</tspan>
+          </text>
+
+          <!-- ===== MARKERS ===== -->
+
+          <!-- 西郷港 -->
+          <circle cx="215" cy="385" r="7" fill="#5c7a6d" stroke="white" stroke-width="2"/>
+          <text x="215" y="406" text-anchor="middle" font-size="10" font-weight="600" fill="#3d3529">
+            <tspan data-lang="ja">西郷港</tspan><tspan data-lang="en">Saigo Port</tspan>
+          </text>
+          <text x="215" y="418" text-anchor="middle" font-size="7.5" fill="#5c7a6d">
+            <tspan data-lang="ja">フェリー乗り場</tspan><tspan data-lang="en">Ferry Terminal</tspan>
+          </text>
+
+          <!-- 隠岐空港 -->
+          <circle cx="135" cy="258" r="6" fill="#5c7a6d" stroke="white" stroke-width="2"/>
+          <text x="100" y="252" text-anchor="middle" font-size="9.5" font-weight="500" fill="#3d3529">
+            <tspan data-lang="ja">隠岐空港</tspan><tspan data-lang="en">Oki Airport</tspan>
+          </text>
+
+          <!-- くすぶるハウス (主役) -->
+          <circle cx="295" cy="278" r="9" fill="#8a6d5b" stroke="white" stroke-width="2.5"/>
+          <circle cx="295" cy="278" r="14" fill="none" stroke="#8a6d5b" stroke-width="1" opacity="0.35"/>
+          <text x="295" y="300" text-anchor="middle" font-size="10.5" font-weight="700" fill="#8a6d5b">
+            <tspan data-lang="ja">くすぶるハウス</tspan><tspan data-lang="en">Kusuburu House</tspan>
+          </text>
+
+          <!-- 白島海岸 -->
+          <circle cx="218" cy="50" r="4.5" fill="#96763a" stroke="white" stroke-width="1.5"/>
+          <text x="218" y="40" text-anchor="middle" font-size="9" fill="#3d3529">
+            <tspan data-lang="ja">白島海岸</tspan><tspan data-lang="en">Shirashima Coast</tspan>
+          </text>
+
+          <!-- ローソク島 -->
+          <circle cx="82" cy="132" r="4.5" fill="#96763a" stroke="white" stroke-width="1.5"/>
+          <text x="82" y="122" text-anchor="middle" font-size="9" fill="#3d3529">
+            <tspan data-lang="ja">ローソク島</tspan><tspan data-lang="en">Candle Island</tspan>
+          </text>
+
+          <!-- 壇鏡の滝 -->
+          <circle cx="162" cy="335" r="4.5" fill="#96763a" stroke="white" stroke-width="1.5"/>
+          <text x="128" y="348" text-anchor="middle" font-size="9" fill="#3d3529">
+            <tspan data-lang="ja">壇鏡の滝</tspan><tspan data-lang="en">Dangyo Falls</tspan>
+          </text>
+
+          <!-- 浄土ヶ浦 -->
+          <circle cx="355" cy="192" r="4.5" fill="#96763a" stroke="white" stroke-width="1.5"/>
+          <text x="340" y="183" text-anchor="end" font-size="9" fill="#3d3529">
+            <tspan data-lang="ja">浄土ヶ浦</tspan><tspan data-lang="en">Jodogaura</tspan>
+          </text>
+
+          <!-- 那久岬 -->
+          <circle cx="48" cy="270" r="4.5" fill="#96763a" stroke="white" stroke-width="1.5"/>
+          <text x="48" y="288" text-anchor="middle" font-size="9" fill="#3d3529">
+            <tspan data-lang="ja">那久岬</tspan><tspan data-lang="en">Naku Cape</tspan>
+          </text>
+
+          <!-- ===== INDICATORS ===== -->
+
+          <!-- North arrow -->
+          <g transform="translate(372,28)">
+            <text x="0" y="-6" text-anchor="middle" font-size="10" font-weight="600" fill="#b8b0a0">N</text>
+            <line x1="0" y1="-3" x2="0" y2="8" stroke="#b8b0a0" stroke-width="1.5"/>
+            <polygon points="0,-3 -3,3 3,3" fill="#b8b0a0"/>
+          </g>
+
+          <!-- Scale bar -->
+          <line x1="18" y1="443" x2="100" y2="443" stroke="#b8b0a0" stroke-width="1.2"/>
+          <line x1="18" y1="439" x2="18" y2="447" stroke="#b8b0a0" stroke-width="1.2"/>
+          <line x1="100" y1="439" x2="100" y2="447" stroke="#b8b0a0" stroke-width="1.2"/>
+          <text x="59" y="455" text-anchor="middle" font-size="8" fill="#b8b0a0">≈ 5km</text>
+
+          <!-- 島一周 callout -->
+          <rect x="120" y="437" width="200" height="22" rx="11" fill="#8a6d5b"/>
+          <text x="220" y="452" text-anchor="middle" font-size="10" font-weight="500" fill="white">
+            <tspan data-lang="ja">島一周 約80km ／ 車で約1.5時間</tspan><tspan data-lang="en">~80km around ／ ~1.5h by car</tspan>
+          </text>
+
+        </svg>
+      </div>
+    </section>
+
     <!-- Candle Island Boat Tour (4-10月のみ表示) -->
     <section class="sec sec-warm reveal" id="sec-candle" style="padding-top:60px;padding-bottom:60px">
       <div style="display:flex;align-items:flex-start;gap:20px">
