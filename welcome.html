@@ -9,7 +9,7 @@
   <meta property="og:description" content="あなたの来島月に合わせた、隠岐の島旅ガイド">
   <meta property="og:image" content="https://kusuburu-house.com/img/ogp.jpg">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@0.474.0"></script>
   <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
@@ -37,7 +37,7 @@
       --surface-warm: #f5f3ef;
       --text-dark: #2a2520;
       --text-body: #5c5448;
-      --text-muted: #9a9080;
+      --text-muted: #7a7060;
       --accent: #7a7060;
       --accent-warm: #b8934f;
       --border-light: rgba(42,37,32,0.06);
@@ -170,21 +170,30 @@
     /* ===== LANG TOGGLE ===== */
     .lang-toggle {
       position: fixed; top: 20px; right: 20px; z-index: 50;
-      display: flex; gap: 2px;
+      display: flex; gap: 1px;
       background: rgba(42,37,32,0.4); backdrop-filter: blur(12px);
       border-radius: 999px; padding: 3px;
     }
     .lang-btn {
-      padding: 6px 16px; border-radius: 999px;
+      padding: 6px 14px; border-radius: 999px;
       font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
       cursor: pointer; transition: all 0.3s;
       border: none; background: transparent;
       color: rgba(255,255,255,0.6);
+      min-height: 32px;
     }
+    .lang-btn:active { transform: scale(0.95) }
     .lang-btn.active {
-      background: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.25);
       color: white;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
     }
+    .lang-btn[data-lang-btn="oki"] {
+      font-size: 9px; letter-spacing: 0; min-width: 48px;
+    }
+    /* Language switch fade */
+    .lang-fading { opacity: 0; transition: opacity 0.15s ease }
+    .lang-fading.fade-in { opacity: 1 }
 
     /* ===== SECTIONS ===== */
     .sec {
@@ -239,8 +248,8 @@
       padding: 14px 8px; border-radius: 4px;
       font-size: 13px; font-weight: 400; letter-spacing: 0.05em;
       background: transparent;
-      color: rgba(255,255,255,0.45);
-      border: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.12);
       cursor: pointer; transition: all 0.4s ease;
     }
     .month-btn:hover {
@@ -253,12 +262,13 @@
       background: rgba(255,255,255,0.08);
     }
     .month-btn.off-season {
-      color: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.4);
       border-color: transparent;
       cursor: default;
+      text-decoration: line-through;
     }
     .month-btn.off-season:hover {
-      color: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.4);
       border-color: transparent;
     }
 
@@ -471,6 +481,45 @@
     }
     .btn-outline:hover { border-color: var(--text-dark) }
 
+    /* ===== FOCUS VISIBLE ===== */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    button:focus-visible, a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* ===== SECTION NAV ===== */
+    .sec-nav {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(250,249,247,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-light);
+      padding: 0 16px;
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+      display: flex; gap: 0;
+      scrollbar-width: none;
+      mask-image: linear-gradient(to right, black 90%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+    }
+    .sec-nav::-webkit-scrollbar { display: none }
+    .sec-nav-item {
+      flex-shrink: 0;
+      padding: 14px 16px;
+      font-size: 11px; font-weight: 400; letter-spacing: 0.05em;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s;
+      cursor: pointer; background: none; border-top: none; border-left: none; border-right: none;
+    }
+    .sec-nav-item:hover { color: var(--text-dark) }
+    .sec-nav-item.active {
+      color: var(--text-dark); font-weight: 500;
+      border-bottom-color: var(--accent);
+    }
+
     .map-pill {
       display: inline-flex; align-items: center; gap: 4px;
       padding: 4px 12px; border-radius: 999px;
@@ -490,6 +539,13 @@
     @media (prefers-reduced-motion: reduce) {
       .kusuburu-ring { animation: none !important }
       .map-marker:hover { transform: none }
+      .reveal { transition: none !important; opacity: 1; transform: none }
+      .intro-overlay { transition: none !important }
+      .page-veil { transition: none !important }
+      .intro-char { transition: none !important }
+      .toast { animation: none !important }
+      .lang-fading { transition: none !important; opacity: 1 }
+      html { scroll-behavior: auto }
     }
 
     /* ===== REVEAL ===== */
@@ -508,7 +564,7 @@
       background: var(--text-dark); color: white;
       padding: 12px 32px; border-radius: 999px;
       font-size: 12px; font-weight: 400; letter-spacing: 0.05em;
-      animation: toastIn 0.3s ease, toastOut 0.3s ease 1.5s forwards;
+      animation: toastIn 0.3s ease, toastOut 0.3s ease 2.5s forwards;
     }
     @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(16px) } to { opacity: 1; transform: translateX(-50%) translateY(0) } }
     @keyframes toastOut { from { opacity: 1 } to { opacity: 0 } }
@@ -526,16 +582,27 @@
 
     /* ===== LANG TOGGLE CONTENT ===== */
     [data-lang="en"] { display: none }
+    [data-lang="oki"] { display: none }
     body.lang-en [data-lang="ja"] { display: none }
     body.lang-en [data-lang="en"] { display: block }
     body.lang-en span[data-lang="en"] { display: inline }
     body.lang-en a[data-lang="en"] { display: inline-flex }
+    body.lang-oki [data-lang="en"] { display: none }
+    body.lang-oki [data-lang="oki"] { display: block }
+    body.lang-oki span[data-lang="oki"] { display: inline }
+    body.lang-oki a[data-lang="oki"] { display: inline-flex }
 
     /* ===== FOOTER ===== */
     .site-footer {
       background: var(--text-dark); color: white;
       padding: 80px 24px 48px; text-align: center;
     }
+    .site-footer .footer-link {
+      color: rgba(255,255,255,0.65); font-size: 11px;
+      text-decoration: none; letter-spacing: 0.1em;
+      transition: color 0.3s;
+    }
+    .site-footer .footer-link:hover { color: white }
 
     /* ===== RESPONSIVE ===== */
     @media (min-width: 768px) {
@@ -559,9 +626,10 @@
   </div>
 
   <!-- ===== LANGUAGE TOGGLE (FIXED) ===== -->
-  <div class="lang-toggle">
-    <button class="lang-btn active" onclick="setLang('ja')" id="btn-ja">JP</button>
-    <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+  <div class="lang-toggle" role="group" aria-label="言語切替">
+    <button class="lang-btn active" onclick="setLang('ja')" data-lang-btn="ja" aria-pressed="true" aria-label="日本語">JP</button>
+    <button class="lang-btn" onclick="setLang('en')" data-lang-btn="en" aria-pressed="false" aria-label="English">EN</button>
+    <button class="lang-btn" onclick="setLang('oki')" data-lang-btn="oki" aria-pressed="false" aria-label="隠岐弁（島言葉）">隠岐弁</button>
   </div>
 
   <!-- ===== MONTH SELECTOR (LANDING) ===== -->
@@ -571,12 +639,14 @@
       <h2 class="font-display" style="font-size:clamp(22px,5vw,32px);font-weight:400;color:white;letter-spacing:0.08em;margin-bottom:8px">
         <span data-lang="ja">何月に隠岐の島へ？</span>
         <span data-lang="en">When are you visiting?</span>
+        <span data-lang="oki">こんた、何月に来るだ？</span>
       </h2>
-      <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:12px;letter-spacing:0.04em;line-height:1.8">
+      <p style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:12px;letter-spacing:0.04em;line-height:1.8">
         <span data-lang="ja">あなたの滞在月に合わせた、気候・食・観光・持ち物のすべて</span>
         <span data-lang="en">Climate, food, sightseeing & packing — tailored to your travel month</span>
+        <span data-lang="oki">こんたの来る月に合わせて、空模様・うまいもん・見どころ・持ちもん、ぜんぶまとめちょるけん</span>
       </p>
-      <p style="font-size:11px;color:rgba(255,255,255,0.25);margin-bottom:40px;letter-spacing:0.08em">
+      <p style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:40px;letter-spacing:0.08em">
         <span data-lang="ja">営業期間：3月中旬 — 11月下旬</span>
         <span data-lang="en">Open: Mid-March — Late November</span>
       </p>
@@ -589,15 +659,30 @@
     <header class="hero-banner reveal">
       <div class="hero-bg" role="img" aria-label="隠岐の島の風景"></div>
       <div class="hero-content">
-        <p style="font-size:11px;letter-spacing:0.3em;color:rgba(255,255,255,0.5);margin-bottom:24px;font-weight:400">KUSUBURU HOUSE</p>
-        <h1 class="font-display" style="font-size:clamp(28px,7vw,48px);font-weight:400;color:white;line-height:1.6;letter-spacing:0.08em" data-lang="ja">
-          くすぶるで過ごす<br>隠岐の島
+        <p style="font-size:11px;letter-spacing:0.3em;color:rgba(255,255,255,0.75);margin-bottom:24px;font-weight:400;text-shadow:0 1px 4px rgba(0,0,0,0.3)">KUSUBURU HOUSE</p>
+        <h1 class="font-display" style="font-size:clamp(28px,7vw,48px);font-weight:400;color:white;line-height:1.6;letter-spacing:0.08em">
+          <span data-lang="ja">くすぶるで過ごす<br>隠岐の島</span>
+          <span data-lang="en">Your Stay at Kusuburu<br>An Oki Island Guide</span>
+          <span data-lang="oki">くすぶるで過ごす<br>隠岐の島だわい</span>
         </h1>
-        <h1 class="font-display" style="font-size:clamp(28px,7vw,48px);font-weight:400;color:white;line-height:1.6;letter-spacing:0.08em" data-lang="en">
-          Your Oki Island<br>Guide
-        </h1>
+        <p style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:20px;letter-spacing:0.06em;line-height:1.8">
+          <span data-lang="ja">あなたの滞在をもっと楽しくする、島の総合ガイドです</span>
+          <span data-lang="en">Your complete guide to making the most of your island stay</span>
+          <span data-lang="oki">こんたの島暮らしが、がいに楽しくなるガイドだけん</span>
+        </p>
       </div>
     </header>
+
+    <!-- Section Navigation -->
+    <nav class="sec-nav" id="sec-nav" role="navigation" aria-label="Section navigation">
+      <button class="sec-nav-item" onclick="scrollToSec('sec-arrival')"><span data-lang="ja">到着</span><span data-lang="en">Arrival</span><span data-lang="oki">来たら</span></button>
+      <button class="sec-nav-item" onclick="scrollToSec('sec-weather')"><span data-lang="ja">気候</span><span data-lang="en">Climate</span><span data-lang="oki">空模様</span></button>
+      <button class="sec-nav-item" onclick="scrollToSec('sec-clothing')"><span data-lang="ja">服装</span><span data-lang="en">Wear</span><span data-lang="oki">着るもん</span></button>
+      <button class="sec-nav-item" onclick="scrollToSec('sec-food')"><span data-lang="ja">食事</span><span data-lang="en">Food</span><span data-lang="oki">うまいもん</span></button>
+      <button class="sec-nav-item" onclick="scrollToSec('sec-spots')"><span data-lang="ja">観光</span><span data-lang="en">Spots</span><span data-lang="oki">見どころ</span></button>
+      <button class="sec-nav-item" onclick="scrollToSec('sec-packing')"><span data-lang="ja">持ち物</span><span data-lang="en">Pack</span><span data-lang="oki">持ちもん</span></button>
+      <button class="sec-nav-item" onclick="scrollToSec('sec-ferry')"><span data-lang="ja">フェリー</span><span data-lang="en">Ferry</span><span data-lang="oki">船</span></button>
+    </nav>
 
     <!-- Month Header + Tips -->
     <section class="sec" style="text-align:center;padding-bottom:40px">
@@ -605,6 +690,86 @@
       <h2 class="font-display sec-title" id="month-tagline" style="letter-spacing:0.08em"></h2>
       <p id="tips-text-ja" class="sec-body" style="max-width:480px;margin:20px auto 0;text-align:center;font-size:13px;line-height:2" data-lang="ja"></p>
       <p id="tips-text-en" class="sec-body" style="max-width:480px;margin:20px auto 0;text-align:center;font-size:13px;line-height:2" data-lang="en"></p>
+    </section>
+
+    <!-- Arrival / Check-in -->
+    <section class="sec sec-warm reveal" id="sec-arrival">
+      <p class="sec-label"><i data-lucide="map-pin-check" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">到着からチェックインまで</span><span data-lang="en">Arrival & Check-in</span><span data-lang="oki">着いたらまずここ見てごせ</span></p>
+      <h3 class="font-display sec-title" style="font-size:clamp(20px,4vw,28px);margin-bottom:8px">
+        <span data-lang="ja">くすぶるハウスへようこそ</span>
+        <span data-lang="en">Welcome to Kusuburu House</span>
+        <span data-lang="oki">くすぶるへようこそだわい</span>
+      </h3>
+      <div class="sec-divider"></div>
+      <p class="sec-body" style="margin-bottom:24px">
+        <span data-lang="ja">到着されましたら、玄関からお入りください。チェックイン時に、五箇温泉の割引券とタオルセットをお渡しします。</span>
+        <span data-lang="en">When you arrive, please come in through the front entrance. At check-in, we'll hand you a Goka Onsen discount voucher and towel set.</span>
+        <span data-lang="oki">着いたら、玄関からそのまま入ってごせ。チェックインのときに五箇温泉の割引券とタオルセット渡すけんの。</span>
+      </p>
+
+      <!-- Access by transport -->
+      <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px">
+        <!-- Ferry -->
+        <div style="padding:20px;background:white;border:1px solid var(--border-light)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <i data-lucide="ship" style="width:16px;height:16px;color:var(--accent)"></i>
+            <h4 style="font-size:14px;font-weight:500">
+              <span data-lang="ja">フェリーで来る方（西郷港から）</span>
+              <span data-lang="en">By Ferry (from Saigo Port)</span>
+            </h4>
+          </div>
+          <p class="sec-body" style="font-size:13px;margin-bottom:10px">
+            <span data-lang="ja"><i data-lucide="car" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> レンタカーで約23分 — ほとんどのゲストはレンタカーを利用されています。港での受け渡し・送迎に対応しているレンタカー会社は下記をご確認ください。</span>
+            <span data-lang="en"><i data-lucide="car" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> About 23 min by rental car — most guests use a rental car. See the rental car companies below for port pickup/drop-off.</span>
+          </p>
+          <div style="padding-top:10px;border-top:1px dashed var(--border-light)">
+            <p style="font-size:11px;color:var(--text-muted);margin-bottom:6px">
+              <span data-lang="ja"><i data-lucide="bus" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> バスの場合（本数が少ないためご注意ください）</span>
+              <span data-lang="en"><i data-lucide="bus" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> By Bus (limited service — please check schedule)</span>
+            </p>
+            <p style="font-size:12px;color:var(--text-body);line-height:1.8">
+              <span data-lang="ja">ポートプラザ前 → 隠岐病院で乗り換え（五箇・福浦方面）→「南方」下車</span>
+              <span data-lang="en">Port Plaza Mae → Transfer at Oki Hospital (Goka/Fukuura line) → Get off at "Minamikata"</span>
+            </p>
+            <a href="https://oki.ichibata.co.jp/route-time.html" target="_blank" rel="noopener" class="service-link" style="margin-top:8px">
+              <i data-lucide="clock" style="width:12px;height:12px"></i>
+              <span data-lang="ja">隠岐一畑交通 時刻表</span>
+              <span data-lang="en">Oki Ichibata Bus Timetable</span>
+              <i data-lucide="external-link" style="width:12px;height:12px"></i>
+            </a>
+          </div>
+        </div>
+        <!-- Airport -->
+        <div style="padding:20px;background:white;border:1px solid var(--border-light)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <i data-lucide="plane" style="width:16px;height:16px;color:var(--accent)"></i>
+            <h4 style="font-size:14px;font-weight:500">
+              <span data-lang="ja">飛行機で来る方（隠岐空港から）</span>
+              <span data-lang="en">By Air (from Oki Airport)</span>
+            </h4>
+          </div>
+          <p class="sec-body" style="font-size:13px">
+            <span data-lang="ja"><i data-lucide="car" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> レンタカーで約20分 — 空港ロビー内にレンタカーカウンターがあり、到着後すぐに手続きできます。事前予約をおすすめします。</span>
+            <span data-lang="en"><i data-lucide="car" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> About 20 min by rental car — rental car counters are available in the airport lobby. Pre-booking is recommended.</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Check-in details -->
+      <div style="display:flex;flex-direction:column;gap:12px;font-size:13px;color:var(--text-body)">
+        <div style="display:flex;align-items:center;gap:12px">
+          <i data-lucide="clock" style="width:16px;height:16px;flex-shrink:0;color:var(--accent)"></i>
+          <span><span data-lang="ja">チェックイン 16:00〜21:00 ／ チェックアウト 10:00</span><span data-lang="en">Check-in 16:00–21:00 ／ Check-out 10:00</span></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <i data-lucide="car" style="width:16px;height:16px;flex-shrink:0;color:var(--accent)"></i>
+          <span><span data-lang="ja">無料駐車場あり（宿の敷地内）</span><span data-lang="en">Free parking available (on-site)</span></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <i data-lucide="wifi" style="width:16px;height:16px;flex-shrink:0;color:var(--accent)"></i>
+          <span><span data-lang="ja">フリーWiFi完備</span><span data-lang="en">Free WiFi available</span></span>
+        </div>
+      </div>
     </section>
 
     <!-- Weather -->
@@ -633,6 +798,7 @@
       <h3 class="font-display sec-title" style="font-size:clamp(18px,3.5vw,24px);margin-bottom:4px">
         <span data-lang="ja">隠岐の島は想像より大きい</span>
         <span data-lang="en">Oki Island is Bigger Than You Think</span>
+        <span data-lang="oki">隠岐の島はがいにでかいけんの</span>
       </h3>
       <p class="sec-body" style="margin-bottom:16px">
         <span data-lang="ja">島一周 約80km — レンタカーでの移動が基本です。</span>
@@ -851,11 +1017,13 @@
     <section class="sec reveal" style="padding-bottom:40px;padding-top:0">
       <div class="notice-card">
         <div class="notice-icon"><i data-lucide="car"></i></div>
-        <p class="sec-label" data-lang="ja">大切なお知らせ</p>
-        <p class="sec-label" data-lang="en">Important Notice</p>
+        <p class="sec-label" data-lang="ja">最初にお伝えしたいこと</p>
+        <p class="sec-label" data-lang="en">Before Anything Else</p>
+        <p class="sec-label" data-lang="oki">まず聞いてごせ</p>
         <h2 class="font-display sec-title" style="font-size:clamp(20px,4vw,26px);margin-bottom:16px">
           <span data-lang="ja">レンタカーのご予約はお早めに</span>
           <span data-lang="en">Book Your Rental Car Early</span>
+          <span data-lang="oki">レンタカーは早よう予約せにゃいかんけん</span>
         </h2>
         <div class="sec-body" style="margin-bottom:24px">
           <p data-lang="ja">
@@ -868,10 +1036,15 @@
             <strong style="font-weight:500">cancel their entire stay</strong> because they couldn't
             secure a rental car at the last minute.
           </p>
+          <p data-lang="oki">
+            隠岐の島はレンタカーの数ががいに少ないけんの。
+            前にも、直前に車が取れんで、<strong style="font-weight:500">泊まること自体やめた</strong>お客さんがおったわい。
+          </p>
         </div>
         <div class="sec-body" style="margin-bottom:28px">
-          <p data-lang="ja">宿のご予約と同時に、レンタカーもご予約されることを強くおすすめします。</p>
-          <p data-lang="en">We strongly recommend booking your rental car at the same time as your accommodation.</p>
+          <p data-lang="ja">宿と一緒にレンタカーも予約しておくのがおすすめです。</p>
+          <p data-lang="en">We recommend booking your rental car at the same time as your accommodation.</p>
+          <p data-lang="oki">宿と一緒にレンタカーも早よう予約しとくのがええけんの。</p>
         </div>
         <div style="display:flex;flex-direction:column;gap:10px">
           <a href="https://www.oki-maekawa.com/" target="_blank" rel="noopener" class="btn-outline" style="font-size:12px;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;width:100%">
@@ -881,8 +1054,8 @@
                 <span data-lang="ja" style="font-weight:500">隠岐レンタ・リース</span>
                 <span data-lang="en" style="font-weight:500">Oki Rent-a-Lease</span>
                 <span style="display:block;font-size:10px;opacity:0.6;margin-top:2px">
-                  <span data-lang="ja">☎ 08512-2-3366 ／ 7:45〜18:30</span>
-                  <span data-lang="en">☎ 08512-2-3366 ／ 7:45–18:30</span>
+                  <span data-lang="ja"><i data-lucide="phone" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> 08512-2-3366 ／ 7:45〜18:30</span>
+                  <span data-lang="en"><i data-lucide="phone" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> 08512-2-3366 ／ 7:45–18:30</span>
                 </span>
               </span>
             </span>
@@ -895,8 +1068,23 @@
                 <span data-lang="ja" style="font-weight:500">隠岐一畑レンタカー</span>
                 <span data-lang="en" style="font-weight:500">Oki Ichibata Rent-a-Car</span>
                 <span style="display:block;font-size:10px;opacity:0.6;margin-top:2px">
-                  <span data-lang="ja">全車カーナビ搭載</span>
-                  <span data-lang="en">All cars with GPS navigation</span>
+                  <span data-lang="ja"><i data-lucide="phone" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> 08512-2-4800 ／ 8:00〜18:30 ／ 全車カーナビ搭載</span>
+                  <span data-lang="en"><i data-lucide="phone" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> 08512-2-4800 ／ 8:00–18:30 ／ All cars with GPS</span>
+                </span>
+              </span>
+            </span>
+            <i data-lucide="external-link" style="width:12px;height:12px;flex-shrink:0;opacity:0.5"></i>
+          </a>
+          <a href="https://www.okidrive.jp/" target="_blank" rel="noopener" class="btn-outline" style="font-size:12px;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;width:100%;border-color:var(--accent);position:relative">
+            <span style="position:absolute;top:-10px;right:12px;font-size:9px;background:var(--accent);color:white;padding:2px 10px;border-radius:99px;letter-spacing:0.05em"><span data-lang="ja">迷ったらここ</span><span data-lang="en">Recommended</span><span data-lang="oki">ここがええけん</span></span>
+            <span style="display:flex;align-items:center;gap:8px">
+              <i data-lucide="car" style="width:16px;height:16px;flex-shrink:0"></i>
+              <span>
+                <span data-lang="ja" style="font-weight:500">隠岐ドライブレンタカー</span>
+                <span data-lang="en" style="font-weight:500">Oki Drive Rent-a-Car</span>
+                <span style="display:block;font-size:10px;opacity:0.6;margin-top:2px">
+                  <span data-lang="ja"><i data-lucide="phone" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> 08512-3-0220 ／ 9:00〜17:00 ／ 西郷港徒歩2分・空港カウンターあり</span>
+                  <span data-lang="en"><i data-lucide="phone" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> 08512-3-0220 ／ 9:00–17:00 ／ 2 min walk from port · Airport counter</span>
                 </span>
               </span>
             </span>
@@ -907,11 +1095,13 @@
           <p class="sec-body" style="font-size:13px;margin-bottom:12px">
             <span data-lang="ja">お困りのことがあれば、お気軽にご連絡ください。</span>
             <span data-lang="en">Feel free to reach out if you need any help.</span>
+            <span data-lang="oki">困ったことがあったら、なんでも聞いてごしなさい。</span>
           </p>
           <a href="https://lin.ee/a4uWMOX" target="_blank" rel="noopener" class="btn-outline" style="font-size:12px;padding:12px 24px">
             <i data-lucide="message-circle" style="width:16px;height:16px"></i>
             <span data-lang="ja">LINEで相談する</span>
             <span data-lang="en">Chat on LINE</span>
+            <span data-lang="oki">LINEで聞いてごせ</span>
           </a>
         </div>
       </div>
@@ -919,10 +1109,11 @@
 
     <!-- Food -->
     <section class="sec reveal" id="sec-food">
-      <p class="sec-label"><i data-lucide="utensils" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">くすぶるの食卓</span><span data-lang="en">Kusuburu Dining</span></p>
+      <p class="sec-label"><i data-lucide="utensils" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">食事</span><span data-lang="en">Dining</span></p>
       <h3 class="font-display sec-title" style="font-size:clamp(20px,4vw,28px);margin-bottom:8px">
         <span data-lang="ja">くすぶるの夕食</span>
         <span data-lang="en">Dinner at Kusuburu</span>
+        <span data-lang="oki">くすぶるのばんげ</span>
       </h3>
       <div class="sec-divider"></div>
       <p id="food-text-ja" class="sec-body" style="margin-bottom:32px" data-lang="ja"></p>
@@ -930,22 +1121,29 @@
       <div class="food-grid" id="food-photos"></div>
       <p style="font-size:10px;color:var(--text-muted);margin-top:12px" data-lang="ja">くすぶるハウスの夕食（1泊2食付きプラン）— 旬の食材を使用するため、仕入れ状況により内容が変わることがあります</p>
       <p style="font-size:10px;color:var(--text-muted);margin-top:12px" data-lang="en">Dinner at Kusuburu (2-meal plan) — Menu varies based on seasonal availability</p>
+      <p style="font-size:12px;color:var(--text-body);margin-top:20px;padding-top:16px;border-top:1px dashed var(--border-light)">
+        <span data-lang="ja">素泊まりの方へ — 島にはおいしいお店がたくさん。下の「<a href="#sec-island-services" style="color:var(--accent);text-decoration:underline">地元で愛される店と体験</a>」で、地元っ子のおすすめをまとめました。</span>
+        <span data-lang="oki">素泊まりのこんたへ — 島にはうまいもん屋がいっぱいあるけん。下の「<a href="#sec-island-services" style="color:var(--accent);text-decoration:underline">島のうまいもんと遊び</a>」に、地元のおすすめまとめちょるけんの。</span>
+        <span data-lang="en">Staying without meals? We've gathered local favorites in "<a href="#sec-island-services" style="color:var(--accent);text-decoration:underline">Beloved Local Spots & Experiences</a>" below — all tried and loved by islanders.</span>
+      </p>
     </section>
 
     <!-- Goka Onsen -->
     <section class="sec sec-warm reveal">
       <p class="sec-label"><i data-lucide="droplets" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">温泉</span><span data-lang="en">Hot Spring</span></p>
       <h3 class="font-display sec-title" style="font-size:clamp(20px,4vw,28px);margin-bottom:8px">
-        <span data-lang="ja">オーナーおすすめ、五箇温泉</span>
-        <span data-lang="en">Owner's Pick: Goka Onsen</span>
+        <span data-lang="ja">島のお湯、五箇温泉</span>
+        <span data-lang="en">Island Hot Spring: Goka Onsen</span>
+        <span data-lang="oki">島のお湯、五箇温泉だわい</span>
       </h3>
       <div class="sec-divider"></div>
       <p class="sec-body" style="margin-bottom:20px">
-        <span data-lang="ja">くすぶるハウスにもお風呂はありますが、古民家のためお一人サイズです。グループでお越しの際は、オーナーも通う五箇温泉がおすすめ。チェックイン時に割引優待券とタオルセットをお渡しします。</span>
-        <span data-lang="en">Kusuburu does have a bath, but it's a single-person size in our traditional farmhouse. For groups, we recommend Goka Onsen — the owner's own favorite spot. We'll hand you a discount voucher and towel set at check-in.</span>
+        <span data-lang="ja">くすぶるハウスには古民家ならではの貸切風呂があり、ひとりでゆっくり浸かれます。もっと広々と楽しみたいなら、宿から歩いても行ける五箇温泉へ。隠岐唯一の天然温泉で、地元の人にも愛されている場所です。チェックイン時にお渡しする割引券をご利用ください。</span>
+        <span data-lang="en">Kusuburu has its own private bath — a cozy soak in our traditional farmhouse, all to yourself. For a more spacious experience, walk to Goka Onsen — Oki's only natural hot spring, loved by locals too. Use the discount voucher we'll give you at check-in.</span>
+        <span data-lang="oki">くすぶるには古民家の貸切風呂があるけん、ひとりでゆっくり浸かれるわい。がいに広いのがええなら、歩いても行ける五箇温泉へ来てごせ。隠岐で一つだけの天然温泉で、地元の衆にもがいに愛されちょるとこだけん。チェックインのときに割引券渡すけんの。</span>
       </p>
       <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--text-body);margin-bottom:16px">
-        <span><span data-lang="ja">🚶 宿から徒歩15分 ／ 🚗 車3分</span><span data-lang="en">🚶 15 min walk ／ 🚗 3 min by car</span></span>
+        <span><span data-lang="ja"><i data-lucide="footprints" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> 宿から徒歩15分 ／ <i data-lucide="car" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> 車3分</span><span data-lang="en"><i data-lucide="footprints" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> 15 min walk ／ <i data-lucide="car" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> 3 min by car</span></span>
         <span><span data-lang="ja">14:00〜20:00（最終受付 19:15）</span><span data-lang="en">14:00–20:00 (last entry 19:15)</span></span>
         <span><span data-lang="ja">大人 ¥500</span><span data-lang="en">Adult ¥500</span></span>
         <span><span data-lang="ja">月曜定休</span><span data-lang="en">Closed Mon</span></span>
@@ -968,6 +1166,7 @@
       <h3 class="font-display sec-title" style="font-size:clamp(20px,4vw,28px);margin-bottom:8px">
         <span data-lang="ja">宿で楽しむ島時間</span>
         <span data-lang="en">Island Moments at Kusuburu</span>
+        <span data-lang="oki">くすぶるで楽しむ島時間だけん</span>
       </h3>
       <div class="sec-divider"></div>
       <div class="act-grid" id="activities-grid"></div>
@@ -1015,18 +1214,18 @@
             <span><span data-lang="ja">大人 ¥4,000 ／ 小人 ¥2,000</span><span data-lang="en">Adult ¥4,000 ／ Child ¥2,000</span></span>
           </div>
           <p style="font-size:12px;color:var(--text-body);margin-bottom:20px">
-            <span data-lang="ja">🚗 宿から車で8分 ／ 🚶 徒歩 約1時間（乗船場：福浦岸壁）</span>
-            <span data-lang="en">🚗 8 min by car ／ 🚶 ~1 hour walk from Kusuburu (Boarding: Fukuura Wharf)</span>
+            <span data-lang="ja"><i data-lucide="car" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> 宿から車で8分 ／ <i data-lucide="footprints" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> 徒歩 約1時間（乗船場：福浦岸壁）</span>
+            <span data-lang="en"><i data-lucide="car" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> 8 min by car ／ <i data-lucide="footprints" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> ~1 hour walk from Kusuburu (Boarding: Fukuura Wharf)</span>
           </p>
           <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
-            <a href="https://www.e-oki.net/experience/6313/" target="_blank" rel="noopener" class="btn-outline" style="font-size:11px;padding:10px 20px">
-              <span data-lang="ja">詳細・予約</span>
-              <span data-lang="en">Details & Book</span>
+            <a href="https://www.e-oki.net/experience/6313/" target="_blank" rel="noopener" class="btn-dark" style="font-size:11px;padding:10px 20px">
+              <span data-lang="ja">遊覧船を予約する（先着順）</span>
+              <span data-lang="en">Book the Boat Tour (First-come)</span>
               <i data-lucide="external-link" style="width:12px;height:12px"></i>
             </a>
             <span style="font-size:10px;color:var(--text-muted)">
-              <span data-lang="ja">※ 予約はアプリ「エルクール」から ／ ☎ 050-3172-1521</span>
-              <span data-lang="en">※ Book via app "L-COOL" ／ ☎ 050-3172-1521</span>
+              <span data-lang="ja">※ Web予約またはお電話で ／ <i data-lucide="phone" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> 050-3172-1521</span>
+              <span data-lang="en">※ Book online or by phone ／ <i data-lucide="phone" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> 050-3172-1521</span>
             </span>
           </div>
         </div>
@@ -1046,6 +1245,7 @@
       <h3 class="font-display sec-title" style="font-size:clamp(20px,4vw,28px);margin-bottom:8px">
         <span data-lang="ja">地元で愛される店と体験</span>
         <span data-lang="en">Beloved Local Spots & Experiences</span>
+        <span data-lang="oki">島のうまいもんと遊び</span>
       </h3>
       <div class="sec-divider"></div>
       <div id="services-list">
@@ -1191,19 +1391,19 @@
 
     <!-- 知っておきたいこと (WiFi・買い出し) -->
     <section class="sec reveal" id="sec-info">
-      <p class="sec-label"><i data-lucide="info" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">WiFi・買い物</span><span data-lang="en">WiFi & Shopping</span></p>
+      <p class="sec-label"><i data-lucide="info" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">電波・買い物</span><span data-lang="en">Signal & Shopping</span><span data-lang="oki">しっちょった方がええこと</span></p>
       <div class="sec-divider"></div>
       <div style="padding:20px 0;border-bottom:1px solid var(--border-light)">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
           <i data-lucide="wifi" style="width:18px;height:18px;color:var(--accent)"></i>
           <h4 style="font-size:15px;font-weight:500">
-            <span data-lang="ja">WiFi・電波</span>
-            <span data-lang="en">WiFi & Cell Service</span>
+            <span data-lang="ja">携帯電波</span>
+            <span data-lang="en">Cell Service</span>
           </h4>
         </div>
         <p class="sec-body" style="font-size:13px">
-          <span data-lang="ja">くすぶるハウスはフリーWiFi完備。島内の携帯電波は主要キャリア（docomo・au・SoftBank）が利用可能ですが、山間部や海沿いの一部で圏外になることがあります。</span>
-          <span data-lang="en">Kusuburu offers free WiFi. Major carriers (docomo, au, SoftBank) work on the island, but signal may drop in mountainous areas or parts of the coast.</span>
+          <span data-lang="ja">島内の携帯電波は主要キャリア（docomo・au・SoftBank）が利用可能ですが、山間部や海沿いの一部で圏外になることがあります。</span>
+          <span data-lang="en">Major carriers (docomo, au, SoftBank) work on the island, but signal may drop in mountainous areas or parts of the coast.</span>
         </p>
       </div>
       <div style="padding:20px 0">
@@ -1215,8 +1415,9 @@
           </h4>
         </div>
         <p class="sec-body" style="font-size:13px;margin-bottom:16px">
-          <span data-lang="ja">島にコンビニはありません。西郷エリアにスーパーとドラッグストアがあります。</span>
-          <span data-lang="en">No convenience stores on the island. Supermarkets and a drugstore are available in the Saigo area.</span>
+          <span data-lang="ja">島にはコンビニがないので、到着日に必要なものは西郷のスーパーで揃えておくのがおすすめです。</span>
+          <span data-lang="en">There are no convenience stores on the island, so we recommend picking up essentials at a Saigo supermarket on your arrival day.</span>
+          <span data-lang="oki">島にはコンビニなんぞないけん、着いた日に西郷のスーパーで買いもんしとくのがええわい。</span>
         </p>
         <div style="display:flex;flex-direction:column;gap:10px">
           <a href="https://www.google.com/maps/search/サンテラス+隠岐の島" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:white;text-decoration:none;color:var(--text-dark);font-size:12px">
@@ -1261,8 +1462,8 @@
           </p>
           <div style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--border-light)">
             <p style="font-size:11px;font-weight:500;color:var(--text-dark);margin-bottom:8px">
-              <span data-lang="ja">🏪 宿の近くの商店</span>
-              <span data-lang="en">🏪 Near Kusuburu</span>
+              <span data-lang="ja"><i data-lucide="store" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> 宿の近くの商店</span>
+              <span data-lang="en"><i data-lucide="store" style="width:12px;height:12px;display:inline;vertical-align:-1px"></i> Near Kusuburu</span>
             </p>
             <a href="https://www.google.com/maps/search/新屋敷商店+隠岐の島町南方" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:white;text-decoration:none;color:var(--text-dark);font-size:12px;margin-bottom:6px">
               <i data-lucide="shopping-cart" style="width:14px;height:14px;color:var(--accent);flex-shrink:0"></i>
@@ -1274,8 +1475,8 @@
                   <span data-lang="en">Groceries, liquor, deli ／ Minamikata (closest to Kusuburu)</span>
                 </span>
                 <span style="display:block;font-size:10px;color:var(--accent);margin-top:2px">
-                  <span data-lang="ja">🚶 宿から徒歩圏内 ／ ☎ 08512-5-2036</span>
-                  <span data-lang="en">🚶 Walking distance ／ ☎ 08512-5-2036</span>
+                  <span data-lang="ja"><i data-lucide="footprints" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> 宿から徒歩圏内 ／ <i data-lucide="phone" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> 08512-5-2036</span>
+                  <span data-lang="en"><i data-lucide="footprints" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> Walking distance ／ <i data-lucide="phone" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> 08512-5-2036</span>
                 </span>
               </span>
               <i data-lucide="map-pin" style="width:12px;height:12px;color:var(--text-muted);flex-shrink:0"></i>
@@ -1290,8 +1491,8 @@
                   <span data-lang="en">Groceries & daily goods ／ 10:00–20:00 ／ Goka area</span>
                 </span>
                 <span style="display:block;font-size:10px;color:var(--accent);margin-top:2px">
-                  <span data-lang="ja">🚗 宿から車で約3分 ／ 🚶 徒歩 約25分</span>
-                  <span data-lang="en">🚗 ~3 min drive from Kusuburu ／ 🚶 ~25 min walk</span>
+                  <span data-lang="ja"><i data-lucide="car" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> 宿から車で約3分 ／ <i data-lucide="footprints" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> 徒歩 約25分</span>
+                  <span data-lang="en"><i data-lucide="car" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> ~3 min drive from Kusuburu ／ <i data-lucide="footprints" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> ~25 min walk</span>
                 </span>
               </span>
               <i data-lucide="map-pin" style="width:12px;height:12px;color:var(--text-muted);flex-shrink:0"></i>
@@ -1303,23 +1504,26 @@
 
     <!-- Packing -->
     <section class="sec sec-warm reveal" id="sec-packing">
-      <p class="sec-label"><i data-lucide="luggage" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">持ち物</span><span data-lang="en">Packing Checklist</span></p>
+      <p class="sec-label"><i data-lucide="luggage" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px"></i><span data-lang="ja">持ち物</span><span data-lang="en">Packing Checklist</span><span data-lang="oki">持ちもんチェックだけん</span></p>
       <div class="sec-divider"></div>
       <div style="background:white;padding:24px 28px" id="packing-list"></div>
     </section>
 
     <!-- FERRY TIMETABLE -->
-    <section class="sec reveal" style="padding-top:60px">
+    <section class="sec reveal" style="padding-top:60px" id="sec-ferry">
       <p class="sec-label" data-lang="ja">アクセス</p>
       <p class="sec-label" data-lang="en">Access</p>
+      <p class="sec-label" data-lang="oki">船の情報だけん</p>
       <h2 class="font-display sec-title" style="margin-bottom:8px">
         <span data-lang="ja">フェリー時刻表</span>
         <span data-lang="en">Ferry Timetable</span>
+        <span data-lang="oki">フェリーの時刻表だわい</span>
       </h2>
       <div class="sec-divider"></div>
       <p class="sec-body" style="margin-bottom:32px">
-        <span data-lang="ja">隠岐の島へは、七類港（松江市）または境港から出発します。季節によりダイヤが変わりますので、最新情報は隠岐汽船をご確認ください。</span>
-        <span data-lang="en">Ferries to Oki depart from Shichirui Port (Matsue) or Sakaiminato. Schedules vary by season — check Oki Kisen for the latest.</span>
+        <span data-lang="ja">帰りのフェリーの確認もお忘れなく。隠岐の島へは、七類港（松江市）か境港からフェリーで。季節で便数が変わるので、出発前に隠岐汽船のサイトをチェックしてくださいね。</span>
+        <span data-lang="en">Don't forget to check your return ferry too. Ferries to Oki depart from Shichirui Port (Matsue) or Sakaiminato. Schedules change by season, so check the Oki Kisen website before you go.</span>
+        <span data-lang="oki">いのる船の確認も忘れんでごせよ。七類か境港からフェリーに乗るんだけん、季節で便数が変わるけん、出る前に隠岐汽船のサイトを見ちょいてごしなさい。</span>
       </p>
       <div id="ferry-info" style="background:white;padding:24px;margin-bottom:20px">
         <!-- JS が月別フェリー情報を描画 -->
@@ -1341,11 +1545,11 @@
       <div style="display:flex;gap:12px">
         <button onclick="shareGuide()" class="btn-dark" style="flex:1">
           <i data-lucide="share-2" style="width:14px;height:14px"></i>
-          <span data-lang="ja">共有する</span><span data-lang="en">Share</span>
+          <span data-lang="ja">共有する</span><span data-lang="en">Share</span><span data-lang="oki">教えちゃる</span>
         </button>
         <button onclick="resetMonth()" class="btn-outline" style="flex:1">
           <i data-lucide="calendar" style="width:14px;height:14px"></i>
-          <span data-lang="ja">月を変更</span><span data-lang="en">Change</span>
+          <span data-lang="ja">月を変更</span><span data-lang="en">Change</span><span data-lang="oki">ほかの月を見るけん</span>
         </button>
       </div>
     </section>
@@ -1355,21 +1559,42 @@
   <!-- ===== FOOTER ===== -->
   <footer class="site-footer">
     <p class="font-display" style="font-size:clamp(20px,4vw,28px);font-weight:400;letter-spacing:0.1em;margin-bottom:4px">くすぶるハウス</p>
-    <p style="font-size:10px;letter-spacing:0.25em;color:rgba(255,255,255,0.25);margin-bottom:48px">KUSUBURU HOUSE — 燻家</p>
-    <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:2.2;margin-bottom:48px;letter-spacing:0.05em">
+    <p style="font-size:10px;letter-spacing:0.25em;color:rgba(255,255,255,0.45);margin-bottom:8px">KUSUBURU HOUSE — 燻家</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.45);margin-bottom:48px;font-style:italic" data-lang="en">"Kusuburu" means to smolder — like embers glowing quietly. Our guesthouse is named after this gentle warmth.</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.45);margin-bottom:48px;font-style:italic" data-lang="ja">"くすぶる"とは、静かに燃え続けること。その小さな灯火のような温もりを、この家の名に込めました。</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.45);margin-bottom:48px;font-style:italic" data-lang="oki">"くすぶる"っちゅうのは、静かに燃えちょることだわい。その小さな灯火みたいな温もりを、この家の名にしたんだけん。こんたが来てくれて、だんだん。</p>
+    <div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:2.2;margin-bottom:48px;letter-spacing:0.05em">
       <p>島根県隠岐郡隠岐の島町南方 1227-1</p>
       <p>Check-in 16:00–21:00 / Check-out 10:00</p>
     </div>
-    <div style="display:flex;justify-content:center;gap:32px;margin-bottom:48px">
-      <a href="https://kusuburu-house.com" target="_blank" style="color:rgba(255,255,255,0.4);font-size:11px;text-decoration:none;letter-spacing:0.1em;transition:color 0.3s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Website</a>
-      <a href="https://lin.ee/a4uWMOX" target="_blank" style="color:rgba(255,255,255,0.4);font-size:11px;text-decoration:none;letter-spacing:0.1em;transition:color 0.3s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">LINE</a>
-      <a href="mailto:info@kusuburu-house.com" style="color:rgba(255,255,255,0.4);font-size:11px;text-decoration:none;letter-spacing:0.1em;transition:color 0.3s" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Email</a>
+    <div style="display:flex;justify-content:center;gap:32px;margin-bottom:12px">
+      <a href="https://kusuburu-house.com" target="_blank" class="footer-link">Website</a>
+      <a href="https://lin.ee/a4uWMOX" target="_blank" class="footer-link">LINE</a>
+      <a href="mailto:info@kusuburu-house.com" class="footer-link">Email</a>
     </div>
-    <p style="font-size:9px;color:rgba(255,255,255,0.15);letter-spacing:0.1em">Weather: JMA Saigo 2021–2025 / SST: Oki Coast 2023–2025</p>
-    <p style="font-size:9px;color:rgba(255,255,255,0.15);letter-spacing:0.1em;margin-top:4px">Photos: Wikimedia Commons contributors (CC BY-SA / Public Domain)</p>
+    <p style="font-size:9px;color:rgba(255,255,255,0.4);margin-bottom:48px;letter-spacing:0.04em">
+      <span data-lang="ja">ご連絡はLINEが便利です（LINEが使えない方はメールでも承ります）</span>
+      <span data-lang="en">LINE is the easiest way to reach us (email also available)</span>
+      <span data-lang="oki">LINEがいちばん楽だけん（LINEが使えんかったらメールでもええけんの）</span>
+    </p>
+    <p style="font-size:9px;color:rgba(255,255,255,0.45);letter-spacing:0.1em">Weather: JMA Saigo 2021–2025 / SST: Oki Coast 2023–2025</p>
+    <p style="font-size:9px;color:rgba(255,255,255,0.45);letter-spacing:0.1em;margin-top:4px">Photos: Wikimedia Commons contributors (CC BY-SA / Public Domain)</p>
+    <div style="margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.08)">
+      <p style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:16px">
+        <span data-lang="ja">滞在のことでお困りなら</span>
+        <span data-lang="en">Need help with your stay?</span>
+        <span data-lang="oki">困ったことがあったら</span>
+      </p>
+      <a href="https://lin.ee/a4uWMOX" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:10px 24px;border-radius:999px;font-size:12px;font-weight:500;letter-spacing:0.1em;background:rgba(255,255,255,0.1);color:white;text-decoration:none;border:1px solid rgba(255,255,255,0.15);transition:all 0.3s" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+        <i data-lucide="message-circle" style="width:14px;height:14px"></i>
+        <span data-lang="ja">LINEで相談する</span>
+        <span data-lang="en">Chat on LINE</span>
+        <span data-lang="oki">LINEで聞いてごせ</span>
+      </a>
+    </div>
   </footer>
 
-  <button class="back-top" id="back-top" onclick="document.getElementById('month-select').scrollIntoView({behavior:'smooth'})">
+  <button class="back-top" id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
     <i data-lucide="chevron-up" style="width:18px;height:18px"></i>
   </button>
 
@@ -1377,15 +1602,15 @@
 const IMG = 'https://kusuburu-house.com/img';
 
 const MONTHS = {
-  3:{name:{ja:'3月',en:'March'},season:'spring',tagline:{ja:'島に春の足音が聞こえる',en:'First whispers of spring on the island'},weather:{avg:8.8,high:13.2,low:4.3,rain:118.7,sun:165.4,sea:12.7},clothing:{ja:'まだ冬の名残り。厚手のコートやダウン、マフラー、手袋があると安心です。日中は日差しが暖かくなる日もありますが、海風は冷たいので防風対策を。',en:'Winter still lingers. Bring a heavy coat, scarf, and gloves. Daytime sun can feel warm, but sea winds are cold — bring windproof layers.'},food:{ja:'ワカメが旬を迎えます。春の山菜も出始め、この島の海と山が届ける恵みを存分に味わえる時期。',en:'Peak wakame seaweed season. Spring mountain vegetables begin to appear — savor the bounty straight from island seas and mountains.'},foodPhotos:[`${IMG}/food/12.jpg`,`${IMG}/food/02.jpg`],events:[{ja:'百手祭り（3/28）— 花生神社にて伝統の弓射神事',en:'Hyakute Festival (3/28) — Traditional archery ritual at Hanao Shrine'}],tips:{ja:'シーズン開幕の月。まだ観光客が少なく、静かな島を独り占めできる贅沢な時期です。フェリーは冬ダイヤの場合があるので事前確認を。',en:'Season opening month. Few tourists yet — enjoy the quiet island all to yourself. Check ferry schedules as winter timetables may still apply.'},packing:['heavy_coat','layers','scarf_gloves','rain_gear','walking_shoes','camera','motion_sickness','cash','meds','charger']},
-  4:{name:{ja:'4月',en:'April'},season:'spring',tagline:{ja:'桜と海、観光シーズンの幕開け',en:'Cherry blossoms meet the sea — season begins'},weather:{avg:13.0,high:17.7,low:8.3,rain:121.7,sun:214.8,sea:14.6},clothing:{ja:'薄手のジャケットやカーディガンで快適。朝晩は冷えるので重ね着がおすすめ。日中は暖かい日も増えてきます。',en:'A light jacket or cardigan works well. Layer up for cool mornings and evenings. Daytime gets warmer.'},food:{ja:'タケノコや山菜が出始める季節。地元の漁師が揚げる旬の地魚とともに、島ならではの食卓が広がります。',en:'Bamboo shoots and mountain vegetables emerge. Together with fresh local fish, the island\'s unique dining experience unfolds.'},foodPhotos:[`${IMG}/food/05.jpg`,`${IMG}/food/06.jpg`],events:[{ja:'隠岐いぐり凧祭（4月上旬）— 総合運動公園にて',en:'Oki Iguri Kite Festival (early Apr) — at Sports Park'},{ja:'蓮華会舞（4/21）— 隠岐国分寺にて重要無形民俗文化財の舞',en:'Renge-e-mai Dance (4/21) — Important Intangible Folk Cultural Property at Kokubunji Temple'}],tips:{ja:'ローソク島遊覧船がこの月から運航開始！桜が咲き始め、島全体が華やかになる季節。晴天率が上がり、観光日和が増えます。',en:'Candle Island boat tours start this month! Cherry blossoms bloom across the island. Clear skies become more frequent.'},packing:['light_jacket','layers','rain_gear','walking_shoes','camera','sunglasses','motion_sickness','cash','meds','charger']},
-  5:{name:{ja:'5月',en:'May'},season:'spring',tagline:{ja:'ベストシーズン到来、海も山も輝く',en:'Peak season — sea and mountains shine'},weather:{avg:17.0,high:21.5,low:12.5,rain:137.5,sun:231.1,sea:16.9},clothing:{ja:'長袖シャツ＋薄い上着で快適。日差しが強くなるので帽子・サングラスも忘れずに。',en:'Long sleeves with a light outer layer. Bring a hat and sunglasses — the sun is getting strong.'},food:{ja:'タケノコが旬を迎え、地元で揚がる旬の地魚も充実。島の海と山、両方の恵みが揃い始める贅沢な季節です。',en:'Bamboo shoots in season alongside fresh local fish. A luxurious time when both sea and mountain bounty come together.'},foodPhotos:[`${IMG}/food/01.jpg`,`${IMG}/food/10.jpg`],events:[{ja:'しゃくなげ祭（5月初旬）— 村上家隠岐しゃくなげ園',en:'Rhododendron Festival (early May) — Murakami Rhododendron Garden'},{ja:'しげさ踊りパレード（5月第2土曜）— 島びらきの祭り',en:'Shigesa Dance Parade (2nd Sat in May) — Island Opening Festival'},{ja:'隠岐しげさ節全国大会（翌日曜）— 全国から民謡愛好家が集結',en:'National Shigesa Folk Song Competition (following Sun)'}],tips:{ja:'年間で最も過ごしやすい時期。島びらきで活気が出ます。釣り体験にも最高のシーズン。日照時間が一年で最も長い月。',en:'The most comfortable time of year. Island Opening brings energy. Best season for fishing. Longest daylight hours of the year.'},packing:['light_jacket','sunscreen','hat_sunglasses','walking_shoes','camera','motion_sickness','cash','meds','charger']},
-  6:{name:{ja:'6月',en:'June'},season:'summer',tagline:{ja:'恵みの雨、緑が最も美しい季節',en:'Blessed rain — the greenest time of year'},weather:{avg:21.8,high:25.6,low:18.0,rain:155.4,sun:195.2,sea:21.4},clothing:{ja:'薄手の服で過ごせます。折りたたみ傘は必須。蒸し暑い日もあるのでレインウェアがあると安心。',en:'Light clothing works. Folding umbrella is essential. Can be humid — rain gear recommended.'},food:{ja:'白イカ本番！目の前の海から届く、この島だからこその味覚が揃い始めます。',en:'White squid in full season! Fresh from the waters right before you — flavors only this island can offer.'},foodPhotos:[`${IMG}/food/10.jpg`,`${IMG}/food/01.jpg`],events:[{ja:'玉若酢命神社御霊会風流（6/5）— 伝統神事',en:'Tamawakasu Shrine Goryo-e Festival (6/5) — Traditional Shinto ritual'},{ja:'隠岐の島ウルトラマラソン — 100kmの島一周レース',en:'Oki Island Ultra Marathon — 100km island circuit race'}],tips:{ja:'梅雨時期ですが、雨上がりの島は格別に美しい。緑が最も鮮やかで、壇鏡の滝は水量が増して迫力満点。観光客も少なめの穴場時期。',en:'Rainy season, but the island after rain is breathtaking. Greenery at its peak, Dangyo Falls at full force. A hidden gem season with fewer tourists.'},packing:['rain_gear','umbrella','light_clothes','sandals','walking_shoes','camera','motion_sickness','cash','meds','charger']},
-  7:{name:{ja:'7月',en:'July'},season:'summer',tagline:{ja:'夏本番！太陽と潮風の島時間',en:'Full summer! Sun and sea breeze island time'},weather:{avg:26.8,high:30.0,low:23.5,rain:159.1,sun:215.8,sea:25.5},clothing:{ja:'夏服、サンダル、水着持参。日焼け止め・帽子は必須。夜は意外と涼しく薄手の羽織があると安心です。',en:'Summer clothes, sandals, swimwear. Sunscreen and hat essential. Evenings are surprisingly cool — a light layer helps.'},food:{ja:'白イカ最盛期、サザエも入り始める！島の漁師が誇る新鮮な海の幸で、夏の食卓が賑やかになる季節。',en:'Peak white squid, turban shells arriving! Fresh seafood from island fishermen — summer dining comes alive.'},foodPhotos:[`${IMG}/food/10.jpg`,`${IMG}/food/09.jpg`],events:[{ja:'久見神楽 — 伊勢命神社にて伝統の舞',en:'Kumi Kagura — Traditional sacred dance at Isemikoto Shrine'}],tips:{ja:'海のアクティビティが最高に楽しい！シュノーケリング、海水浴、釣り。塩の浜は透明度抜群。くすぶるハウスの釣り体験もぜひ。',en:'Ocean activities are amazing! Snorkeling, swimming, fishing. Shio-no-hama beach has crystal-clear water. Try fishing at Kusuburu!'},packing:['swimwear','sunscreen','hat_sunglasses','sandals','light_clothes','rash_guard','insect_repellent','camera','motion_sickness','cash','meds','charger']},
-  8:{name:{ja:'8月',en:'August'},season:'summer',tagline:{ja:'島の夏祭り、最も賑やかな季節',en:'Island summer festivals — the liveliest season'},weather:{avg:27.6,high:30.9,low:24.2,rain:232.7,sun:212.9,sea:28.8},clothing:{ja:'夏服全開で。海遊び用の装備もお忘れなく。夜は薄手の羽織が一枚あると過ごしやすい。',en:'Full summer wear. Bring ocean activity gear. A light layer for evenings makes a difference.'},food:{ja:'サザエが最も旨い季節、白イカと島の夏野菜も。地元で採れた食材をそのまま食卓へ。',en:'Turban shells at their best, plus white squid and island summer vegetables. Locally sourced ingredients straight to your table.'},foodPhotos:[`${IMG}/food/01.jpg`,`${IMG}/food/08.jpg`],events:[{ja:'西村神楽（8/14）— 西村神社神楽殿にて',en:'Nishimura Kagura (8/14) — Sacred dance at Nishimura Shrine'},{ja:'牛突き夏場所大会（8/15）— 隠岐モーモードームにて島の伝統行事',en:'Bull Sumo Summer Tournament (8/15) — Traditional bull fighting at Oki Moo Moo Dome'}],tips:{ja:'ハイシーズン！花火、祭り、海。一年で最も賑やかな時期。夜は星空が格別に美しい。牛突きは隠岐ならではの迫力ある伝統文化。',en:'Peak season! Fireworks, festivals, ocean. The liveliest time of year. Night skies are stunning for stargazing. Bull sumo is a unique Oki tradition.'},packing:['swimwear','sunscreen','hat_sunglasses','sandals','light_clothes','light_layer','insect_repellent','camera','motion_sickness','cash','meds','charger']},
-  9:{name:{ja:'9月',en:'September'},season:'autumn',tagline:{ja:'穴場の秋、静けさと温もりの季節',en:'Hidden gem autumn — quiet warmth on the island'},weather:{avg:24.6,high:27.7,low:21.4,rain:182.2,sun:148.0,sea:27.8},clothing:{ja:'まだ暖かいですが朝晩は涼しくなります。薄い長袖があると安心。前半はまだ海に入れる日も。',en:'Still warm but cooler mornings and evenings. Light long sleeves recommended. You can still swim in early September.'},food:{ja:'白イカの終盤を楽しみつつ、秋の地魚が始まる。海の味覚が移り変わるこの島ならではの食の物語を堪能できます。',en:'Last of the white squid while autumn fish appear. Experience the seasonal story of island flavors unique to Oki.'},foodPhotos:[`${IMG}/food/01.jpg`,`${IMG}/food/05.jpg`],events:[{ja:'八朔牛突き大会（9月上旬）— 佐山牛突き場にて',en:'Hassaku Bull Sumo Tournament (early Sep) — at Sayama Bull Arena'}],tips:{ja:'観光客がぐっと減り、静かな島時間を過ごせる穴場シーズン。夕日が特に美しい季節。くすぶるハウスの焚き火が心地よくなる頃。',en:'Tourists thin out — enjoy quiet island time. Especially beautiful sunsets. Kusuburu\'s bonfire starts feeling perfect.'},packing:['light_jacket','layers','light_clothes','walking_shoes','camera','motion_sickness','cash','meds','charger']},
-  10:{name:{ja:'10月',en:'October'},season:'autumn',tagline:{ja:'実りの秋、食も景色も最高の季節',en:'Bountiful autumn — peak food and scenery'},weather:{avg:17.9,high:21.9,low:14.0,rain:141.7,sun:150.2,sea:23.8},clothing:{ja:'薄手のジャケットが活躍。朝晩は重ね着で調整。一年で最も降水量が少なく、晴天率が高い月。',en:'A light jacket comes in handy. Layer for temperature swings. The driest month with the clearest skies.'},food:{ja:'アワビ解禁！魚にも脂がのり始め、秋の味覚が深まる季節。島で獲れた旬の幸を、鮮度そのままでお届けします。',en:'Abalone season opens! Fish grow richer as autumn deepens. Freshly caught island delicacies served at their peak.'},foodPhotos:[`${IMG}/food/07.jpg`,`${IMG}/food/11.jpg`],events:[{ja:'一夜嶽牛突き大会（10/13）— 一夜嶽牛突き場にて',en:'Ichiyatake Bull Sumo Tournament (10/13) — at Ichiyatake Arena'},{ja:'隠岐武良祭風流（奇数年 10/19）— 伝統の祭礼',en:'Oki Mura Festival (odd years, 10/19) — Traditional festival'}],tips:{ja:'ローソク島の夕日が最も美しい季節。空気が澄み、幻想的な光景が見られます。食も最高。最もバランスの取れた月。',en:'The most beautiful Candle Island sunsets of the year. Crystal-clear air creates magical views. Food is at its peak. The most well-balanced month.'},packing:['light_jacket','layers','walking_shoes','camera','onsen_set','motion_sickness','cash','meds','charger']},
-  11:{name:{ja:'11月',en:'November'},season:'autumn',tagline:{ja:'晩秋の贅沢、温泉と焚き火のひととき',en:'Late autumn luxury — hot springs and bonfire moments'},weather:{avg:12.9,high:17.2,low:8.5,rain:127.2,sun:131.5,sea:20.3},clothing:{ja:'暖かいジャケット必須。マフラーもあると安心。海風が冷たくなり、冬の足音が聞こえます。',en:'Warm jacket essential. A scarf helps. Sea winds turn cold as winter approaches.'},food:{ja:'アワビの旬が続き、ブリも脂を蓄え始める。この島の冬の味覚と温泉は最高の組み合わせです。',en:'Abalone still in season, yellowtail fattening up. Island winter flavors paired with hot springs — the ultimate combination.'},foodPhotos:[`${IMG}/food/07.jpg`,`${IMG}/food/06.jpg`],events:[{ja:'上西神社奉納牛突き大会（11月上旬）— シーズン最後の牛突き',en:'Kaminishi Shrine Bull Sumo (early Nov) — Last bull sumo of the season'}],tips:{ja:'シーズン終盤。温泉×焚き火×島の味覚は、この時期だけの贅沢。隠岐唯一の温泉は宿から徒歩15分。静かな島の魅力を存分に。',en:'End of season. Hot springs × bonfire × island flavors — a luxury only this time offers. The island\'s only hot spring is a 15-min walk from Kusuburu.'},packing:['warm_jacket','scarf_gloves','layers','walking_shoes','onsen_set','camera','motion_sickness','cash','meds','charger']}
+  3:{name:{ja:'3月',en:'March'},season:'spring',tagline:{ja:'島に春の足音が聞こえる',en:'First whispers of spring on the island',oki:'春がそろそろ来ちょるわい'},weather:{avg:8.8,high:13.2,low:4.3,rain:118.7,sun:165.4,sea:12.7},clothing:{ja:'まだ冬の名残り。厚手のコートやダウン、マフラー、手袋があると安心です。日中は日差しが暖かくなる日もありますが、海風は冷たいので防風対策を。',en:'Winter still lingers. Bring a heavy coat, scarf, and gloves. Daytime sun can feel warm, but sea winds are cold — bring windproof layers.'},food:{ja:'ワカメが旬を迎えます。春の山菜も出始め、この島の海と山が届ける恵みを存分に味わえる時期。',en:'Peak wakame seaweed season. Spring mountain vegetables begin to appear — savor the bounty straight from island seas and mountains.'},foodPhotos:[`${IMG}/food/12.jpg`,`${IMG}/food/02.jpg`],events:[{ja:'百手祭り（3/28）— 花生神社にて伝統の弓射神事',en:'Hyakute Festival (3/28) — Traditional archery ritual at Hanao Shrine'}],tips:{ja:'シーズン開幕の月。まだ観光客が少なく、静かな島を独り占めできる贅沢な時期です。フェリーは冬ダイヤの場合があるので事前確認を。',en:'Season opening month. Few tourists yet — enjoy the quiet island all to yourself. Check ferry schedules as winter timetables may still apply.'},packing:['heavy_coat','layers','scarf_gloves','rain_gear','walking_shoes','camera','motion_sickness','cash','meds','charger']},
+  4:{name:{ja:'4月',en:'April'},season:'spring',tagline:{ja:'桜と海、観光シーズンの幕開け',en:'Cherry blossoms meet the sea — season begins',oki:'桜が咲いたわい、いよいよ島が始まるけん'},weather:{avg:13.0,high:17.7,low:8.3,rain:121.7,sun:214.8,sea:14.6},clothing:{ja:'薄手のジャケットやカーディガンで快適。朝晩は冷えるので重ね着がおすすめ。日中は暖かい日も増えてきます。',en:'A light jacket or cardigan works well. Layer up for cool mornings and evenings. Daytime gets warmer.'},food:{ja:'タケノコや山菜が出始める季節。地元の漁師が揚げる旬の地魚とともに、島ならではの食卓が広がります。',en:'Bamboo shoots and mountain vegetables emerge. Together with fresh local fish, the island\'s unique dining experience unfolds.'},foodPhotos:[`${IMG}/food/05.jpg`,`${IMG}/food/06.jpg`],events:[{ja:'隠岐いぐり凧祭（4月上旬）— 総合運動公園にて',en:'Oki Iguri Kite Festival (early Apr) — at Sports Park'},{ja:'蓮華会舞（4/21）— 隠岐国分寺にて重要無形民俗文化財の舞',en:'Renge-e-mai Dance (4/21) — Important Intangible Folk Cultural Property at Kokubunji Temple'}],tips:{ja:'ローソク島遊覧船がこの月から運航開始！桜が咲き始め、島全体が華やかになる季節。晴天率が上がり、観光日和が増えます。',en:'Candle Island boat tours start this month! Cherry blossoms bloom across the island. Clear skies become more frequent.'},packing:['light_jacket','layers','rain_gear','walking_shoes','camera','sunglasses','motion_sickness','cash','meds','charger']},
+  5:{name:{ja:'5月',en:'May'},season:'spring',tagline:{ja:'ベストシーズン到来、海も山も輝く',en:'Peak season — sea and mountains shine',oki:'がいにええ季節だわい、海も山もぴかぴかだけん'},weather:{avg:17.0,high:21.5,low:12.5,rain:137.5,sun:231.1,sea:16.9},clothing:{ja:'長袖シャツ＋薄い上着で快適。日差しが強くなるので帽子・サングラスも忘れずに。',en:'Long sleeves with a light outer layer. Bring a hat and sunglasses — the sun is getting strong.'},food:{ja:'タケノコが旬を迎え、地元で揚がる旬の地魚も充実。島の海と山、両方の恵みが揃い始める贅沢な季節です。',en:'Bamboo shoots in season alongside fresh local fish. A luxurious time when both sea and mountain bounty come together.'},foodPhotos:[`${IMG}/food/01.jpg`,`${IMG}/food/10.jpg`],events:[{ja:'しゃくなげ祭（5月初旬）— 村上家隠岐しゃくなげ園',en:'Rhododendron Festival (early May) — Murakami Rhododendron Garden'},{ja:'しげさ踊りパレード（5月第2土曜）— 島びらきの祭り',en:'Shigesa Dance Parade (2nd Sat in May) — Island Opening Festival'},{ja:'隠岐しげさ節全国大会（翌日曜）— 全国から民謡愛好家が集結',en:'National Shigesa Folk Song Competition (following Sun)'}],tips:{ja:'年間で最も過ごしやすい時期。島びらきで活気が出ます。釣り体験にも最高のシーズン。日照時間が一年で最も長い月。',en:'The most comfortable time of year. Island Opening brings energy. Best season for fishing. Longest daylight hours of the year.'},packing:['light_jacket','sunscreen','hat_sunglasses','walking_shoes','camera','motion_sickness','cash','meds','charger']},
+  6:{name:{ja:'6月',en:'June'},season:'summer',tagline:{ja:'緑が深まる、雨上がりの美しい季節',en:'Lush greens after the rain — the most beautiful season',oki:'雨上がりの島はがいにきれいだけんの'},weather:{avg:21.8,high:25.6,low:18.0,rain:155.4,sun:195.2,sea:21.4},clothing:{ja:'薄手の服で過ごせます。折りたたみ傘は必須。蒸し暑い日もあるのでレインウェアがあると安心。',en:'Light clothing works. Folding umbrella is essential. Can be humid — rain gear recommended.'},food:{ja:'白イカ本番！目の前の海から届く、この島だからこその味覚が揃い始めます。',en:'White squid in full season! Fresh from the waters right before you — flavors only this island can offer.'},foodPhotos:[`${IMG}/food/10.jpg`,`${IMG}/food/01.jpg`],events:[{ja:'玉若酢命神社御霊会風流（6/5）— 伝統神事',en:'Tamawakasu Shrine Goryo-e Festival (6/5) — Traditional Shinto ritual'},{ja:'隠岐の島ウルトラマラソン — 100kmの島一周レース',en:'Oki Island Ultra Marathon — 100km island circuit race'}],tips:{ja:'梅雨時期ですが、雨上がりの島は格別に美しい。緑が最も鮮やかで、壇鏡の滝は水量が増して迫力満点。観光客も少なめの穴場時期。',en:'Rainy season, but the island after rain is breathtaking. Greenery at its peak, Dangyo Falls at full force. A hidden gem season with fewer tourists.'},packing:['rain_gear','umbrella','light_clothes','sandals','walking_shoes','camera','motion_sickness','cash','meds','charger']},
+  7:{name:{ja:'7月',en:'July'},season:'summer',tagline:{ja:'夏本番！太陽と潮風の島時間',en:'Full summer! Sun and sea breeze island time',oki:'夏だわい！がいにぬきーけん、海へ来てごせ'},weather:{avg:26.8,high:30.0,low:23.5,rain:159.1,sun:215.8,sea:25.5},clothing:{ja:'夏服、サンダル、水着持参。日焼け止め・帽子は必須。夜は意外と涼しく薄手の羽織があると安心です。',en:'Summer clothes, sandals, swimwear. Sunscreen and hat essential. Evenings are surprisingly cool — a light layer helps.'},food:{ja:'白イカ最盛期、サザエも入り始める！島の漁師が誇る新鮮な海の幸で、夏の食卓が賑やかになる季節。',en:'Peak white squid, turban shells arriving! Fresh seafood from island fishermen — summer dining comes alive.'},foodPhotos:[`${IMG}/food/10.jpg`,`${IMG}/food/09.jpg`],events:[{ja:'久見神楽 — 伊勢命神社にて伝統の舞',en:'Kumi Kagura — Traditional sacred dance at Isemikoto Shrine'}],tips:{ja:'海のアクティビティが最高に楽しい！シュノーケリング、海水浴、釣り。塩の浜は透明度抜群。くすぶるハウスの釣り体験もぜひ。',en:'Ocean activities are amazing! Snorkeling, swimming, fishing. Shio-no-hama beach has crystal-clear water. Try fishing at Kusuburu!'},packing:['swimwear','sunscreen','hat_sunglasses','sandals','light_clothes','rash_guard','insect_repellent','camera','motion_sickness','cash','meds','charger']},
+  8:{name:{ja:'8月',en:'August'},season:'summer',tagline:{ja:'島の夏祭り、最も賑やかな季節',en:'Island summer festivals — the liveliest season',oki:'祭りだ祭りだ！がいに盛り上がるだわい'},weather:{avg:27.6,high:30.9,low:24.2,rain:232.7,sun:212.9,sea:28.8},clothing:{ja:'夏服全開で。海遊び用の装備もお忘れなく。夜は薄手の羽織が一枚あると過ごしやすい。',en:'Full summer wear. Bring ocean activity gear. A light layer for evenings makes a difference.'},food:{ja:'サザエが最も旨い季節、白イカと島の夏野菜も。地元で採れた食材をそのまま食卓へ。',en:'Turban shells at their best, plus white squid and island summer vegetables. Locally sourced ingredients straight to your table.'},foodPhotos:[`${IMG}/food/01.jpg`,`${IMG}/food/08.jpg`],events:[{ja:'西村神楽（8/14）— 西村神社神楽殿にて',en:'Nishimura Kagura (8/14) — Sacred dance at Nishimura Shrine'},{ja:'牛突き夏場所大会（8/15）— 隠岐モーモードームにて島の伝統行事',en:'Bull Sumo Summer Tournament (8/15) — Traditional bull fighting at Oki Moo Moo Dome'}],tips:{ja:'ハイシーズン！花火、祭り、海。一年で最も賑やかな時期。夜は星空が格別に美しい。牛突きは隠岐ならではの迫力ある伝統文化。',en:'Peak season! Fireworks, festivals, ocean. The liveliest time of year. Night skies are stunning for stargazing. Bull sumo is a unique Oki tradition.'},packing:['swimwear','sunscreen','hat_sunglasses','sandals','light_clothes','light_layer','insect_repellent','camera','motion_sickness','cash','meds','charger']},
+  9:{name:{ja:'9月',en:'September'},season:'autumn',tagline:{ja:'穴場の秋、静けさと温もりの季節',en:'Hidden gem autumn — quiet warmth on the island',oki:'静かでええ秋だわい、こんただけの島時間だけん'},weather:{avg:24.6,high:27.7,low:21.4,rain:182.2,sun:148.0,sea:27.8},clothing:{ja:'まだ暖かいですが朝晩は涼しくなります。薄い長袖があると安心。前半はまだ海に入れる日も。',en:'Still warm but cooler mornings and evenings. Light long sleeves recommended. You can still swim in early September.'},food:{ja:'白イカの終盤を楽しみつつ、秋の地魚が始まる。海の味覚が移り変わるこの島ならではの食の物語を堪能できます。',en:'Last of the white squid while autumn fish appear. Experience the seasonal story of island flavors unique to Oki.'},foodPhotos:[`${IMG}/food/01.jpg`,`${IMG}/food/05.jpg`],events:[{ja:'八朔牛突き大会（9月上旬）— 佐山牛突き場にて',en:'Hassaku Bull Sumo Tournament (early Sep) — at Sayama Bull Arena'}],tips:{ja:'観光客がぐっと減り、静かな島時間を過ごせる穴場シーズン。夕日が特に美しい季節。くすぶるハウスの焚き火が心地よくなる頃。',en:'Tourists thin out — enjoy quiet island time. Especially beautiful sunsets. Kusuburu\'s bonfire starts feeling perfect.'},packing:['light_jacket','layers','light_clothes','walking_shoes','camera','motion_sickness','cash','meds','charger']},
+  10:{name:{ja:'10月',en:'October'},season:'autumn',tagline:{ja:'実りの秋、食も景色も最高の季節',en:'Bountiful autumn — peak food and scenery',oki:'うまいもんだらけの秋だわい、ばら〜っちゅうくらいええけん'},weather:{avg:17.9,high:21.9,low:14.0,rain:141.7,sun:150.2,sea:23.8},clothing:{ja:'薄手のジャケットが活躍。朝晩は重ね着で調整。一年で最も降水量が少なく、晴天率が高い月。',en:'A light jacket comes in handy. Layer for temperature swings. The driest month with the clearest skies.'},food:{ja:'アワビ解禁！魚にも脂がのり始め、秋の味覚が深まる季節。島で獲れた旬の幸を、鮮度そのままでお届けします。',en:'Abalone season opens! Fish grow richer as autumn deepens. Freshly caught island delicacies served at their peak.'},foodPhotos:[`${IMG}/food/07.jpg`,`${IMG}/food/11.jpg`],events:[{ja:'一夜嶽牛突き大会（10/13）— 一夜嶽牛突き場にて',en:'Ichiyatake Bull Sumo Tournament (10/13) — at Ichiyatake Arena'},{ja:'隠岐武良祭風流（奇数年 10/19）— 伝統の祭礼',en:'Oki Mura Festival (odd years, 10/19) — Traditional festival'}],tips:{ja:'ローソク島の夕日が最も美しい季節。空気が澄み、幻想的な光景が見られます。食も最高。最もバランスの取れた月。',en:'The most beautiful Candle Island sunsets of the year. Crystal-clear air creates magical views. Food is at its peak. The most well-balanced month.'},packing:['light_jacket','layers','walking_shoes','camera','onsen_set','motion_sickness','cash','meds','charger']},
+  11:{name:{ja:'11月',en:'November'},season:'autumn',tagline:{ja:'晩秋の贅沢、温泉と焚き火のひととき',en:'Late autumn luxury — hot springs and bonfire moments',oki:'湯と焚き火がしんから気持ちええ季節だわい'},weather:{avg:12.9,high:17.2,low:8.5,rain:127.2,sun:131.5,sea:20.3},clothing:{ja:'暖かいジャケット必須。マフラーもあると安心。海風が冷たくなり、冬の足音が聞こえます。',en:'Warm jacket essential. A scarf helps. Sea winds turn cold as winter approaches.'},food:{ja:'アワビの旬が続き、ブリも脂を蓄え始める。この島の冬の味覚と温泉は最高の組み合わせです。',en:'Abalone still in season, yellowtail fattening up. Island winter flavors paired with hot springs — the ultimate combination.'},foodPhotos:[`${IMG}/food/07.jpg`,`${IMG}/food/06.jpg`],events:[{ja:'上西神社奉納牛突き大会（11月上旬）— シーズン最後の牛突き',en:'Kaminishi Shrine Bull Sumo (early Nov) — Last bull sumo of the season'}],tips:{ja:'シーズン終盤。温泉×焚き火×島の味覚は、この時期だけの贅沢。隠岐唯一の温泉は宿から徒歩15分。静かな島の魅力を存分に。',en:'End of season. Hot springs × bonfire × island flavors — a luxury only this time offers. The island\'s only hot spring is a 15-min walk from Kusuburu.'},packing:['warm_jacket','scarf_gloves','layers','walking_shoes','onsen_set','camera','motion_sickness','cash','meds','charger']}
 };
 
 const SPOTS = [
@@ -1394,7 +1619,7 @@ const SPOTS = [
   {id:'dangyo',icon:'droplets',name:{ja:'壇鏡の滝',en:'Dangyo Falls'},desc:{ja:'日本の滝百選・名水百選。高さ40mの雄滝と雌滝が神社の左右に流れ落ちる。',en:'Top 100 Waterfalls & Spring Waters of Japan. Two 40m falls cascade beside Dangyo Shrine.'},drive:{ja:'車で約25分',en:'~25 min drive'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#9a9080,#7a7060)',map:'https://www.google.com/maps/search/壇鏡の滝+隠岐の島',photo:'https://upload.wikimedia.org/wikipedia/commons/a/a5/Dangyo_falls1.JPG'},
   {id:'jodogaura',icon:'anchor',name:{ja:'浄土ヶ浦',en:'Jodogaura Coast'},desc:{ja:'極楽浄土のような世界観。5つの地質時代にわたる7種の岩石が織りなす地質の宝庫。',en:'An otherworldly landscape. A geological treasure with 7 rock types spanning 5 geological periods.'},drive:{ja:'車で約45分',en:'~45 min drive'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#d4cec3,#b8b0a0)',map:'https://www.google.com/maps/search/浄土ヶ浦+隠岐の島',photo:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/%E9%9A%A0%E5%B2%90%E6%B5%84%E5%9C%9F%E3%83%B6%E6%B5%A6.png/800px-%E9%9A%A0%E5%B2%90%E6%B5%84%E5%9C%9F%E3%83%B6%E6%B5%A6.png'},
   {id:'chichi',icon:'tree-pine',name:{ja:'乳房杉',en:'Chichi-sugi Cedar'},desc:{ja:'樹齢800年超。15本の幹から24個の乳房状の根が垂れ下がる神秘的な巨木。',en:'Over 800 years old. 24 aerial roots hang from 15 divided trunks — a mystical ancient tree.'},drive:{ja:'車で約35分',en:'~35 min drive'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#9a9080,#7a7060)',map:'https://www.google.com/maps/search/乳房杉+隠岐の島',photo:'https://upload.wikimedia.org/wikipedia/commons/6/65/Iwakura_Chibusasugi.jpg'},
-  {id:'tokage',icon:'mountain',name:{ja:'トカゲ岩',en:'Tokage Rock'},desc:{ja:'山の斜面に現れたトカゲ形の巨大な自然岩。展望所から眺めると圧巻。',en:'A giant natural rock shaped like a lizard climbing the mountainside. Stunning from the viewpoint.'},drive:{ja:'車で約40分',en:'~40 min drive'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#b8b0a0,#9a9080)',map:'https://www.google.com/maps/search/トカゲ岩+隠岐の島',photo:''},
+  {id:'tokage',icon:'mountain',name:{ja:'トカゲ岩',en:'Tokage Rock'},desc:{ja:'山の斜面に現れたトカゲ形の巨大な自然岩。展望所から眺めると圧巻。',en:'A giant natural rock shaped like a lizard climbing the mountainside. Stunning from the viewpoint.'},drive:{ja:'車で約40分',en:'~40 min drive'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#b8b0a0,#9a9080)',map:'https://www.google.com/maps/search/トカゲ岩+隠岐の島',photo:'img/tokage-rock.jpg'},
   {id:'naku',icon:'sunset',name:{ja:'那久岬',en:'Naku Cape'},desc:{ja:'高台の展望台から島前を一望。夕日の名所として知られる静かな岬。',en:'Hilltop viewpoint overlooking the Dozen Islands. A quiet cape known for stunning sunsets.'},drive:{ja:'車で約20分',en:'~20 min drive'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#d4cec3,#9a9080)',map:'https://www.google.com/maps/search/那久岬+隠岐の島',photo:''},
   {id:'yaosugi',icon:'landmark',name:{ja:'玉若酢命神社・八百杉',en:'Tamawakasu Shrine'},desc:{ja:'隠岐の総社。境内の八百杉は樹高38m、県下一の巨木。パワースポット。',en:'Grand shrine of Oki. The 38m Yao-sugi is the tallest tree in Shimane. A popular power spot.'},drive:{ja:'車で約20分',en:'~20 min drive'},season:{ja:'通年',en:'Year-round'},gradient:'linear-gradient(135deg,#7a7060,#5c5448)',map:'https://www.google.com/maps/search/玉若酢命神社+隠岐の島',photo:'https://upload.wikimedia.org/wikipedia/commons/6/6a/Tamawakasu-mikoto-jinja%2C_shaden.jpg'}
 ];
@@ -1428,11 +1653,36 @@ const SEASON_COLORS = {spring:{accent:'#8a6d5b'},summer:{accent:'#5c7a6d'},autum
 
 let currentMonth = null, currentLang = 'ja';
 
+function applyOkiFallback(scope){
+  const root=scope||document;
+  const isOki=document.body.classList.contains('lang-oki');
+  root.querySelectorAll('[data-lang="oki"]').forEach(el=>{
+    const ja=el.parentElement.querySelector(':scope > [data-lang="ja"]');
+    if(ja) ja.style.display=isOki?'none':'';
+  });
+}
 function setLang(l){
-  currentLang=l;
-  document.body.classList.toggle('lang-en',l==='en');
-  document.getElementById('btn-ja').classList.toggle('active',l==='ja');
-  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  currentLang=l==='oki'?'ja':l;
+  document.documentElement.lang=l==='en'?'en':'ja';
+  // Fade out
+  const ct=document.getElementById('content');
+  const ms=document.getElementById('month-select');
+  [ct,ms].forEach(el=>{if(el)el.classList.add('lang-fading')});
+  setTimeout(()=>{
+    document.body.classList.remove('lang-en','lang-oki');
+    if(l==='en') document.body.classList.add('lang-en');
+    if(l==='oki') document.body.classList.add('lang-oki');
+    document.querySelectorAll('[data-lang-btn]').forEach(b=>{
+      const active=b.dataset.langBtn===l;
+      b.classList.toggle('active',active);
+      b.setAttribute('aria-pressed',active);
+    });
+    applyOkiFallback();
+    // Fade in
+    requestAnimationFrame(()=>[ct,ms].forEach(el=>{if(el){el.classList.add('fade-in');setTimeout(()=>el.classList.remove('lang-fading','fade-in'),150)}}));
+  },150);
+  // Welcome toast on first oki switch
+  if(l==='oki'&&!window._okiToasted){window._okiToasted=true;setTimeout(()=>toast('まめかの？ 島言葉でご案内するけん！'),320)}
 }
 
 function buildMonthGrid(){
@@ -1443,12 +1693,13 @@ function buildMonthGrid(){
     b.className=`month-btn${off?' off-season':''}`;b.id=`month-${m}`;
     const L={1:{j:'1月',e:'Jan'},2:{j:'2月',e:'Feb'},3:{j:'3月',e:'Mar'},4:{j:'4月',e:'Apr'},5:{j:'5月',e:'May'},6:{j:'6月',e:'Jun'},7:{j:'7月',e:'Jul'},8:{j:'8月',e:'Aug'},9:{j:'9月',e:'Sep'},10:{j:'10月',e:'Oct'},11:{j:'11月',e:'Nov'},12:{j:'12月',e:'Dec'}};
     b.innerHTML=`<span data-lang="ja">${L[m].j}</span><span data-lang="en">${L[m].e}</span>`;
-    if(!off) b.addEventListener('click',()=>selectMonth(m));
+    if(off) { b.setAttribute('aria-disabled','true'); b.setAttribute('tabindex','-1'); b.addEventListener('click',()=>{const msgs={en:'Closed in winter (Dec–Feb) due to heavy snow and strong winds',ja:'冬季休業中です（12〜2月：積雪・強風のため）'};const okiMsg='冬は休みだけんの（12〜2月：雪と風がえらいけん）';toast(document.body.classList.contains('lang-oki')?okiMsg:(currentLang==='en'?msgs.en:msgs.ja))}); }
+    else b.addEventListener('click',()=>selectMonth(m));
     g.appendChild(b);
   });
   const n=document.createElement('p');
   n.style.cssText='grid-column:span 3;text-align:center;color:rgba(255,255,255,0.2);font-size:10px;margin-top:12px;letter-spacing:0.1em';
-  n.innerHTML='<span data-lang="ja">12–2月 冬季休業（積雪・強風のため）</span><span data-lang="en">Closed Dec–Feb (heavy snow & strong winds)</span>';
+  n.innerHTML='<span data-lang="ja">12–2月 冬季休業（積雪・強風のため）</span><span data-lang="en">Closed Dec–Feb (heavy snow & strong winds)</span><span data-lang="oki">12–2月は休みだけん（雪と風がえらいけん）</span>';
   g.appendChild(n);
 }
 
@@ -1459,14 +1710,14 @@ function showContent(m){
   document.querySelectorAll('.month-btn').forEach(b=>b.classList.remove('selected'));
   document.getElementById(`month-${m}`).classList.add('selected');
   document.getElementById('month-badge').textContent=currentLang==='en'?d.name.en:d.name.ja;
-  document.getElementById('month-tagline').innerHTML=`<span data-lang="ja">${d.tagline.ja}</span><span data-lang="en">${d.tagline.en}</span>`;
+  document.getElementById('month-tagline').innerHTML=`<span data-lang="ja">${d.tagline.ja}</span><span data-lang="en">${d.tagline.en}</span>${d.tagline.oki?`<span data-lang="oki">${d.tagline.oki}</span>`:''}`;
 
   renderWeather(d.weather);
   document.getElementById('clothing-text-ja').textContent=d.clothing.ja;
   document.getElementById('clothing-text-en').textContent=d.clothing.en;
   document.getElementById('food-text-ja').textContent=d.food.ja;
   document.getElementById('food-text-en').textContent=d.food.en;
-  renderFoodPhotos(d.foodPhotos);
+  renderFoodPhotos(d.foodPhotos,d.name.ja);
   renderSpots();renderEvents(d.events);renderActivities();renderPacking(d.packing);
   renderFerry(m);
   const candleSec=document.getElementById('sec-candle');
@@ -1475,7 +1726,9 @@ function showContent(m){
   document.getElementById('tips-text-en').textContent=d.tips.en;
 
   document.getElementById('content').classList.remove('hidden');
+  // Re-apply language mode after dynamic content render
   if(currentLang==='en') document.body.classList.add('lang-en');
+  applyOkiFallback();
   lucide.createIcons();
   initReveal();
   history.replaceState(null,'',`?m=${m}`);
@@ -1516,15 +1769,16 @@ function renderWeather(w){
     <div class="weather-cell"><div class="weather-val">${w.sun}<span class="weather-unit">h</span></div><div class="weather-label"><span data-lang="ja">日照</span><span data-lang="en">Sun</span></div></div>`;
 }
 
-function renderFoodPhotos(p){
-  document.getElementById('food-photos').innerHTML=p.map(u=>`<img src="${u}" alt="" loading="lazy" onerror="this.style.display='none'">`).join('');
+function renderFoodPhotos(p,monthName){
+  const alt=monthName?`${monthName}の夕食`:'くすぶるハウスの夕食';
+  document.getElementById('food-photos').innerHTML=p.map((u,i)=>`<img src="${u}" alt="${alt} ${i+1}" loading="lazy" onerror="this.style.display='none'">`).join('');
 }
 
 function renderSpots(){
   const row=document.getElementById('spots-row');
   row.innerHTML=SPOTS.map(s=>{
     const bg=s.photo?`background-image:url('${s.photo}')`:`background:${s.gradient}`;
-    return `<div class="spot-card"><div class="spot-visual" style="${bg}"></div><div class="spot-info"><h4 style="font-size:14px;font-weight:500;margin-bottom:6px"><span data-lang="ja">${s.name.ja}</span><span data-lang="en">${s.name.en}</span></h4><p style="font-size:12px;color:var(--text-body);line-height:1.8;margin-bottom:10px"><span data-lang="ja">${s.desc.ja}</span><span data-lang="en">${s.desc.en}</span></p><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:10px;color:var(--text-body)"><span data-lang="ja">\u{1F697} ${s.drive.ja}</span><span data-lang="en">\u{1F697} ${s.drive.en}</span></span><div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:10px;color:var(--text-muted);letter-spacing:0.05em"><span data-lang="ja">${s.season.ja}</span><span data-lang="en">${s.season.en}</span></span><a href="${s.map}" target="_blank" class="map-pill"><i data-lucide="map-pin" style="width:10px;height:10px"></i>Map</a></div></div></div></div>`;
+    return `<div class="spot-card"><div class="spot-visual" role="img" aria-label="${s.name.ja}" style="${bg}"></div><div class="spot-info"><h4 style="font-size:14px;font-weight:500;margin-bottom:6px"><span data-lang="ja">${s.name.ja}</span><span data-lang="en">${s.name.en}</span></h4><p style="font-size:12px;color:var(--text-body);line-height:1.8;margin-bottom:10px"><span data-lang="ja">${s.desc.ja}</span><span data-lang="en">${s.desc.en}</span></p><div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:10px;color:var(--text-body)"><i data-lucide="car" style="width:10px;height:10px;display:inline;vertical-align:-1px"></i> <span data-lang="ja">${s.drive.ja}</span><span data-lang="en">${s.drive.en}</span></span><div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:10px;color:var(--text-muted);letter-spacing:0.05em"><span data-lang="ja">${s.season.ja}</span><span data-lang="en">${s.season.en}</span></span><a href="${s.map}" target="_blank" class="map-pill"><i data-lucide="map-pin" style="width:10px;height:10px"></i>Map</a></div></div></div></div>`;
   }).join('');
   row.addEventListener('scroll',updateSpotArrows);
   updateSpotArrows();
@@ -1548,7 +1802,7 @@ function updateSpotArrows(){
 
 function renderEvents(ev){
   const c=document.getElementById('events-list');
-  if(!ev||!ev.length){c.innerHTML=`<p class="sec-body" style="padding:8px 0"><span data-lang="ja">大きなイベントはありませんが、島のゆったりした日常を楽しめます。</span><span data-lang="en">No major events, but enjoy the relaxed island pace.</span></p>`;return}
+  if(!ev||!ev.length){c.innerHTML=`<p class="sec-body" style="padding:8px 0"><span data-lang="ja">この月は大きなイベントの予定はありません。その分、静かな島の日常をゆっくり味わえる——それも隠岐の贅沢です。</span><span data-lang="en">No major events this month. But that means you get to savor the quiet rhythm of island life — a luxury in itself.</span></p>`;return}
   c.innerHTML=ev.map(e=>`<div class="event-item"><p class="sec-body" data-lang="ja">${e.ja}</p><p class="sec-body" data-lang="en">${e.en}</p></div>`).join('');
 }
 
@@ -1563,15 +1817,28 @@ function renderActivities(){
   }).join('');
 }
 
+function getPackData(month){
+  const raw=localStorage.getItem(`kpack-${month}`);
+  if(!raw) return {};
+  const d=JSON.parse(raw);
+  // Expire after 90 days
+  if(d._ts && Date.now()-d._ts > 90*24*60*60*1000){
+    localStorage.removeItem(`kpack-${month}`);
+    return {};
+  }
+  return d;
+}
+
 function renderPacking(items){
   const c=document.getElementById('packing-list');
-  const s=JSON.parse(localStorage.getItem(`kpack-${currentMonth}`)||'{}');
+  const s=getPackData(currentMonth);
   c.innerHTML=items.map((k,i)=>{const it=PACKING[k];if(!it)return'';const ch=s[k]?'checked':'';return`<div class="check-row${ch?' checked':''}"><input type="checkbox" id="p${i}" ${ch} onchange="togglePack('${k}',this)"><label for="p${i}"><span data-lang="ja">${it.ja}</span><span data-lang="en">${it.en}</span></label></div>`}).join('');
 }
 
 function togglePack(k,el){
-  const s=JSON.parse(localStorage.getItem(`kpack-${currentMonth}`)||'{}');
-  s[k]=el.checked;localStorage.setItem(`kpack-${currentMonth}`,JSON.stringify(s));
+  const s=getPackData(currentMonth);
+  s[k]=el.checked;s._ts=Date.now();
+  localStorage.setItem(`kpack-${currentMonth}`,JSON.stringify(s));
   el.closest('.check-row').classList.toggle('checked',el.checked);
 }
 
@@ -1608,11 +1875,12 @@ function renderFerry(m){
       </div>
       <div style="border-top:1px solid var(--border-light);padding:14px 0 0">
         <p style="font-size:12px;color:var(--accent-warm);line-height:1.7">
-          <span data-lang="ja">💡 ${f.note.ja}</span><span data-lang="en">💡 ${f.note.en}</span>
+          <i data-lucide="lightbulb" style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:4px"></i><span data-lang="ja">${f.note.ja}</span><span data-lang="en">${f.note.en}</span>
         </p>
       </div>
     </div>`;
   if(currentLang==='en') document.body.classList.add('lang-en');
+  applyOkiFallback(document.getElementById('ferry-info'));
 }
 
 function shareGuide(){
@@ -1623,8 +1891,8 @@ function shareGuide(){
 function clip(t){navigator.clipboard.writeText(t).then(()=>toast(currentLang==='en'?'Link copied!':'リンクをコピーしました'))}
 function toast(m){
   const e=document.querySelector('.toast');if(e)e.remove();
-  const t=document.createElement('div');t.className='toast';t.textContent=m;
-  document.body.appendChild(t);setTimeout(()=>t.remove(),2000);
+  const t=document.createElement('div');t.className='toast';t.textContent=m;t.setAttribute('role','status');
+  document.body.appendChild(t);setTimeout(()=>t.remove(),3000);
 }
 function resetMonth(){
   const veil=document.getElementById('page-veil');
@@ -1639,6 +1907,37 @@ function resetMonth(){
   },350);
 }
 
+function scrollToSec(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const nav=document.getElementById('sec-nav');
+  const offset=nav?nav.offsetHeight:0;
+  window.scrollTo({top:el.offsetTop-offset,behavior:'smooth'});
+}
+
+function updateSecNav(){
+  const nav=document.getElementById('sec-nav');
+  if(!nav)return;
+  const items=nav.querySelectorAll('.sec-nav-item');
+  const navH=nav.offsetHeight+10;
+  const sections=['sec-arrival','sec-weather','sec-clothing','sec-food','sec-spots','sec-packing','sec-ferry'];
+  let activeIdx=0;
+  sections.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el&&window.scrollY>=el.offsetTop-navH-80) activeIdx=i;
+  });
+  items.forEach((it,i)=>it.classList.toggle('active',i===activeIdx));
+  // Auto-scroll nav to active item
+  const activeItem=items[activeIdx];
+  if(activeItem){
+    const navRect=nav.getBoundingClientRect();
+    const itemRect=activeItem.getBoundingClientRect();
+    if(itemRect.left<navRect.left||itemRect.right>navRect.right){
+      activeItem.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    }
+  }
+}
+
 function initReveal(){
   const obs=new IntersectionObserver((entries)=>{
     entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});
@@ -1647,7 +1946,9 @@ function initReveal(){
 }
 
 window.addEventListener('scroll',()=>{
-  document.getElementById('back-top').classList.toggle('visible',window.scrollY>600);
+  const contentVisible=!document.getElementById('content').classList.contains('hidden');
+  document.getElementById('back-top').classList.toggle('visible',window.scrollY>600&&contentVisible);
+  updateSecNav();
 });
 
 function runIntro(){
