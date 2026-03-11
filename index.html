@@ -167,7 +167,8 @@
         <div>
           <div class="text-sand-400 mb-1 text-[10px]" data-lang="ja">夕食</div>
           <div class="text-sand-400 mb-1 text-[10px]" data-lang="en">Dinner</div>
-          <div class="text-white font-bold text-base">18:30</div>
+          <div class="text-white font-bold text-base" data-lang="ja">18:30頃から</div>
+          <div class="text-white font-bold text-base" data-lang="en">From ~18:30</div>
         </div>
       </div>
     </div>
@@ -204,8 +205,8 @@
         <div class="flex justify-between items-center">
           <span class="text-xs text-sand-500" data-lang="ja">ネットワーク名</span>
           <span class="text-xs text-sand-500" data-lang="en">Network</span>
-          <button onclick="copyText('kusuburu-guest', this)" class="font-mono font-bold text-sm text-sand-800 bg-white px-3 py-1.5 rounded-lg hover:bg-sand-100 transition-colors flex items-center gap-2">
-            kusuburu-guest
+          <button onclick="copyText('KUSUBURUHOUSE', this)" class="font-mono font-bold text-sm text-sand-800 bg-white px-3 py-1.5 rounded-lg hover:bg-sand-100 transition-colors flex items-center gap-2">
+            KUSUBURUHOUSE
             <i data-lucide="copy" class="w-3.5 h-3.5 text-sand-400"></i>
           </button>
         </div>
@@ -213,10 +214,12 @@
         <div class="flex justify-between items-center">
           <span class="text-xs text-sand-500" data-lang="ja">パスワード</span>
           <span class="text-xs text-sand-500" data-lang="en">Password</span>
-          <button onclick="copyText('oki-kusuburu', this)" class="font-mono font-bold text-sm text-sand-800 bg-white px-3 py-1.5 rounded-lg hover:bg-sand-100 transition-colors flex items-center gap-2">
-            oki-kusuburu
-            <i data-lucide="copy" class="w-3.5 h-3.5 text-sand-400"></i>
-          </button>
+          <span class="font-mono font-bold text-sm text-sand-800 bg-white px-3 py-1.5 rounded-lg flex items-center gap-2" data-lang="ja">
+            確認中
+          </span>
+          <span class="font-mono font-bold text-sm text-sand-800 bg-white px-3 py-1.5 rounded-lg flex items-center gap-2" data-lang="en">
+            TBD
+          </span>
         </div>
       </div>
     </section>
@@ -269,14 +272,14 @@
       </div>
       <div class="space-y-2.5">
         <div class="flex items-start gap-3 bg-sand-50 rounded-xl p-3">
-          <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <i data-lucide="wine-off" class="w-4 h-4 text-red-400"></i>
+          <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i data-lucide="beer" class="w-4 h-4 text-amber-500"></i>
           </div>
           <div>
-            <div class="font-bold text-sm" data-lang="ja">飲み物の持ち込みについて</div>
+            <div class="font-bold text-sm" data-lang="ja">飲み物について</div>
             <div class="font-bold text-sm" data-lang="en">About Beverages</div>
-            <div class="text-xs text-sand-600 mt-0.5" data-lang="ja">宿に飲み物のご用意はありません。チェックイン前にお買い求めください。</div>
-            <div class="text-xs text-sand-600 mt-0.5" data-lang="en">No beverages provided. Please purchase before check-in.</div>
+            <div class="text-xs text-sand-600 mt-0.5" data-lang="ja">缶ビールや地酒などのご用意はあります、持ち込みもOKです。</div>
+            <div class="text-xs text-sand-600 mt-0.5" data-lang="en">Canned beer and local sake are available. Bringing your own is also OK.</div>
           </div>
         </div>
         <div class="flex items-start gap-3 bg-sand-50 rounded-xl p-3">
@@ -387,34 +390,6 @@
         </div>
       </div>
       <div class="space-y-2.5">
-        <div class="bg-sand-50 rounded-xl p-4">
-          <div class="flex justify-between items-start">
-            <div>
-              <div class="font-bold text-sm" data-lang="ja">五箇商店</div>
-              <div class="font-bold text-sm" data-lang="en">Goka Shop</div>
-              <div class="text-[11px] text-sand-600 mt-0.5" data-lang="ja">食料品・日用品</div>
-              <div class="text-[11px] text-sand-600 mt-0.5" data-lang="en">Groceries & daily goods</div>
-            </div>
-            <div class="text-right">
-              <div class="text-xs font-bold text-sand-700">8:00〜19:00</div>
-              <div class="text-[10px] text-red-500 font-bold mt-0.5" data-lang="ja">日曜定休</div>
-              <div class="text-[10px] text-red-500 font-bold mt-0.5" data-lang="en">Closed Sunday</div>
-            </div>
-          </div>
-        </div>
-        <div class="bg-sand-50 rounded-xl p-4">
-          <div class="flex justify-between items-start">
-            <div>
-              <div class="font-bold text-sm">A-COOP</div>
-              <div class="text-[11px] text-sand-600 mt-0.5" data-lang="ja">スーパーマーケット（西郷）</div>
-              <div class="text-[11px] text-sand-600 mt-0.5" data-lang="en">Supermarket (Saigo)</div>
-            </div>
-            <div class="text-right">
-              <div class="text-xs font-bold text-sand-700" data-lang="ja">〜19時</div>
-              <div class="text-xs font-bold text-sand-700" data-lang="en">Until 7 PM</div>
-            </div>
-          </div>
-        </div>
         <a href="https://www.google.com/maps/search/?api=1&query=%E3%82%B9%E3%83%88%E3%82%A2%E3%83%BC%E3%81%8B%E3%81%BF%E3%82%84+%E9%9A%A0%E5%B2%90%E3%81%AE%E5%B3%B6%E7%94%BA" target="_blank" class="block bg-sand-50 rounded-xl p-4 hover:bg-sand-100 transition-colors">
           <div class="flex justify-between items-start">
             <div>
@@ -433,8 +408,8 @@
             <div>
               <div class="font-bold text-sm" data-lang="ja">新屋敷商店</div>
               <div class="font-bold text-sm" data-lang="en">Shinoyashiki Store</div>
-              <div class="text-[11px] text-sand-600 mt-0.5" data-lang="ja">惣菜・弁当（南方地区）</div>
-              <div class="text-[11px] text-sand-600 mt-0.5" data-lang="en">Deli & bento (Minamikata area)</div>
+              <div class="text-[11px] text-sand-600 mt-0.5" data-lang="ja">お菓子・飲み物・タバコ（南方地区）</div>
+              <div class="text-[11px] text-sand-600 mt-0.5" data-lang="en">Snacks, drinks & tobacco (Minamikata area)</div>
             </div>
             <div class="text-right">
               <div class="text-[10px] text-sand-500 mt-0.5"><i data-lucide="map-pin" class="w-3 h-3 inline"></i> Map</div>
