@@ -23,7 +23,7 @@ function corsHeaders(origin, allowedOrigin) {
   const allowed = origin === allowedOrigin || origin === 'https://mako3gokushi-boop.github.io';
   return {
     'Access-Control-Allow-Origin': allowed ? origin : allowedOrigin,
-    'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Max-Age': '86400',
   };
@@ -54,10 +54,6 @@ async function checkRateLimit(clientIP, env) {
   // Use D1 for simple rate limiting
   const now = Math.floor(Date.now() / 1000);
   const windowStart = now - RATE_LIMIT_WINDOW;
-
-  await env.DB.prepare(
-    `CREATE TABLE IF NOT EXISTS rate_limits (ip TEXT, timestamp INTEGER)`
-  ).run();
 
   // Clean old entries
   await env.DB.prepare('DELETE FROM rate_limits WHERE timestamp < ?').bind(windowStart).run();
@@ -132,22 +128,22 @@ async function handleCheckin(request, env, origin) {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
   `).bind(
     id,
-    escapeHtml(data.name),
-    escapeHtml(data.furigana || ''),
+    data.name,
+    data.furigana || '',
     data.adults || 1,
     data.children || 0,
     data.checkin_date,
     data.checkout_date,
-    escapeHtml(data.phone),
-    escapeHtml(data.email || ''),
-    escapeHtml(data.zipcode || ''),
-    escapeHtml(data.address || ''),
+    data.phone,
+    data.email || '',
+    data.zipcode || '',
+    data.address || '',
     data.is_foreign ? 1 : 0,
-    escapeHtml(data.nationality || ''),
-    escapeHtml(data.passport_no || ''),
-    escapeHtml(data.transport || ''),
-    escapeHtml(data.allergies || ''),
-    escapeHtml(data.notes || '')
+    data.nationality || '',
+    data.passport_no || '',
+    data.transport || '',
+    data.allergies || '',
+    data.notes || ''
   ).run();
 
   // Send LINE notification (fire and forget)

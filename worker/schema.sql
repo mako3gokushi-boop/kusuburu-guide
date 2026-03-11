@@ -25,3 +25,8 @@ CREATE TABLE IF NOT EXISTS admin_tokens (
   token TEXT PRIMARY KEY,
   created_at TEXT DEFAULT (datetime('now'))
 );
+
+CREATE TABLE IF NOT EXISTS rate_limits (
+  ip TEXT,
+  timestamp INTEGER
+);
