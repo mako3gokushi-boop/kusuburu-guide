@@ -340,6 +340,32 @@ async function handleAdminCsvExport(request, env, origin) {
   });
 }
 
+async function handleAdminStats(request, env, origin) {
+  if (!await verifyAdmin(request, env)) {
+    return jsonResponse({ error: 'Unauthorized' }, 401, origin, env.ALLOWED_ORIGIN);
+  }
+
+  const [monthlyResult, nationalityResult, avgResult, totalResult] = await Promise.all([
+    env.DB.prepare(
+      "SELECT strftime('%Y-%m', checkin_date) as month, COUNT(*) as count FROM checkins GROUP BY month ORDER BY month DESC LIMIT 12"
+    ).all(),
+    env.DB.prepare(
+      "SELECT nationality, COUNT(*) as count FROM checkins WHERE is_foreign = 1 AND nationality != '' GROUP BY nationality ORDER BY count DESC"
+    ).all(),
+    env.DB.prepare(
+      "SELECT AVG(julianday(checkout_date) - julianday(checkin_date)) as avg_stay FROM checkins WHERE checkout_date IS NOT NULL AND checkin_date IS NOT NULL"
+    ).first(),
+    env.DB.prepare("SELECT COUNT(*) as total FROM checkins").first(),
+  ]);
+
+  return jsonResponse({
+    monthly: monthlyResult.results || [],
+    nationalities: nationalityResult.results || [],
+    avg_stay: avgResult ? Math.round((avgResult.avg_stay || 0) * 10) / 10 : 0,
+    total: totalResult ? totalResult.total : 0,
+  }, 200, origin, env.ALLOWED_ORIGIN);
+}
+
 // --- Main Router ---
 
 export default {
@@ -378,6 +404,9 @@ export default {
       // Admin endpoints
       if (path === '/admin/checkins' && method === 'GET') {
         return handleAdminCheckins(request, env, origin);
+      }
+      if (path === '/admin/stats' && method === 'GET') {
+        return handleAdminStats(request, env, origin);
       }
       if (path === '/admin/checkins/csv' && method === 'GET') {
         return handleAdminCsvExport(request, env, origin);

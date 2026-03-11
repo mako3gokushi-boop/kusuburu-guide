@@ -6,6 +6,7 @@
   <title>管理画面 | くすぶるハウス</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@0.474.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
@@ -137,7 +138,9 @@
           <h1 class="font-display text-base font-semibold">くすぶるハウス 管理画面</h1>
           <p class="text-sand-400 text-[10px] mt-0.5">Check-in Management</p>
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-2 items-center">
+          <button onclick="showTab('list')" id="tab-list" class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:white;">一覧</button>
+          <button onclick="showTab('stats')" id="tab-stats" class="btn btn-sm" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);">統計</button>
           <button onclick="exportCsv()" class="btn btn-secondary btn-sm flex items-center gap-1">
             <i data-lucide="download" class="w-3.5 h-3.5"></i> CSV
           </button>
@@ -148,8 +151,8 @@
       </div>
     </header>
 
-    <!-- Filters -->
-    <div class="max-w-5xl mx-auto px-4 py-4">
+    <!-- List View -->
+    <div id="view-list" class="max-w-5xl mx-auto px-4 py-4">
       <div class="card p-4 mb-4">
         <div class="flex flex-wrap gap-3 items-end">
           <div class="flex-1 min-w-[160px]">
@@ -177,7 +180,6 @@
         </div>
       </div>
 
-      <!-- Stats -->
       <div class="grid grid-cols-3 gap-3 mb-4">
         <div class="card p-3 text-center">
           <div class="text-2xl font-bold" id="stat-pending">-</div>
@@ -193,7 +195,6 @@
         </div>
       </div>
 
-      <!-- Table -->
       <div class="card responsive-table">
         <table id="checkins-table">
           <thead>
@@ -213,6 +214,44 @@
         </table>
       </div>
     </div>
+
+    <!-- Stats View -->
+    <div id="view-stats" class="max-w-5xl mx-auto px-4 py-4 hidden">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        <div class="card p-4 text-center">
+          <div class="text-3xl font-bold" id="stats-total">-</div>
+          <div class="text-[10px] text-sand-500 font-semibold mt-1">総宿泊者数</div>
+        </div>
+        <div class="card p-4 text-center">
+          <div class="text-3xl font-bold text-amber-600" id="stats-avg-stay">-</div>
+          <div class="text-[10px] text-sand-500 font-semibold mt-1">平均滞在日数</div>
+        </div>
+        <div class="card p-4 text-center">
+          <div class="text-3xl font-bold text-green-600" id="stats-this-month">-</div>
+          <div class="text-[10px] text-sand-500 font-semibold mt-1">今月の宿泊者</div>
+        </div>
+        <div class="card p-4 text-center">
+          <div class="text-3xl font-bold text-indigo-600" id="stats-nationalities">-</div>
+          <div class="text-[10px] text-sand-500 font-semibold mt-1">外国籍ゲスト国数</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="card p-5">
+          <h3 class="font-display font-semibold text-sm mb-3">月別宿泊者数</h3>
+          <div style="position:relative;height:280px;">
+            <canvas id="chart-monthly"></canvas>
+          </div>
+        </div>
+        <div class="card p-5" id="nationality-chart-card">
+          <h3 class="font-display font-semibold text-sm mb-3">国籍別ゲスト</h3>
+          <div style="position:relative;height:280px;">
+            <canvas id="chart-nationality"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- Detail Modal -->
@@ -489,6 +528,99 @@
         loadCheckins();
       } catch (e) {
         alert('削除に失敗しました');
+      }
+    }
+
+    // === Tabs ===
+    let currentTab = 'list';
+    let monthlyChart = null;
+    let nationalityChart = null;
+
+    function showTab(tab) {
+      currentTab = tab;
+      document.getElementById('view-list').classList.toggle('hidden', tab !== 'list');
+      document.getElementById('view-stats').classList.toggle('hidden', tab !== 'stats');
+      document.getElementById('tab-list').style.background = tab === 'list' ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)';
+      document.getElementById('tab-list').style.color = tab === 'list' ? 'white' : 'rgba(255,255,255,0.5)';
+      document.getElementById('tab-stats').style.background = tab === 'stats' ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)';
+      document.getElementById('tab-stats').style.color = tab === 'stats' ? 'white' : 'rgba(255,255,255,0.5)';
+      if (tab === 'stats') loadStats();
+    }
+
+    async function loadStats() {
+      try {
+        const res = await fetch(API_URL + '/admin/stats', {
+          headers: { 'Authorization': 'Bearer ' + authToken },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+
+        document.getElementById('stats-total').textContent = data.total || 0;
+        document.getElementById('stats-avg-stay').textContent = data.avg_stay ? data.avg_stay + '泊' : '-';
+
+        const thisMonth = new Date().toISOString().slice(0, 7);
+        const thisMonthData = (data.monthly || []).find(m => m.month === thisMonth);
+        document.getElementById('stats-this-month').textContent = thisMonthData ? thisMonthData.count : 0;
+        document.getElementById('stats-nationalities').textContent = (data.nationalities || []).length;
+
+        // Monthly chart
+        const monthly = (data.monthly || []).reverse();
+        const monthLabels = monthly.map(m => m.month);
+        const monthCounts = monthly.map(m => m.count);
+
+        if (monthlyChart) monthlyChart.destroy();
+        monthlyChart = new Chart(document.getElementById('chart-monthly'), {
+          type: 'bar',
+          data: {
+            labels: monthLabels,
+            datasets: [{
+              label: '宿泊者数',
+              data: monthCounts,
+              backgroundColor: 'rgba(184,147,79,0.6)',
+              borderColor: 'rgba(184,147,79,1)',
+              borderWidth: 1,
+              borderRadius: 4,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, ticks: { stepSize: 1 } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+
+        // Nationality chart
+        const nats = data.nationalities || [];
+        const natCard = document.getElementById('nationality-chart-card');
+        if (nats.length === 0) {
+          natCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">国籍別ゲスト</h3><p class="text-sand-400 text-sm text-center py-12">外国籍ゲストのデータがありません</p>';
+        } else {
+          if (nationalityChart) nationalityChart.destroy();
+          const colors = ['#b8934f','#7a7060','#3d3832','#d4cec3','#9a9080','#5c5448','#e8e4dc','#2a2520'];
+          nationalityChart = new Chart(document.getElementById('chart-nationality'), {
+            type: 'doughnut',
+            data: {
+              labels: nats.map(n => n.nationality),
+              datasets: [{
+                data: nats.map(n => n.count),
+                backgroundColor: nats.map((_, i) => colors[i % colors.length]),
+                borderWidth: 2,
+                borderColor: '#fff',
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
+            }
+          });
+        }
+      } catch (e) {
+        console.error('Stats load failed:', e);
       }
     }
 
