@@ -269,18 +269,40 @@ async function handleAdminDelete(env, id, request, origin) {
   return jsonResponse({ success: true }, 200, origin, env.ALLOWED_ORIGIN);
 }
 
-async function handleAdminUpdateStatus(env, id, request, origin) {
+async function handleAdminUpdate(env, id, request, origin) {
   if (!await verifyAdmin(request, env)) {
     return jsonResponse({ error: 'Unauthorized' }, 401, origin, env.ALLOWED_ORIGIN);
   }
 
   const data = await request.json();
-  const validStatuses = ['pending', 'checked_in', 'checked_out'];
-  if (!validStatuses.includes(data.status)) {
-    return jsonResponse({ error: 'Invalid status' }, 400, origin, env.ALLOWED_ORIGIN);
+  const updates = [];
+  const params = [];
+
+  // Status update
+  if (data.status) {
+    const validStatuses = ['pending', 'checked_in', 'checked_out'];
+    if (!validStatuses.includes(data.status)) {
+      return jsonResponse({ error: 'Invalid status' }, 400, origin, env.ALLOWED_ORIGIN);
+    }
+    updates.push('status = ?');
+    params.push(data.status);
   }
 
-  await env.DB.prepare('UPDATE checkins SET status = ? WHERE id = ?').bind(data.status, id).run();
+  // Checkout date update (for extending stay)
+  if (data.checkout_date) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(data.checkout_date)) {
+      return jsonResponse({ error: 'Invalid date format (YYYY-MM-DD)' }, 400, origin, env.ALLOWED_ORIGIN);
+    }
+    updates.push('checkout_date = ?');
+    params.push(data.checkout_date);
+  }
+
+  if (updates.length === 0) {
+    return jsonResponse({ error: 'No valid fields to update' }, 400, origin, env.ALLOWED_ORIGIN);
+  }
+
+  params.push(id);
+  await env.DB.prepare(`UPDATE checkins SET ${updates.join(', ')} WHERE id = ?`).bind(...params).run();
   return jsonResponse({ success: true }, 200, origin, env.ALLOWED_ORIGIN);
 }
 
@@ -321,6 +343,15 @@ async function handleAdminCsvExport(request, env, origin) {
 // --- Main Router ---
 
 export default {
+  async scheduled(event, env, ctx) {
+    // Auto-checkout: JST 06:00 daily (UTC 21:00)
+    const today = new Date().toISOString().split('T')[0];
+    const result = await env.DB.prepare(
+      "UPDATE checkins SET status = 'checked_out' WHERE checkout_date < ? AND status = 'checked_in'"
+    ).bind(today).run();
+    console.log(`Auto-checkout: ${result.meta.changes} records updated`);
+  },
+
   async fetch(request, env) {
     const url = new URL(request.url);
     const path = url.pathname;
@@ -357,7 +388,7 @@ export default {
         const id = checkinMatch[1];
         if (method === 'GET') return handleAdminCheckinDetail(env, id, request, origin);
         if (method === 'DELETE') return handleAdminDelete(env, id, request, origin);
-        if (method === 'PUT') return handleAdminUpdateStatus(env, id, request, origin);
+        if (method === 'PUT') return handleAdminUpdate(env, id, request, origin);
       }
 
       const photoMatch = path.match(/^\/admin\/photo\/([a-f0-9-]+)$/);

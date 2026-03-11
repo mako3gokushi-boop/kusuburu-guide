@@ -11,5 +11,8 @@
   ],
   "vars": {
     "ALLOWED_ORIGIN": "https://kusuburu.ritoukoubou.com"
+  },
+  "triggers": {
+    "crons": ["0 21 * * *"]
   }
 }

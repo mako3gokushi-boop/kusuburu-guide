@@ -386,7 +386,13 @@
             <div><span class="text-sand-400 text-xs">大人</span><br>${c.adults||0}名</div>
             <div><span class="text-sand-400 text-xs">子供</span><br>${c.children||0}名</div>
             <div><span class="text-sand-400 text-xs">チェックイン</span><br>${c.checkin_date||'-'}</div>
-            <div><span class="text-sand-400 text-xs">チェックアウト</span><br>${c.checkout_date||'-'}</div>
+            <div>
+              <span class="text-sand-400 text-xs">チェックアウト</span><br>
+              <div class="flex items-center gap-2 mt-1">
+                <input type="date" id="edit-checkout-${c.id}" value="${c.checkout_date||''}" class="form-input" style="width:auto;padding:4px 8px;font-size:12px;">
+                <button onclick="updateCheckoutDate('${c.id}')" class="btn btn-secondary btn-sm">更新</button>
+              </div>
+            </div>
             <div><span class="text-sand-400 text-xs">電話番号</span><br>${esc(c.phone||'-')}</div>
             <div><span class="text-sand-400 text-xs">メール</span><br>${esc(c.email||'-')}</div>
             <div class="col-span-2"><span class="text-sand-400 text-xs">住所</span><br>${esc(c.zipcode||'')} ${esc(c.address||'-')}</div>
@@ -441,6 +447,26 @@
     }
 
     // === Actions ===
+    async function updateCheckoutDate(id) {
+      const newDate = document.getElementById('edit-checkout-' + id).value;
+      if (!newDate) { alert('日付を選択してください'); return; }
+      try {
+        const res = await fetch(API_URL + '/admin/checkins/' + id, {
+          method: 'PUT',
+          headers: { 'Authorization': 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ checkout_date: newDate }),
+        });
+        if (res.ok) {
+          alert('チェックアウト日を更新しました');
+          loadCheckins();
+        } else {
+          alert('更新に失敗しました');
+        }
+      } catch (e) {
+        alert('更新に失敗しました');
+      }
+    }
+
     async function updateStatus(id, status) {
       try {
         await fetch(API_URL + '/admin/checkins/' + id, {
