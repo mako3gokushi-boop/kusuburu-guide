@@ -217,6 +217,24 @@
 
     <!-- Stats View -->
     <div id="view-stats" class="max-w-5xl mx-auto px-4 py-4 hidden">
+      <!-- Period Filter -->
+      <div class="card p-4 mb-4">
+        <div class="flex flex-wrap gap-3 items-end">
+          <div>
+            <label class="text-[11px] font-semibold text-sand-500 block mb-1">開始月</label>
+            <input type="month" id="stats-from" class="form-input" style="width:auto;">
+          </div>
+          <div>
+            <label class="text-[11px] font-semibold text-sand-500 block mb-1">終了月</label>
+            <input type="month" id="stats-to" class="form-input" style="width:auto;">
+          </div>
+          <button onclick="loadStats()" class="btn btn-primary btn-sm">集計</button>
+          <button onclick="clearStatsFilter()" class="btn btn-secondary btn-sm">全期間</button>
+          <button onclick="exportStatsCsv()" class="btn btn-secondary btn-sm flex items-center gap-1"><i data-lucide="download" class="w-3 h-3"></i> 統計CSV</button>
+        </div>
+      </div>
+
+      <!-- Summary Cards -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         <div class="card p-4 text-center">
           <div class="text-3xl font-bold" id="stats-total">-</div>
@@ -231,23 +249,52 @@
           <div class="text-[10px] text-sand-500 font-semibold mt-1">今月の宿泊者</div>
         </div>
         <div class="card p-4 text-center">
-          <div class="text-3xl font-bold text-indigo-600" id="stats-nationalities">-</div>
-          <div class="text-[10px] text-sand-500 font-semibold mt-1">外国籍ゲスト国数</div>
+          <div class="text-3xl font-bold text-indigo-600" id="stats-occupancy">-</div>
+          <div class="text-[10px] text-sand-500 font-semibold mt-1">今月稼働率（3部屋）</div>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Charts Row 1 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div class="card p-5">
-          <h3 class="font-display font-semibold text-sm mb-3">月別宿泊者数</h3>
+          <h3 class="font-display font-semibold text-sm mb-3">月別宿泊者数 <span class="text-sand-400 text-[10px] font-normal">（クリックで詳細）</span></h3>
           <div style="position:relative;height:280px;">
             <canvas id="chart-monthly"></canvas>
           </div>
         </div>
+        <div class="card p-5">
+          <h3 class="font-display font-semibold text-sm mb-3">曜日別チェックイン傾向</h3>
+          <div style="position:relative;height:280px;">
+            <canvas id="chart-weekday"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row 2 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div class="card p-5" id="nationality-chart-card">
           <h3 class="font-display font-semibold text-sm mb-3">国籍別ゲスト</h3>
           <div style="position:relative;height:280px;">
             <canvas id="chart-nationality"></canvas>
           </div>
+        </div>
+        <div class="card p-5" id="repeater-card">
+          <h3 class="font-display font-semibold text-sm mb-3">リピーター</h3>
+          <div id="repeater-list" class="text-sm" style="max-height:280px;overflow-y:auto;"></div>
+        </div>
+      </div>
+
+      <!-- Monthly Detail (shown when clicking a bar) -->
+      <div id="monthly-detail" class="card p-5 mb-4 hidden">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-display font-semibold text-sm" id="monthly-detail-title">-</h3>
+          <button onclick="document.getElementById('monthly-detail').classList.add('hidden')" class="text-sand-400 hover:text-sand-700 text-xs">閉じる</button>
+        </div>
+        <div class="responsive-table">
+          <table>
+            <thead><tr><th>氏名</th><th>人数</th><th>チェックイン</th><th>チェックアウト</th><th>ステータス</th></tr></thead>
+            <tbody id="monthly-detail-body"></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -535,6 +582,9 @@
     let currentTab = 'list';
     let monthlyChart = null;
     let nationalityChart = null;
+    let weekdayChart = null;
+    let lastStatsData = null;
+    const ROOM_COUNT = 3;
 
     function showTab(tab) {
       currentTab = tab;
@@ -547,23 +597,44 @@
       if (tab === 'stats') loadStats();
     }
 
+    function clearStatsFilter() {
+      document.getElementById('stats-from').value = '';
+      document.getElementById('stats-to').value = '';
+      loadStats();
+    }
+
     async function loadStats() {
       try {
-        const res = await fetch(API_URL + '/admin/stats', {
+        const params = new URLSearchParams();
+        const from = document.getElementById('stats-from').value;
+        const to = document.getElementById('stats-to').value;
+        if (from) params.set('from', from);
+        if (to) params.set('to', to);
+
+        const res = await fetch(API_URL + '/admin/stats?' + params.toString(), {
           headers: { 'Authorization': 'Bearer ' + authToken },
         });
         if (!res.ok) return;
         const data = await res.json();
+        lastStatsData = data;
 
+        // Summary cards
         document.getElementById('stats-total').textContent = data.total || 0;
         document.getElementById('stats-avg-stay').textContent = data.avg_stay ? data.avg_stay + '泊' : '-';
 
         const thisMonth = new Date().toISOString().slice(0, 7);
         const thisMonthData = (data.monthly || []).find(m => m.month === thisMonth);
-        document.getElementById('stats-this-month').textContent = thisMonthData ? thisMonthData.count : 0;
-        document.getElementById('stats-nationalities').textContent = (data.nationalities || []).length;
+        const thisMonthCount = thisMonthData ? thisMonthData.count : 0;
+        document.getElementById('stats-this-month').textContent = thisMonthCount;
 
-        // Monthly chart
+        // Occupancy rate (this month)
+        const now = new Date();
+        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        const maxCapacity = ROOM_COUNT * daysInMonth;
+        const occupancy = maxCapacity > 0 ? Math.round((thisMonthCount / maxCapacity) * 100) : 0;
+        document.getElementById('stats-occupancy').textContent = occupancy + '%';
+
+        // Monthly bar chart
         const monthly = (data.monthly || []).reverse();
         const monthLabels = monthly.map(m => m.month);
         const monthCounts = monthly.map(m => m.count);
@@ -585,6 +656,12 @@
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            onClick: (e, elements) => {
+              if (elements.length > 0) {
+                const idx = elements[0].index;
+                showMonthlyDetail(monthLabels[idx]);
+              }
+            },
             plugins: { legend: { display: false } },
             scales: {
               y: { beginAtZero: true, ticks: { stepSize: 1 } },
@@ -593,12 +670,42 @@
           }
         });
 
-        // Nationality chart
+        // Weekday chart
+        const dowLabels = ['日', '月', '火', '水', '木', '金', '土'];
+        const dowData = [0, 0, 0, 0, 0, 0, 0];
+        (data.weekday || []).forEach(w => { dowData[w.dow] = w.count; });
+        const dowColors = dowData.map((_, i) => i === 0 || i === 6 ? 'rgba(239,68,68,0.5)' : 'rgba(184,147,79,0.5)');
+
+        if (weekdayChart) weekdayChart.destroy();
+        weekdayChart = new Chart(document.getElementById('chart-weekday'), {
+          type: 'bar',
+          data: {
+            labels: dowLabels,
+            datasets: [{
+              label: 'チェックイン数',
+              data: dowData,
+              backgroundColor: dowColors,
+              borderRadius: 4,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, ticks: { stepSize: 1 } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+
+        // Nationality doughnut
         const nats = data.nationalities || [];
         const natCard = document.getElementById('nationality-chart-card');
         if (nats.length === 0) {
           natCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">国籍別ゲスト</h3><p class="text-sand-400 text-sm text-center py-12">外国籍ゲストのデータがありません</p>';
         } else {
+          natCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">国籍別ゲスト</h3><div style="position:relative;height:280px;"><canvas id="chart-nationality"></canvas></div>';
           if (nationalityChart) nationalityChart.destroy();
           const colors = ['#b8934f','#7a7060','#3d3832','#d4cec3','#9a9080','#5c5448','#e8e4dc','#2a2520'];
           nationalityChart = new Chart(document.getElementById('chart-nationality'), {
@@ -619,9 +726,89 @@
             }
           });
         }
+
+        // Repeaters
+        const repeaters = data.repeaters || [];
+        const rList = document.getElementById('repeater-list');
+        if (repeaters.length === 0) {
+          rList.innerHTML = '<p class="text-sand-400 text-center py-8">リピーターはまだいません</p>';
+        } else {
+          rList.innerHTML = repeaters.map(r =>
+            `<div class="flex items-center justify-between py-2 border-b border-sand-50">
+              <span class="font-medium">${esc(r.name)}</span>
+              <span class="status-badge" style="background:#fef3c7;color:#92400e;">${r.visits}回目</span>
+            </div>`
+          ).join('');
+        }
+
+        lucide.createIcons();
       } catch (e) {
         console.error('Stats load failed:', e);
       }
+    }
+
+    async function showMonthlyDetail(month) {
+      const detail = document.getElementById('monthly-detail');
+      const title = document.getElementById('monthly-detail-title');
+      const tbody = document.getElementById('monthly-detail-body');
+      title.textContent = month + ' の宿泊者';
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center text-sand-400 py-4">読み込み中...</td></tr>';
+      detail.classList.remove('hidden');
+      detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      try {
+        const res = await fetch(API_URL + '/admin/stats/monthly/' + month, {
+          headers: { 'Authorization': 'Bearer ' + authToken },
+        });
+        const data = await res.json();
+        const checkins = data.checkins || [];
+        if (checkins.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="text-center text-sand-400 py-4">データなし</td></tr>';
+          return;
+        }
+        tbody.innerHTML = checkins.map(c =>
+          `<tr>
+            <td class="font-medium">${esc(c.name)}</td>
+            <td>${c.adults||0}+${c.children||0}</td>
+            <td class="text-xs">${c.checkin_date||''}</td>
+            <td class="text-xs">${c.checkout_date||''}</td>
+            <td><span class="status-badge status-${c.status}">${statusLabels[c.status]||c.status}</span></td>
+          </tr>`
+        ).join('');
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-red-400 py-4">読み込みエラー</td></tr>';
+      }
+    }
+
+    function exportStatsCsv() {
+      if (!lastStatsData) { alert('先に統計を読み込んでください'); return; }
+      const d = lastStatsData;
+      const rows = [['月', '宿泊者数']];
+      (d.monthly || []).forEach(m => rows.push([m.month, m.count]));
+      rows.push([]);
+      rows.push(['曜日', 'チェックイン数']);
+      const dowNames = ['日', '月', '火', '水', '木', '金', '土'];
+      const dowMap = {};
+      (d.weekday || []).forEach(w => { dowMap[w.dow] = w.count; });
+      for (let i = 0; i < 7; i++) rows.push([dowNames[i], dowMap[i] || 0]);
+      rows.push([]);
+      rows.push(['国籍', '人数']);
+      (d.nationalities || []).forEach(n => rows.push([n.nationality, n.count]));
+      rows.push([]);
+      rows.push(['リピーター', '回数']);
+      (d.repeaters || []).forEach(r => rows.push([r.name, r.visits]));
+      rows.push([]);
+      rows.push(['総宿泊者数', d.total]);
+      rows.push(['平均滞在日数', d.avg_stay]);
+
+      const csv = '\uFEFF' + rows.map(r => r.map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'stats.csv';
+      a.click();
+      URL.revokeObjectURL(url);
     }
 
     async function exportCsv() {

@@ -345,17 +345,43 @@ async function handleAdminStats(request, env, origin) {
     return jsonResponse({ error: 'Unauthorized' }, 401, origin, env.ALLOWED_ORIGIN);
   }
 
-  const [monthlyResult, nationalityResult, avgResult, totalResult] = await Promise.all([
-    env.DB.prepare(
-      "SELECT strftime('%Y-%m', checkin_date) as month, COUNT(*) as count FROM checkins GROUP BY month ORDER BY month DESC LIMIT 12"
-    ).all(),
-    env.DB.prepare(
-      "SELECT nationality, COUNT(*) as count FROM checkins WHERE is_foreign = 1 AND nationality != '' GROUP BY nationality ORDER BY count DESC"
-    ).all(),
-    env.DB.prepare(
-      "SELECT AVG(julianday(checkout_date) - julianday(checkin_date)) as avg_stay FROM checkins WHERE checkout_date IS NOT NULL AND checkin_date IS NOT NULL"
-    ).first(),
-    env.DB.prepare("SELECT COUNT(*) as total FROM checkins").first(),
+  const url = new URL(request.url);
+  const from = url.searchParams.get('from') || '';
+  const to = url.searchParams.get('to') || '';
+
+  let dateFilter = '';
+  const dateParams = [];
+  if (from) { dateFilter += " AND strftime('%Y-%m', checkin_date) >= ?"; dateParams.push(from); }
+  if (to) { dateFilter += " AND strftime('%Y-%m', checkin_date) <= ?"; dateParams.push(to); }
+
+  const monthlyStmt = env.DB.prepare(
+    "SELECT strftime('%Y-%m', checkin_date) as month, COUNT(*) as count FROM checkins WHERE 1=1" + dateFilter + " GROUP BY month ORDER BY month DESC LIMIT 24"
+  );
+  const nationalityStmt = env.DB.prepare(
+    "SELECT nationality, COUNT(*) as count FROM checkins WHERE is_foreign = 1 AND nationality != ''" + dateFilter + " GROUP BY nationality ORDER BY count DESC"
+  );
+  const avgStmt = env.DB.prepare(
+    "SELECT AVG(julianday(checkout_date) - julianday(checkin_date)) as avg_stay FROM checkins WHERE checkout_date IS NOT NULL AND checkin_date IS NOT NULL" + dateFilter
+  );
+  const totalStmt = env.DB.prepare(
+    "SELECT COUNT(*) as total FROM checkins WHERE 1=1" + dateFilter
+  );
+  const weekdayStmt = env.DB.prepare(
+    "SELECT CAST(strftime('%w', checkin_date) AS INTEGER) as dow, COUNT(*) as count FROM checkins WHERE 1=1" + dateFilter + " GROUP BY dow ORDER BY dow"
+  );
+  const repeaterStmt = env.DB.prepare(
+    "SELECT name, COUNT(*) as visits FROM checkins WHERE 1=1" + dateFilter + " GROUP BY name HAVING visits > 1 ORDER BY visits DESC LIMIT 20"
+  );
+
+  const bind = (stmt) => dateParams.length > 0 ? stmt.bind(...dateParams) : stmt;
+
+  const [monthlyResult, nationalityResult, avgResult, totalResult, weekdayResult, repeaterResult] = await Promise.all([
+    bind(monthlyStmt).all(),
+    bind(nationalityStmt).all(),
+    bind(avgStmt).first(),
+    bind(totalStmt).first(),
+    bind(weekdayStmt).all(),
+    bind(repeaterStmt).all(),
   ]);
 
   return jsonResponse({
@@ -363,7 +389,25 @@ async function handleAdminStats(request, env, origin) {
     nationalities: nationalityResult.results || [],
     avg_stay: avgResult ? Math.round((avgResult.avg_stay || 0) * 10) / 10 : 0,
     total: totalResult ? totalResult.total : 0,
+    weekday: weekdayResult.results || [],
+    repeaters: repeaterResult.results || [],
   }, 200, origin, env.ALLOWED_ORIGIN);
+}
+
+async function handleAdminStatsMonthly(request, env, origin, month) {
+  if (!await verifyAdmin(request, env)) {
+    return jsonResponse({ error: 'Unauthorized' }, 401, origin, env.ALLOWED_ORIGIN);
+  }
+
+  if (!/^\d{4}-\d{2}$/.test(month)) {
+    return jsonResponse({ error: 'Invalid month format (YYYY-MM)' }, 400, origin, env.ALLOWED_ORIGIN);
+  }
+
+  const result = await env.DB.prepare(
+    "SELECT id, name, furigana, adults, children, checkin_date, checkout_date, phone, status, created_at FROM checkins WHERE strftime('%Y-%m', checkin_date) = ? ORDER BY checkin_date"
+  ).bind(month).all();
+
+  return jsonResponse({ month, checkins: result.results || [] }, 200, origin, env.ALLOWED_ORIGIN);
 }
 
 // --- Main Router ---
@@ -407,6 +451,10 @@ export default {
       }
       if (path === '/admin/stats' && method === 'GET') {
         return handleAdminStats(request, env, origin);
+      }
+      const monthlyMatch = path.match(/^\/admin\/stats\/monthly\/(\d{4}-\d{2})$/);
+      if (monthlyMatch && method === 'GET') {
+        return handleAdminStatsMonthly(request, env, origin, monthlyMatch[1]);
       }
       if (path === '/admin/checkins/csv' && method === 'GET') {
         return handleAdminCsvExport(request, env, origin);
