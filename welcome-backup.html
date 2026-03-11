@@ -36,8 +36,8 @@
       --surface: #faf9f7;
       --surface-warm: #f5f3ef;
       --text-dark: #2a2520;
-      --text-body: #4a4238;
-      --text-muted: #635a4c;
+      --text-body: #5c5448;
+      --text-muted: #7a7060;
       --accent: #7a7060;
       --accent-warm: #b8934f;
       --border-light: rgba(42,37,32,0.06);
@@ -536,7 +536,6 @@
       50% { r: 22; opacity: 0.15 }
     }
     .map-marker { cursor: pointer }
-
     @media (prefers-reduced-motion: reduce) {
       .kusuburu-ring { animation: none !important }
       .map-marker:hover { transform: none }
@@ -546,7 +545,6 @@
       .intro-char { transition: none !important }
       .toast { animation: none !important }
       .lang-fading { transition: none !important; opacity: 1 }
-      .oki-toku-banner { animation: none !important; opacity: 1 }
       html { scroll-behavior: auto }
     }
 
@@ -613,34 +611,6 @@
       .spot-card { min-width: 340px }
       .service-img { width: 140px; height: 140px }
     }
-
-    /* おき得乗船券ポップアニメーション */
-    @keyframes okiTokuBounceIn {
-      0% { opacity: 0; transform: scale(0.3); }
-      50% { opacity: 1; transform: scale(1.08); }
-      70% { transform: scale(0.95); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-    /* おき得バナー共通 */
-    .oki-toku-banner {
-      opacity: 0;
-    }
-    .oki-toku-banner:hover {
-      transform: scale(1.05);
-      transition: transform 0.2s ease;
-    }
-    /* おき得バナー: 横長バナー中央 */
-    .oki-toku-sp {
-      display: block;
-      max-width: 320px;
-      margin: 0 auto 20px;
-    }
-    .oki-toku-sp img {
-      width: 100%;
-      height: auto;
-      border-radius: 12px;
-      display: block;
-    }
   </style>
 </head>
 <body>
@@ -680,20 +650,6 @@
         <span data-lang="ja">営業期間：3月中旬 — 11月下旬</span>
         <span data-lang="en">Open: Mid-March — Late November</span>
       </p>
-      <!-- おき得乗船券バナー: スマホ=横長バナー / PC=丸切り抜き右寄せ -->
-      <!-- スマホ版 -->
-      <a href="https://www.oki-toku.jp/#denshi" target="_blank" rel="noopener"
-         class="oki-toku-banner oki-toku-sp"
-         style="text-decoration:none;animation:okiTokuBounceIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;animation-delay:0.5s;">
-        <img src="img/okitoku-banner-sp.png" alt="おき得乗船券 — 2等運賃の復路無料のWEB限定チケット">
-      </a>
-      <!-- 説明テキスト -->
-      <p style="font-size:10px;color:rgba(255,255,255,0.55);margin-bottom:16px;letter-spacing:0.04em;line-height:1.5;text-align:center;" class="oki-toku-desc">
-        <span data-lang="ja">※ 2等運賃の復路が無料になるWEB限定チケット（要事前購入）</span>
-        <span data-lang="en">※ Free return trip (2nd class) — web-only, advance purchase required</span>
-        <span data-lang="oki">※ 2等の帰りがタダになるけん。先に買うちょかんといけんよ</span>
-      </p>
-
       <p id="lang-hint" style="font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:40px;letter-spacing:0.04em;line-height:1.6">
         <span data-lang="oki">いま島言葉で読んじょるけん。 <button onclick="setLang('ja')" style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:11px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0">標準語に切り替える</button></span>
         <span data-lang="ja">このガイドは<button onclick="setLang('oki')" style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:11px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0">隠岐の島言葉</button>でも読めます</span>
