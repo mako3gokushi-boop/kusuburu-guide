@@ -266,6 +266,11 @@
   <main id="form-main" class="px-4 py-6 max-w-lg mx-auto">
     <form id="checkin-form" novalidate>
 
+      <!-- Honeypot (hidden from real users, bots fill this) -->
+      <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true" tabindex="-1">
+        <input type="text" name="website" autocomplete="off" tabindex="-1">
+      </div>
+
       <!-- Guest Info -->
       <div class="form-card p-5 mb-4">
         <h2 class="font-display font-semibold text-base mb-4 flex items-center gap-2">
@@ -766,6 +771,9 @@
       const API_URL = 'https://kusuburu-api.mako-3gokushi.workers.dev';
 
       // Prepare server payload (passport_number → passport_no for API)
+      // Honeypot check (if filled, bot detected — send but server discards)
+      const hpVal = document.querySelector('[name="website"]')?.value || '';
+
       const serverData = {
         name: formData.name,
         furigana: formData.furigana,
@@ -784,6 +792,7 @@
         allergies: formData.allergies,
         notes: formData.notes,
       };
+      if (hpVal) serverData.website = hpVal;
 
       try {
         const res = await fetch(API_URL + '/checkin', {

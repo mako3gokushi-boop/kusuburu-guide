@@ -116,9 +116,34 @@ async function handleCheckin(request, env, origin) {
     return jsonResponse({ error: 'Invalid JSON' }, 400, origin, env.ALLOWED_ORIGIN);
   }
 
+  // Honeypot check (bot trap)
+  if (data.website || data.url || data.company_url) {
+    // Silently accept but don't save — bots fill hidden fields
+    return jsonResponse({ success: true, id: 'ok' }, 201, origin, env.ALLOWED_ORIGIN);
+  }
+
   // Validate required fields
   if (!data.name || !data.phone || !data.checkin_date || !data.checkout_date) {
     return jsonResponse({ error: 'Missing required fields: name, phone, checkin_date, checkout_date' }, 400, origin, env.ALLOWED_ORIGIN);
+  }
+
+  // Input validation
+  if (typeof data.name !== 'string' || data.name.length < 1 || data.name.length > 100) {
+    return jsonResponse({ error: 'Invalid name' }, 400, origin, env.ALLOWED_ORIGIN);
+  }
+  if (typeof data.phone !== 'string' || data.phone.length < 3 || data.phone.length > 20) {
+    return jsonResponse({ error: 'Invalid phone' }, 400, origin, env.ALLOWED_ORIGIN);
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(data.checkin_date) || !/^\d{4}-\d{2}-\d{2}$/.test(data.checkout_date)) {
+    return jsonResponse({ error: 'Invalid date format (YYYY-MM-DD)' }, 400, origin, env.ALLOWED_ORIGIN);
+  }
+  if (data.checkin_date > data.checkout_date) {
+    return jsonResponse({ error: 'checkout_date must be after checkin_date' }, 400, origin, env.ALLOWED_ORIGIN);
+  }
+  const adults = parseInt(data.adults) || 1;
+  const children = parseInt(data.children) || 0;
+  if (adults < 1 || adults > 20 || children < 0 || children > 20) {
+    return jsonResponse({ error: 'Invalid guest count' }, 400, origin, env.ALLOWED_ORIGIN);
   }
 
   const id = generateUUID();
@@ -130,8 +155,8 @@ async function handleCheckin(request, env, origin) {
     id,
     data.name,
     data.furigana || '',
-    data.adults || 1,
-    data.children || 0,
+    adults,
+    children,
     data.checkin_date,
     data.checkout_date,
     data.phone,
