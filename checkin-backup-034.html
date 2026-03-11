@@ -681,7 +681,7 @@
     }
 
     // === Form validation & submit ===
-    document.getElementById('checkin-form').addEventListener('submit', async function(e) {
+    document.getElementById('checkin-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const isEn = document.body.classList.contains('lang-en');
       const isForeign = document.getElementById('is-foreign').checked;
@@ -751,134 +751,17 @@
         submitted_at: new Date().toISOString(),
       };
 
-      // Submit to server
-      const btn = document.getElementById('submit-btn');
-      btn.disabled = true;
-      btn.innerHTML = '<span data-lang="ja">送信中...</span><span data-lang="en">Submitting...</span>';
-      if (document.body.classList.contains('lang-en')) {
-        btn.querySelector('[data-lang="ja"]').style.display = 'none';
-        btn.querySelector('[data-lang="en"]').style.display = 'inline';
-      } else {
-        btn.querySelector('[data-lang="ja"]').style.display = 'inline';
-        btn.querySelector('[data-lang="en"]').style.display = 'none';
-      }
+      // Save to localStorage (Phase 1)
+      const checkins = JSON.parse(localStorage.getItem('kusuburu-checkins') || '[]');
+      checkins.push(formData);
+      localStorage.setItem('kusuburu-checkins', JSON.stringify(checkins));
 
-      const API_URL = 'https://kusuburu-api.mako-3gokushi.workers.dev';
-
-      // Prepare server payload (passport_number → passport_no for API)
-      const serverData = {
-        name: formData.name,
-        furigana: formData.furigana,
-        adults: formData.adults,
-        children: formData.children,
-        checkin_date: formData.checkin_date,
-        checkout_date: formData.checkout_date,
-        phone: formData.phone,
-        email: formData.email,
-        zipcode: formData.zipcode,
-        address: formData.address,
-        is_foreign: formData.is_foreign,
-        nationality: formData.nationality,
-        passport_no: formData.passport_number,
-        transport: formData.transport,
-        allergies: formData.allergies,
-        notes: formData.notes,
-      };
-
-      try {
-        const res = await fetch(API_URL + '/checkin', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(serverData),
-        });
-        const result = await res.json();
-
-        if (res.ok && result.success) {
-          // Upload passport photo if present
-          if (formData.passport_photo && result.id) {
-            try {
-              await fetch(API_URL + '/checkin/photo', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ checkin_id: result.id, photo: formData.passport_photo }),
-              });
-            } catch (photoErr) {
-              console.warn('Photo upload failed (data saved):', photoErr);
-            }
-          }
-          showSuccess();
-        } else {
-          throw new Error(result.error || 'Server error');
-        }
-      } catch (err) {
-        console.warn('Server submit failed, saving offline:', err);
-        // Save to localStorage as offline fallback
-        const pending = JSON.parse(localStorage.getItem('kusuburu-pending') || '[]');
-        pending.push(formData);
-        localStorage.setItem('kusuburu-pending', JSON.stringify(pending));
-        showSuccess(true);
-      }
-
-      function showSuccess(offline) {
-        document.getElementById('checkin-form').style.display = 'none';
-        const ss = document.getElementById('success-screen');
-        ss.classList.add('show');
-        if (offline) {
-          const offlineMsg = document.createElement('p');
-          offlineMsg.className = 'text-amber-600 text-xs mt-3';
-          offlineMsg.innerHTML = '<span data-lang="ja">※ オフライン保存されました。ネット接続時に自動送信されます。</span><span data-lang="en">※ Saved offline. Will auto-submit when online.</span>';
-          if (document.body.classList.contains('lang-en')) {
-            offlineMsg.querySelector('[data-lang="ja"]').style.display = 'none';
-          } else {
-            offlineMsg.querySelector('[data-lang="en"]').style.display = 'none';
-          }
-          ss.querySelector('.form-card').appendChild(offlineMsg);
-        }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        lucide.createIcons();
-      }
+      // Show success
+      document.getElementById('checkin-form').style.display = 'none';
+      document.getElementById('success-screen').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      lucide.createIcons();
     });
-
-    // === Offline auto-retry ===
-    async function retryPendingCheckins() {
-      const pending = JSON.parse(localStorage.getItem('kusuburu-pending') || '[]');
-      if (pending.length === 0) return;
-      const API_URL = 'https://kusuburu-api.mako-3gokushi.workers.dev';
-      const remaining = [];
-      for (const item of pending) {
-        try {
-          const serverData = {
-            name: item.name, furigana: item.furigana, adults: item.adults,
-            children: item.children, checkin_date: item.checkin_date,
-            checkout_date: item.checkout_date, phone: item.phone, email: item.email,
-            zipcode: item.zipcode, address: item.address, is_foreign: item.is_foreign,
-            nationality: item.nationality, passport_no: item.passport_number,
-            transport: item.transport, allergies: item.allergies, notes: item.notes,
-          };
-          const res = await fetch(API_URL + '/checkin', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(serverData),
-          });
-          const result = await res.json();
-          if (res.ok && result.success && item.passport_photo && result.id) {
-            try {
-              await fetch(API_URL + '/checkin/photo', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ checkin_id: result.id, photo: item.passport_photo }),
-              });
-            } catch (e) { /* photo upload failed, data already saved */ }
-          }
-          if (!res.ok) remaining.push(item);
-        } catch (e) {
-          remaining.push(item);
-        }
-      }
-      localStorage.setItem('kusuburu-pending', JSON.stringify(remaining));
-    }
-    window.addEventListener('online', retryPendingCheckins);
-    if (navigator.onLine) retryPendingCheckins();
 
     // Clear error on input
     document.querySelectorAll('.form-input').forEach(input => {

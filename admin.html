@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理画面 | くすぶるハウス</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@0.474.0"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Shippori Mincho"', 'serif'],
+            body: ['"Noto Sans JP"', 'sans-serif'],
+          },
+          colors: {
+            sand: {
+              50:'#faf9f7',100:'#f5f3ef',200:'#e8e4dc',300:'#d4cec3',
+              400:'#b8b0a0',500:'#9a9080',600:'#7a7060',700:'#5c5448',
+              800:'#3d3832',900:'#2a2520',950:'#1a1714'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --surface: #faf9f7;
+      --surface-warm: #f5f3ef;
+      --text-dark: #2a2520;
+      --text-body: #4a4238;
+      --text-muted: #635a4c;
+      --accent: #7a7060;
+      --accent-warm: #b8934f;
+      --border-light: rgba(42,37,32,0.06);
+      --border-medium: rgba(42,37,32,0.12);
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--surface);
+      color: var(--text-dark);
+      font-weight: 300;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(42,37,32,0.06), 0 4px 12px rgba(42,37,32,0.03);
+    }
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: 'Noto Sans JP', sans-serif;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-primary { background: var(--accent-warm); color: white; }
+    .btn-secondary { background: var(--surface-warm); color: var(--text-body); }
+    .btn-danger { background: #ef4444; color: white; }
+    .btn-sm { padding: 4px 10px; font-size: 11px; }
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-checked_in { background: #d1fae5; color: #065f46; }
+    .status-checked_out { background: #e0e7ff; color: #3730a3; }
+    .form-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1.5px solid var(--border-medium);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--surface);
+      color: var(--text-dark);
+    }
+    .form-input:focus { outline: none; border-color: var(--accent-warm); }
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      max-width: 560px;
+      width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 24px;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-size: 11px; font-weight: 600; color: var(--text-muted); padding: 8px 12px; border-bottom: 1px solid var(--border-medium); }
+    td { padding: 10px 12px; font-size: 13px; border-bottom: 1px solid var(--border-light); }
+    tr:hover td { background: var(--surface-warm); }
+    .clickable { cursor: pointer; }
+    @media (max-width: 768px) {
+      .responsive-table { overflow-x: auto; }
+      .hide-mobile { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div id="login-screen" class="min-h-screen flex items-center justify-center px-4">
+    <div class="card p-8 w-full max-w-sm text-center">
+      <div class="w-16 h-16 rounded-full bg-sand-100 flex items-center justify-center mx-auto mb-4">
+        <i data-lucide="lock" class="w-7 h-7 text-sand-500"></i>
+      </div>
+      <h1 class="font-display text-lg font-semibold mb-1">管理画面</h1>
+      <p class="text-sand-500 text-xs mb-6">くすぶるハウス チェックイン管理</p>
+      <input type="password" id="login-token" class="form-input mb-3" placeholder="管理トークンを入力">
+      <div id="login-error" class="text-red-500 text-xs mb-3 hidden">認証に失敗しました</div>
+      <button onclick="doLogin()" class="btn btn-primary w-full">ログイン</button>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="admin-screen" class="hidden">
+    <!-- Header -->
+    <header class="bg-sand-900 text-white px-5 py-4">
+      <div class="max-w-5xl mx-auto flex items-center justify-between">
+        <div>
+          <h1 class="font-display text-base font-semibold">くすぶるハウス 管理画面</h1>
+          <p class="text-sand-400 text-[10px] mt-0.5">Check-in Management</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="exportCsv()" class="btn btn-secondary btn-sm flex items-center gap-1">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i> CSV
+          </button>
+          <button onclick="doLogout()" class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Filters -->
+    <div class="max-w-5xl mx-auto px-4 py-4">
+      <div class="card p-4 mb-4">
+        <div class="flex flex-wrap gap-3 items-end">
+          <div class="flex-1 min-w-[160px]">
+            <label class="text-[11px] font-semibold text-sand-500 block mb-1">検索</label>
+            <input type="text" id="filter-search" class="form-input" placeholder="名前・電話番号..." oninput="debounceLoad()">
+          </div>
+          <div>
+            <label class="text-[11px] font-semibold text-sand-500 block mb-1">ステータス</label>
+            <select id="filter-status" class="form-input" onchange="loadCheckins()">
+              <option value="">すべて</option>
+              <option value="pending">予約</option>
+              <option value="checked_in">チェックイン済</option>
+              <option value="checked_out">チェックアウト済</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[11px] font-semibold text-sand-500 block mb-1">日付（開始）</label>
+            <input type="date" id="filter-from" class="form-input" onchange="loadCheckins()">
+          </div>
+          <div>
+            <label class="text-[11px] font-semibold text-sand-500 block mb-1">日付（終了）</label>
+            <input type="date" id="filter-to" class="form-input" onchange="loadCheckins()">
+          </div>
+          <button onclick="clearFilters()" class="btn btn-secondary btn-sm">クリア</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <div class="card p-3 text-center">
+          <div class="text-2xl font-bold" id="stat-pending">-</div>
+          <div class="text-[10px] text-sand-500 font-semibold">予約</div>
+        </div>
+        <div class="card p-3 text-center">
+          <div class="text-2xl font-bold text-green-600" id="stat-in">-</div>
+          <div class="text-[10px] text-sand-500 font-semibold">チェックイン済</div>
+        </div>
+        <div class="card p-3 text-center">
+          <div class="text-2xl font-bold text-indigo-600" id="stat-out">-</div>
+          <div class="text-[10px] text-sand-500 font-semibold">チェックアウト済</div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="card responsive-table">
+        <table id="checkins-table">
+          <thead>
+            <tr>
+              <th>氏名</th>
+              <th>人数</th>
+              <th>チェックイン</th>
+              <th>チェックアウト</th>
+              <th class="hide-mobile">電話番号</th>
+              <th>ステータス</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="checkins-body">
+            <tr><td colspan="7" class="text-center text-sand-400 py-8">読み込み中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div id="detail-modal" class="modal-overlay hidden" onclick="if(event.target===this)closeDetail()">
+    <div class="modal-content" id="detail-content"></div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const API_URL = 'https://kusuburu-api.mako-3gokushi.workers.dev';
+    let authToken = '';
+    let allCheckins = [];
+    let debounceTimer = null;
+
+    // === Auth ===
+    function doLogin() {
+      authToken = document.getElementById('login-token').value.trim();
+      if (!authToken) return;
+      localStorage.setItem('kusuburu-admin-token', authToken);
+      showDashboard();
+    }
+
+    function doLogout() {
+      authToken = '';
+      localStorage.removeItem('kusuburu-admin-token');
+      document.getElementById('admin-screen').classList.add('hidden');
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('login-token').value = '';
+      document.getElementById('login-error').classList.add('hidden');
+    }
+
+    function showDashboard() {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('admin-screen').classList.remove('hidden');
+      loadCheckins();
+    }
+
+    // Auto-login
+    const saved = localStorage.getItem('kusuburu-admin-token');
+    if (saved) {
+      authToken = saved;
+      showDashboard();
+    }
+
+    document.getElementById('login-token').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+
+    // === Load Checkins ===
+    async function loadCheckins() {
+      const params = new URLSearchParams();
+      const status = document.getElementById('filter-status').value;
+      const search = document.getElementById('filter-search').value.trim();
+      const from = document.getElementById('filter-from').value;
+      const to = document.getElementById('filter-to').value;
+      if (status) params.set('status', status);
+      if (search) params.set('search', search);
+      if (from) params.set('date_from', from);
+      if (to) params.set('date_to', to);
+
+      try {
+        const res = await fetch(API_URL + '/admin/checkins?' + params.toString(), {
+          headers: { 'Authorization': 'Bearer ' + authToken },
+        });
+        if (res.status === 401) {
+          document.getElementById('login-error').classList.remove('hidden');
+          doLogout();
+          return;
+        }
+        const data = await res.json();
+        allCheckins = data.checkins || [];
+        renderTable();
+        updateStats();
+      } catch (e) {
+        document.getElementById('checkins-body').innerHTML =
+          '<tr><td colspan="7" class="text-center text-red-400 py-8">接続エラー</td></tr>';
+      }
+    }
+
+    function debounceLoad() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(loadCheckins, 300);
+    }
+
+    function clearFilters() {
+      document.getElementById('filter-search').value = '';
+      document.getElementById('filter-status').value = '';
+      document.getElementById('filter-from').value = '';
+      document.getElementById('filter-to').value = '';
+      loadCheckins();
+    }
+
+    // === Render ===
+    const statusLabels = { pending: '予約', checked_in: 'チェックイン済', checked_out: 'チェックアウト済' };
+
+    function renderTable() {
+      const tbody = document.getElementById('checkins-body');
+      if (allCheckins.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-sand-400 py-8">データがありません</td></tr>';
+        return;
+      }
+      tbody.innerHTML = allCheckins.map(c => `
+        <tr class="clickable" ondblclick="showDetail('${c.id}')">
+          <td class="font-medium">${esc(c.name)}<br><span class="text-[10px] text-sand-400">${esc(c.furigana||'')}</span></td>
+          <td>${c.adults||0}+${c.children||0}</td>
+          <td class="text-xs">${c.checkin_date||''}</td>
+          <td class="text-xs">${c.checkout_date||''}</td>
+          <td class="hide-mobile text-xs">${esc(c.phone||'')}</td>
+          <td><span class="status-badge status-${c.status}">${statusLabels[c.status]||c.status}</span></td>
+          <td>
+            <div class="flex gap-1 flex-wrap">
+              <button onclick="showDetail('${c.id}')" class="btn btn-secondary btn-sm">詳細</button>
+              ${c.status === 'pending' ? `<button onclick="updateStatus('${c.id}','checked_in')" class="btn btn-sm" style="background:#d1fae5;color:#065f46;">IN</button>` : ''}
+              ${c.status === 'checked_in' ? `<button onclick="updateStatus('${c.id}','checked_out')" class="btn btn-sm" style="background:#e0e7ff;color:#3730a3;">OUT</button>` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function updateStats() {
+      const pending = allCheckins.filter(c => c.status === 'pending').length;
+      const checkedIn = allCheckins.filter(c => c.status === 'checked_in').length;
+      const checkedOut = allCheckins.filter(c => c.status === 'checked_out').length;
+      document.getElementById('stat-pending').textContent = pending;
+      document.getElementById('stat-in').textContent = checkedIn;
+      document.getElementById('stat-out').textContent = checkedOut;
+    }
+
+    function esc(s) {
+      if (!s) return '';
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    // === Detail ===
+    async function showDetail(id) {
+      const modal = document.getElementById('detail-modal');
+      const content = document.getElementById('detail-content');
+      content.innerHTML = '<div class="text-center py-8 text-sand-400">読み込み中...</div>';
+      modal.classList.remove('hidden');
+
+      try {
+        const res = await fetch(API_URL + '/admin/checkins/' + id, {
+          headers: { 'Authorization': 'Bearer ' + authToken },
+        });
+        const data = await res.json();
+        const c = data.checkin;
+        if (!c) { content.innerHTML = '<p class="text-red-500">データが見つかりません</p>'; return; }
+
+        let photoHtml = '';
+        if (c.is_foreign) {
+          photoHtml = `
+            <div class="mt-4">
+              <h4 class="text-xs font-semibold text-sand-500 mb-2">パスポート写真</h4>
+              <button onclick="loadPhoto('${c.id}')" class="btn btn-secondary btn-sm" id="photo-btn-${c.id}">写真を表示</button>
+              <div id="photo-container-${c.id}" class="mt-2"></div>
+            </div>`;
+        }
+
+        content.innerHTML = `
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display text-lg font-semibold">${esc(c.name)}</h3>
+            <button onclick="closeDetail()" class="text-sand-400 hover:text-sand-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+          </div>
+          <div class="grid grid-cols-2 gap-3 text-sm">
+            <div><span class="text-sand-400 text-xs">フリガナ</span><br>${esc(c.furigana||'-')}</div>
+            <div><span class="text-sand-400 text-xs">ステータス</span><br><span class="status-badge status-${c.status}">${statusLabels[c.status]||c.status}</span></div>
+            <div><span class="text-sand-400 text-xs">大人</span><br>${c.adults||0}名</div>
+            <div><span class="text-sand-400 text-xs">子供</span><br>${c.children||0}名</div>
+            <div><span class="text-sand-400 text-xs">チェックイン</span><br>${c.checkin_date||'-'}</div>
+            <div><span class="text-sand-400 text-xs">チェックアウト</span><br>${c.checkout_date||'-'}</div>
+            <div><span class="text-sand-400 text-xs">電話番号</span><br>${esc(c.phone||'-')}</div>
+            <div><span class="text-sand-400 text-xs">メール</span><br>${esc(c.email||'-')}</div>
+            <div class="col-span-2"><span class="text-sand-400 text-xs">住所</span><br>${esc(c.zipcode||'')} ${esc(c.address||'-')}</div>
+            ${c.is_foreign ? `
+              <div><span class="text-sand-400 text-xs">国籍</span><br>${esc(c.nationality||'-')}</div>
+              <div><span class="text-sand-400 text-xs">パスポート番号</span><br>${esc(c.passport_no||'-')}</div>
+            ` : ''}
+            <div><span class="text-sand-400 text-xs">交通手段</span><br>${esc(c.transport||'-')}</div>
+            <div><span class="text-sand-400 text-xs">アレルギー</span><br>${esc(c.allergies||'-')}</div>
+            <div class="col-span-2"><span class="text-sand-400 text-xs">備考</span><br>${esc(c.notes||'-')}</div>
+            <div class="col-span-2"><span class="text-sand-400 text-xs">登録日時</span><br>${c.created_at||'-'}</div>
+          </div>
+          ${photoHtml}
+          <div class="flex gap-2 mt-6 pt-4 border-t border-sand-100">
+            ${c.status === 'pending' ? `<button onclick="updateStatus('${c.id}','checked_in');closeDetail()" class="btn btn-sm" style="background:#d1fae5;color:#065f46;">チェックイン</button>` : ''}
+            ${c.status === 'checked_in' ? `<button onclick="updateStatus('${c.id}','checked_out');closeDetail()" class="btn btn-sm" style="background:#e0e7ff;color:#3730a3;">チェックアウト</button>` : ''}
+            <button onclick="if(confirm('本当に削除しますか？')){deleteCheckin('${c.id}');closeDetail()}" class="btn btn-danger btn-sm ml-auto">削除</button>
+          </div>
+        `;
+        lucide.createIcons();
+      } catch (e) {
+        content.innerHTML = '<p class="text-red-500">読み込みエラー</p>';
+      }
+    }
+
+    function closeDetail() {
+      document.getElementById('detail-modal').classList.add('hidden');
+    }
+
+    async function loadPhoto(id) {
+      const container = document.getElementById('photo-container-' + id);
+      const btn = document.getElementById('photo-btn-' + id);
+      btn.disabled = true;
+      btn.textContent = '読込中...';
+      try {
+        const res = await fetch(API_URL + '/admin/photo/' + id, {
+          headers: { 'Authorization': 'Bearer ' + authToken },
+        });
+        const data = await res.json();
+        if (data.photo) {
+          container.innerHTML = `<img src="${data.photo}" style="max-width:100%;border-radius:8px;">`;
+          btn.style.display = 'none';
+        } else {
+          container.innerHTML = '<p class="text-sand-400 text-xs">写真なし</p>';
+          btn.style.display = 'none';
+        }
+      } catch (e) {
+        container.innerHTML = '<p class="text-red-400 text-xs">読込エラー</p>';
+        btn.disabled = false;
+        btn.textContent = '再試行';
+      }
+    }
+
+    // === Actions ===
+    async function updateStatus(id, status) {
+      try {
+        await fetch(API_URL + '/admin/checkins/' + id, {
+          method: 'PUT',
+          headers: { 'Authorization': 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status }),
+        });
+        loadCheckins();
+      } catch (e) {
+        alert('更新に失敗しました');
+      }
+    }
+
+    async function deleteCheckin(id) {
+      try {
+        await fetch(API_URL + '/admin/checkins/' + id, {
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + authToken },
+        });
+        loadCheckins();
+      } catch (e) {
+        alert('削除に失敗しました');
+      }
+    }
+
+    async function exportCsv() {
+      try {
+        const res = await fetch(API_URL + '/admin/checkins/csv', {
+          headers: { 'Authorization': 'Bearer ' + authToken },
+        });
+        if (!res.ok) throw new Error('Export failed');
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'checkins.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        alert('CSVエクスポートに失敗しました');
+      }
+    }
+  </script>
+</body>
+</html>
