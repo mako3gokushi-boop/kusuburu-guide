@@ -3,114 +3,170 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>くすぶるハウス -燻家- ゲストガイド</title>
+  <title>くすぶるハウス -燻家- ゲストポータル</title>
+  <meta name="description" content="くすぶるハウス ゲストポータル。WiFi、天気、ハウスルール、周辺情報など滞在に必要な情報をまとめてご案内。">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.474.0"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            display: ['"Zen Maru Gothic"', 'sans-serif'],
+            display: ['"Shippori Mincho"', 'serif'],
             body: ['"Noto Sans JP"', 'sans-serif'],
+            soft: ['"Zen Maru Gothic"', 'sans-serif'],
           },
           colors: {
-            wood: { 50: '#faf6f0', 100: '#f0e6d3', 200: '#e0ccaa', 300: '#c9a96e', 400: '#b8934f', 500: '#96763a', 600: '#7a5d2e', 700: '#5e4623', 800: '#3d2e17', 900: '#2a1f10' },
-            leaf: { 50: '#f0f7f0', 100: '#d4e8d4', 200: '#a8d1a8', 300: '#6db56d', 400: '#4a9a4a', 500: '#3a7a3a', 600: '#2d5e2d' },
-            smoke: { 50: '#f8f7f5', 100: '#eeece8', 200: '#ddd9d2', 300: '#c4bfb5', 400: '#a39d91', 500: '#7d776c' },
+            sand: {
+              50:'#faf9f7',100:'#f5f3ef',200:'#e8e4dc',300:'#d4cec3',
+              400:'#b8b0a0',500:'#9a9080',600:'#7a7060',700:'#5c5448',
+              800:'#3d3832',900:'#2a2520',950:'#1a1714'
+            }
           }
         }
       }
     }
   </script>
   <style>
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Noto Sans JP', sans-serif; background: #faf6f0; color: #2a1f10; }
-    .font-display { font-family: 'Zen Maru Gothic', sans-serif; }
+    :root {
+      --surface: #faf9f7;
+      --surface-warm: #f5f3ef;
+      --text-dark: #2a2520;
+      --text-body: #4a4238;
+      --text-muted: #635a4c;
+      --accent: #7a7060;
+      --accent-warm: #b8934f;
+      --border-light: rgba(42,37,32,0.06);
+      --border-medium: rgba(42,37,32,0.12);
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0 }
+    html { scroll-behavior: smooth }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--surface);
+      color: var(--text-dark);
+      overflow-x: hidden;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+    .font-display { font-family: 'Shippori Mincho', serif; }
+    .font-soft { font-family: 'Zen Maru Gothic', sans-serif; }
+
+    /* Hero */
     .hero-bg {
-      background: linear-gradient(135deg, #3d2e17 0%, #5e4623 40%, #3d2e17 100%);
+      background: linear-gradient(135deg, #2a2520 0%, #3d3832 40%, #2a2520 100%);
       position: relative; overflow: hidden;
     }
     .hero-bg::before {
       content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 30% 50%, rgba(201,169,110,0.15) 0%, transparent 60%),
-                  radial-gradient(ellipse at 70% 30%, rgba(201,169,110,0.1) 0%, transparent 50%);
+      background: radial-gradient(ellipse at 30% 50%, rgba(184,147,79,0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 30%, rgba(184,147,79,0.08) 0%, transparent 50%);
     }
-    .guide-card {
-      background: white; border-radius: 16px;
-      box-shadow: 0 1px 3px rgba(42,31,16,0.08), 0 4px 12px rgba(42,31,16,0.04);
+
+    /* Cards */
+    .portal-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(42,37,32,0.06), 0 4px 12px rgba(42,37,32,0.03);
+      transition: box-shadow 0.2s;
     }
+    .portal-card:hover { box-shadow: 0 2px 6px rgba(42,37,32,0.08), 0 8px 20px rgba(42,37,32,0.05); }
+
+    /* Nav pills */
     .nav-pill {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 10px 16px; background: white; border-radius: 100px;
-      box-shadow: 0 1px 4px rgba(42,31,16,0.1);
-      font-size: 13px; font-weight: 500; color: #5e4623;
+      box-shadow: 0 1px 4px rgba(42,37,32,0.08);
+      font-size: 13px; font-weight: 500; color: var(--text-body);
       text-decoration: none; white-space: nowrap; transition: all 0.2s;
     }
-    .nav-pill:active { background: #f0e6d3; }
+    .nav-pill:active { background: var(--surface-warm); }
+
+    /* Lang toggle */
+    .lang-btn {
+      padding: 6px 14px; border-radius: 100px; font-size: 12px;
+      font-weight: 600; cursor: pointer; transition: all 0.2s; border: none;
+    }
+    .lang-btn.active { background: var(--accent-warm); color: white; }
+    .lang-btn:not(.active) { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); }
+
+    /* i18n */
+    [data-lang="en"] { display: none; }
+    body.lang-en [data-lang="ja"] { display: none; }
+    body.lang-en [data-lang="en"] { display: block; }
+    body.lang-en span[data-lang="en"] { display: inline; }
+    body.lang-en a[data-lang="en"] { display: inline-flex; }
+    body.lang-en div[data-lang="en"] { display: block; }
+    body.lang-en p[data-lang="en"] { display: block; }
+
+    /* Weather skeleton */
+    .weather-skeleton { animation: pulse 1.5s ease-in-out infinite; background: #e8e4dc; border-radius: 8px; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+    /* Copy toast */
+    .copy-toast {
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--text-dark); color: white; padding: 10px 20px;
+      border-radius: 100px; font-size: 13px; font-weight: 500;
+      opacity: 0; transition: all 0.3s ease; pointer-events: none; z-index: 100;
+    }
+    .copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Map button */
+    .map-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 10px; border-radius: 6px;
+      background: var(--surface-warm); color: var(--text-body);
+      font-size: 11px; font-weight: 500; text-decoration: none;
+      transition: background 0.2s;
+    }
+    .map-btn:active { background: var(--surface); }
+
+    /* Accordion */
     .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
     .accordion-content.open { max-height: 3000px; }
     .accordion-arrow { transition: transform 0.3s; }
     .accordion-arrow.open { transform: rotate(180deg); }
-    html { scroll-behavior: smooth; }
-    .lang-btn { padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; }
-    .lang-btn.active { background: #c9a96e; color: white; }
-    .lang-btn:not(.active) { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); }
-    .map-btn {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 4px 10px; border-radius: 6px;
-      background: #f0e6d3; color: #7a5d2e;
-      font-size: 11px; font-weight: 500; text-decoration: none;
-    }
-    [data-lang="en"] { display: none; }
-    body.lang-en [data-lang="ja"] { display: none; }
-    body.lang-en [data-lang="en"] { display: block; }
-    body.lang-en span[data-lang="en"],
-    body.lang-en a[data-lang="en"],
-    body.lang-en div[data-lang="en"],
-    body.lang-en p[data-lang="en"] { display: block; }
-    body.lang-en span[data-lang="en"] { display: inline; }
-    body.lang-en a[data-lang="en"] { display: inline-flex; }
+
+    /* Timetable */
     .timetable { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .timetable th { background: #f0e6d3; color: #5e4623; padding: 6px 8px; text-align: left; font-weight: 600; font-size: 11px; }
-    .timetable td { padding: 6px 8px; border-bottom: 1px solid #eeece8; }
+    .timetable th { background: var(--surface-warm); color: var(--text-body); padding: 6px 8px; text-align: left; font-weight: 600; font-size: 11px; }
+    .timetable td { padding: 6px 8px; border-bottom: 1px solid var(--border-light); }
     .timetable tr:last-child td { border-bottom: none; }
-    .weather-icon { font-size: 28px; line-height: 1; }
-    .weather-skeleton { animation: pulse 1.5s ease-in-out infinite; background: #eeece8; border-radius: 8px; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
   </style>
 </head>
 <body>
 
   <!-- ===== HERO ===== -->
-  <header class="hero-bg text-white px-5 pt-12 pb-8 relative z-10">
-    <div class="flex justify-end gap-2 mb-6">
+  <header class="hero-bg text-white px-5 pt-10 pb-8 relative z-10">
+    <div class="flex justify-end gap-2 mb-6 relative z-10">
       <button class="lang-btn active" onclick="setLang('ja')" id="btn-ja">JP</button>
       <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
     </div>
-    <div class="text-center">
-      <p class="text-xs tracking-[0.3em] text-wood-300 mb-2 uppercase">Guest Guide</p>
-      <h1 class="font-display text-3xl font-bold mb-1">くすぶるハウス</h1>
-      <p class="text-wood-300 text-sm font-display">-燻家-</p>
-      <p class="text-wood-200 text-xs mt-3 leading-relaxed" data-lang="ja">ようこそ、島の木を使い改装した<br>「ネオおばあちゃんち」へ</p>
-      <p class="text-wood-200 text-xs mt-3 leading-relaxed" data-lang="en">Welcome to our "Neo-Grandma's House"<br>renovated with local island wood</p>
+    <div class="text-center relative z-10">
+      <p class="text-[10px] tracking-[0.3em] text-sand-400 mb-2 uppercase font-light">Guest Portal</p>
+      <h1 class="font-display text-2xl font-semibold mb-1 tracking-wider">くすぶるハウス</h1>
+      <p class="text-sand-400 text-sm font-display">-燻家-</p>
+      <p class="text-sand-300 text-xs mt-3 leading-relaxed font-light" data-lang="ja">ようこそ、島の木を使い改装した<br>「ネオおばあちゃんち」へ</p>
+      <p class="text-sand-300 text-xs mt-3 leading-relaxed font-light" data-lang="en">Welcome to our "Neo-Grandma's House"<br>renovated with local island wood</p>
     </div>
-    <div class="mt-6 bg-white/10 backdrop-blur-sm rounded-2xl p-4">
+    <div class="mt-6 bg-white/10 backdrop-blur-sm rounded-2xl p-4 relative z-10">
       <div class="grid grid-cols-3 gap-3 text-center text-xs">
         <div>
-          <div class="text-wood-300 mb-1" data-lang="ja">チェックイン</div>
-          <div class="text-wood-300 mb-1" data-lang="en">Check-in</div>
+          <div class="text-sand-400 mb-1 text-[10px]" data-lang="ja">チェックイン</div>
+          <div class="text-sand-400 mb-1 text-[10px]" data-lang="en">Check-in</div>
           <div class="text-white font-bold text-base">16:00</div>
+          <div class="text-sand-500 text-[9px]">〜21:00</div>
         </div>
-        <div class="border-x border-white/20">
-          <div class="text-wood-300 mb-1" data-lang="ja">チェックアウト</div>
-          <div class="text-wood-300 mb-1" data-lang="en">Check-out</div>
+        <div class="border-x border-white/15">
+          <div class="text-sand-400 mb-1 text-[10px]" data-lang="ja">チェックアウト</div>
+          <div class="text-sand-400 mb-1 text-[10px]" data-lang="en">Check-out</div>
           <div class="text-white font-bold text-base">10:00</div>
         </div>
         <div>
-          <div class="text-wood-300 mb-1" data-lang="ja">夕食</div>
-          <div class="text-wood-300 mb-1" data-lang="en">Dinner</div>
+          <div class="text-sand-400 mb-1 text-[10px]" data-lang="ja">夕食</div>
+          <div class="text-sand-400 mb-1 text-[10px]" data-lang="en">Dinner</div>
           <div class="text-white font-bold text-base">18:30</div>
         </div>
       </div>
@@ -120,35 +176,66 @@
   <!-- ===== NAV ===== -->
   <nav class="px-4 -mt-3 relative z-20">
     <div class="flex gap-2 overflow-x-auto pb-3" style="-webkit-overflow-scrolling:touch;">
-      <a href="#weather" class="nav-pill"><i data-lucide="cloud-sun" class="w-4 h-4"></i><span data-lang="ja">天気</span><span data-lang="en">Weather</span></a>
       <a href="#wifi" class="nav-pill"><i data-lucide="wifi" class="w-4 h-4"></i>Wi-Fi</a>
-      <a href="#onsen" class="nav-pill"><span>♨️</span><span data-lang="ja">温泉</span><span data-lang="en">Onsen</span></a>
-      <a href="#food" class="nav-pill"><i data-lucide="utensils" class="w-4 h-4"></i><span data-lang="ja">飲食店</span><span data-lang="en">Dining</span></a>
-      <a href="#spots" class="nav-pill"><i data-lucide="map-pin" class="w-4 h-4"></i><span data-lang="ja">観光</span><span data-lang="en">Sights</span></a>
-      <a href="#transport" class="nav-pill"><i data-lucide="ship" class="w-4 h-4"></i><span data-lang="ja">交通</span><span data-lang="en">Transport</span></a>
+      <a href="#weather" class="nav-pill"><i data-lucide="cloud-sun" class="w-4 h-4"></i><span data-lang="ja">天気</span><span data-lang="en">Weather</span></a>
       <a href="#rules" class="nav-pill"><i data-lucide="book-open" class="w-4 h-4"></i><span data-lang="ja">ご案内</span><span data-lang="en">Info</span></a>
+      <a href="#nearby" class="nav-pill"><i data-lucide="store" class="w-4 h-4"></i><span data-lang="ja">近所</span><span data-lang="en">Nearby</span></a>
+      <a href="#spots" class="nav-pill"><i data-lucide="map-pin" class="w-4 h-4"></i><span data-lang="ja">観光</span><span data-lang="en">Sights</span></a>
+      <a href="#onsen" class="nav-pill"><span>♨️</span><span data-lang="ja">温泉</span><span data-lang="en">Onsen</span></a>
       <a href="#emergency" class="nav-pill"><i data-lucide="phone" class="w-4 h-4"></i><span data-lang="ja">緊急</span><span data-lang="en">SOS</span></a>
     </div>
   </nav>
 
   <main class="px-4 pb-8 space-y-4 max-w-lg mx-auto">
 
-    <!-- ===== WEATHER (API自動取得) ===== -->
-    <section id="weather" class="guide-card overflow-hidden">
+    <!-- ===== WI-FI ===== -->
+    <section id="wifi" class="portal-card p-5">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+          <i data-lucide="wifi" class="w-5 h-5 text-blue-500"></i>
+        </div>
+        <div>
+          <h2 class="font-display font-semibold text-base">Wi-Fi</h2>
+          <p class="text-[10px] text-sand-500" data-lang="ja">タップでコピー</p>
+          <p class="text-[10px] text-sand-500" data-lang="en">Tap to copy</p>
+        </div>
+      </div>
+      <div class="bg-sand-50 rounded-xl p-4 space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-xs text-sand-500" data-lang="ja">ネットワーク名</span>
+          <span class="text-xs text-sand-500" data-lang="en">Network</span>
+          <button onclick="copyText('kusuburu-guest', this)" class="font-mono font-bold text-sm text-sand-800 bg-white px-3 py-1.5 rounded-lg hover:bg-sand-100 transition-colors flex items-center gap-2">
+            kusuburu-guest
+            <i data-lucide="copy" class="w-3.5 h-3.5 text-sand-400"></i>
+          </button>
+        </div>
+        <div class="border-t border-sand-200"></div>
+        <div class="flex justify-between items-center">
+          <span class="text-xs text-sand-500" data-lang="ja">パスワード</span>
+          <span class="text-xs text-sand-500" data-lang="en">Password</span>
+          <button onclick="copyText('oki-kusuburu', this)" class="font-mono font-bold text-sm text-sand-800 bg-white px-3 py-1.5 rounded-lg hover:bg-sand-100 transition-colors flex items-center gap-2">
+            oki-kusuburu
+            <i data-lucide="copy" class="w-3.5 h-3.5 text-sand-400"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== WEATHER ===== -->
+    <section id="weather" class="portal-card overflow-hidden">
       <div class="bg-gradient-to-r from-sky-50 to-blue-50 p-5">
         <div class="flex items-center gap-3 mb-3">
           <div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center">
             <i data-lucide="cloud-sun" class="w-5 h-5 text-sky-600"></i>
           </div>
           <div>
-            <h2 class="font-display font-bold text-base" data-lang="ja">隠岐の島 天気予報</h2>
-            <h2 class="font-display font-bold text-base" data-lang="en">Oki Island Weather</h2>
-            <p class="text-[10px] text-smoke-400" data-lang="ja">リアルタイム取得</p>
-            <p class="text-[10px] text-smoke-400" data-lang="en">Live data</p>
+            <h2 class="font-display font-semibold text-base" data-lang="ja">隠岐の島の天気</h2>
+            <h2 class="font-display font-semibold text-base" data-lang="en">Oki Island Weather</h2>
+            <p class="text-[10px] text-sand-500" data-lang="ja">リアルタイム取得</p>
+            <p class="text-[10px] text-sand-500" data-lang="en">Live data</p>
           </div>
         </div>
         <div id="weather-container" class="grid grid-cols-3 gap-2">
-          <!-- skeleton loading -->
           <div class="bg-white/60 rounded-xl p-3 text-center">
             <div class="weather-skeleton h-3 w-12 mx-auto mb-2"></div>
             <div class="weather-skeleton h-8 w-8 mx-auto mb-2 rounded-full"></div>
@@ -171,72 +258,114 @@
       </div>
     </section>
 
-    <!-- ===== WI-FI ===== -->
-    <section id="wifi" class="guide-card p-5">
-      <div class="flex items-center gap-3 mb-3">
-        <div class="w-10 h-10 rounded-xl bg-wood-100 flex items-center justify-center">
-          <i data-lucide="wifi" class="w-5 h-5 text-wood-600"></i>
+    <!-- ===== HOUSE RULES ===== -->
+    <section id="rules" class="portal-card p-5">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+          <i data-lucide="book-open" class="w-5 h-5 text-amber-600"></i>
         </div>
-        <h2 class="font-display font-bold text-base">Wi-Fi</h2>
+        <h2 class="font-display font-semibold text-base" data-lang="ja">ハウスルール</h2>
+        <h2 class="font-display font-semibold text-base" data-lang="en">House Rules</h2>
       </div>
-      <div class="bg-smoke-50 rounded-xl p-4 space-y-3">
-        <div class="flex justify-between items-center">
-          <span class="text-xs text-smoke-500" data-lang="ja">ネットワーク名</span>
-          <span class="text-xs text-smoke-500" data-lang="en">Network</span>
-          <span class="font-mono font-bold text-sm text-wood-800 bg-white px-3 py-1 rounded-lg" id="wifi-name">kusuburu-guest</span>
+      <div class="space-y-2.5">
+        <div class="flex items-start gap-3 bg-sand-50 rounded-xl p-3">
+          <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i data-lucide="wine-off" class="w-4 h-4 text-red-400"></i>
+          </div>
+          <div>
+            <div class="font-bold text-sm" data-lang="ja">飲み物の持ち込みについて</div>
+            <div class="font-bold text-sm" data-lang="en">About Beverages</div>
+            <div class="text-xs text-sand-600 mt-0.5" data-lang="ja">宿に飲み物のご用意はありません。チェックイン前にお買い求めください。</div>
+            <div class="text-xs text-sand-600 mt-0.5" data-lang="en">No beverages provided. Please purchase before check-in.</div>
+          </div>
         </div>
-        <div class="border-t border-smoke-200"></div>
-        <div class="flex justify-between items-center">
-          <span class="text-xs text-smoke-500" data-lang="ja">パスワード</span>
-          <span class="text-xs text-smoke-500" data-lang="en">Password</span>
-          <div class="flex items-center gap-2">
-            <span class="font-mono font-bold text-sm text-wood-800 bg-white px-3 py-1 rounded-lg" id="wifi-pass">oki-kusuburu</span>
-            <button onclick="copyWifi()" class="text-wood-400 hover:text-wood-600 p-1" id="copy-btn">
-              <i data-lucide="copy" class="w-4 h-4"></i>
-            </button>
+        <div class="flex items-start gap-3 bg-sand-50 rounded-xl p-3">
+          <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i data-lucide="shower-head" class="w-4 h-4 text-blue-400"></i>
+          </div>
+          <div>
+            <div class="font-bold text-sm" data-lang="ja">お風呂</div>
+            <div class="font-bold text-sm" data-lang="en">Bath</div>
+            <div class="text-xs text-sand-600 mt-0.5" data-lang="ja">シャワーのみご利用いただけます。湯船をご希望の方は五箇温泉へどうぞ。</div>
+            <div class="text-xs text-sand-600 mt-0.5" data-lang="en">Shower only. For a bath, please visit Goka Onsen.</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 bg-sand-50 rounded-xl p-3">
+          <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i data-lucide="clock" class="w-4 h-4 text-green-500"></i>
+          </div>
+          <div>
+            <div class="font-bold text-sm" data-lang="ja">チェックイン / アウト</div>
+            <div class="font-bold text-sm" data-lang="en">Check-in / out</div>
+            <div class="text-xs text-sand-600 mt-0.5" data-lang="ja">IN 16:00〜21:00 / OUT 10:00　事前連絡で変更可</div>
+            <div class="text-xs text-sand-600 mt-0.5" data-lang="en">IN 16:00-21:00 / OUT 10:00　Flexible with notice</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 bg-sand-50 rounded-xl p-3">
+          <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i data-lucide="tv-off" class="w-4 h-4 text-purple-400"></i>
+          </div>
+          <div>
+            <div class="font-bold text-sm" data-lang="ja">設備</div>
+            <div class="font-bold text-sm" data-lang="en">Amenities</div>
+            <div class="text-xs text-sand-600 mt-0.5" data-lang="ja">Wi-Fi / エアコン / ドライヤー / 冷蔵庫 / 洗濯機（無料）　※テレビなし</div>
+            <div class="text-xs text-sand-600 mt-0.5" data-lang="en">Wi-Fi / AC / Dryer / Fridge / Washer (free)　*No TV</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 bg-sand-50 rounded-xl p-3">
+          <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i data-lucide="credit-card" class="w-4 h-4 text-amber-500"></i>
+          </div>
+          <div>
+            <div class="font-bold text-sm" data-lang="ja">お支払い</div>
+            <div class="font-bold text-sm" data-lang="en">Payment</div>
+            <div class="text-xs text-sand-600 mt-0.5" data-lang="ja">現金 / クレジットカード / QRコード決済</div>
+            <div class="text-xs text-sand-600 mt-0.5" data-lang="en">Cash / Credit card / QR payment</div>
           </div>
         </div>
       </div>
-      <p class="text-[11px] text-smoke-400 mt-2" data-lang="ja">※ Wi-Fi名・パスワードはサンプルです</p>
-      <p class="text-[11px] text-smoke-400 mt-2" data-lang="en">* Wi-Fi credentials are samples</p>
     </section>
 
     <!-- ===== ONSEN ===== -->
-    <section id="onsen" class="guide-card overflow-hidden">
-      <div class="bg-gradient-to-r from-blue-50 to-leaf-50 p-5">
+    <section id="onsen" class="portal-card overflow-hidden">
+      <div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-5">
         <div class="flex items-center gap-3 mb-3">
           <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
             <span class="text-xl">♨️</span>
           </div>
           <div>
-            <h2 class="font-display font-bold text-base" data-lang="ja">隠岐温泉GOKA</h2>
-            <h2 class="font-display font-bold text-base" data-lang="en">Oki Onsen GOKA</h2>
-            <p class="text-xs text-smoke-500" data-lang="ja">宿から徒歩15分 / 島で唯一の温泉</p>
-            <p class="text-xs text-smoke-500" data-lang="en">15 min walk / The only hot spring on the island</p>
+            <h2 class="font-display font-semibold text-base" data-lang="ja">隠岐温泉GOKA</h2>
+            <h2 class="font-display font-semibold text-base" data-lang="en">Oki Onsen GOKA</h2>
+            <p class="text-xs text-sand-500" data-lang="ja">宿から徒歩15分 / 島で唯一の温泉</p>
+            <p class="text-xs text-sand-500" data-lang="en">15 min walk / The only hot spring on the island</p>
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div class="bg-white/70 rounded-xl p-3 text-center">
-            <div class="text-[10px] text-smoke-500 mb-1" data-lang="ja">営業時間</div>
-            <div class="text-[10px] text-smoke-500 mb-1" data-lang="en">Hours</div>
-            <div class="font-bold text-sm text-wood-800">14:00〜20:00</div>
-            <div class="text-[10px] text-smoke-400 mt-0.5" data-lang="ja">受付 19:15まで</div>
-            <div class="text-[10px] text-smoke-400 mt-0.5" data-lang="en">Last entry 19:15</div>
+            <div class="text-[10px] text-sand-500 mb-1" data-lang="ja">営業時間</div>
+            <div class="text-[10px] text-sand-500 mb-1" data-lang="en">Hours</div>
+            <div class="font-bold text-sm">14:00〜20:00</div>
+            <div class="text-[10px] text-sand-500 mt-0.5" data-lang="ja">受付 19:15まで</div>
+            <div class="text-[10px] text-sand-500 mt-0.5" data-lang="en">Last entry 19:15</div>
           </div>
           <div class="bg-white/70 rounded-xl p-3 text-center">
-            <div class="text-[10px] text-smoke-500 mb-1" data-lang="ja">料金</div>
-            <div class="text-[10px] text-smoke-500 mb-1" data-lang="en">Price</div>
-            <div class="font-bold text-sm text-wood-800" data-lang="ja">大人 500円</div>
-            <div class="font-bold text-sm text-wood-800" data-lang="en">Adult ¥500</div>
-            <div class="text-[10px] text-smoke-400 mt-0.5" data-lang="ja">小人 250円</div>
-            <div class="text-[10px] text-smoke-400 mt-0.5" data-lang="en">Child ¥250</div>
+            <div class="text-[10px] text-sand-500 mb-1" data-lang="ja">料金</div>
+            <div class="text-[10px] text-sand-500 mb-1" data-lang="en">Price</div>
+            <div class="font-bold text-sm" data-lang="ja">大人 500円</div>
+            <div class="font-bold text-sm" data-lang="en">Adult ¥500</div>
+            <div class="text-[10px] text-sand-500 mt-0.5" data-lang="ja">小人 250円</div>
+            <div class="text-[10px] text-sand-500 mt-0.5" data-lang="en">Child ¥250</div>
           </div>
+        </div>
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-2.5 mb-3">
+          <p class="text-[11px] text-amber-700 font-bold" data-lang="ja">割引券あります！フロントでお声がけください。</p>
+          <p class="text-[11px] text-amber-700 font-bold" data-lang="en">Discount tickets available! Ask at the front desk.</p>
         </div>
         <div class="flex items-center gap-2 text-xs flex-wrap">
           <span class="bg-red-100 text-red-600 px-2 py-0.5 rounded-full text-[10px] font-bold" data-lang="ja">定休日: 月曜日</span>
           <span class="bg-red-100 text-red-600 px-2 py-0.5 rounded-full text-[10px] font-bold" data-lang="en">Closed: Monday</span>
-          <span class="text-smoke-400" data-lang="ja">現金のみ</span>
-          <span class="text-smoke-400" data-lang="en">Cash only</span>
+          <span class="text-sand-500 text-[11px]" data-lang="ja">現金のみ</span>
+          <span class="text-sand-500 text-[11px]" data-lang="en">Cash only</span>
         </div>
         <a href="https://maps.google.com/?q=隠岐温泉GOKA" target="_blank" rel="noopener" class="mt-3 map-btn">
           <i data-lucide="navigation" class="w-3 h-3"></i>
@@ -246,491 +375,201 @@
       </div>
     </section>
 
-    <!-- ===== RESTAURANTS ===== -->
-    <section id="food" class="guide-card p-5">
+    <!-- ===== NEARBY ===== -->
+    <section id="nearby" class="portal-card p-5">
       <div class="flex items-center gap-3 mb-4">
-        <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
-          <i data-lucide="utensils" class="w-5 h-5 text-orange-600"></i>
+        <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+          <i data-lucide="store" class="w-5 h-5 text-green-600"></i>
         </div>
         <div>
-          <h2 class="font-display font-bold text-base" data-lang="ja">周辺の飲食店</h2>
-          <h2 class="font-display font-bold text-base" data-lang="en">Nearby Restaurants</h2>
-          <p class="text-xs text-smoke-400" data-lang="ja">西郷港エリア（車25分）が中心</p>
-          <p class="text-xs text-smoke-400" data-lang="en">Mostly around Saigo Port (25 min drive)</p>
+          <h2 class="font-display font-semibold text-base" data-lang="ja">近所の情報</h2>
+          <h2 class="font-display font-semibold text-base" data-lang="en">Nearby</h2>
         </div>
       </div>
-
-      <!-- Lunch -->
-      <div class="mb-4">
-        <button class="accordion-trigger w-full flex items-center justify-between py-2" onclick="toggleAccordion(this)">
-          <div class="flex items-center gap-2">
-            <span class="text-lg">☀️</span>
-            <span class="font-bold text-sm" data-lang="ja">ランチ</span>
-            <span class="font-bold text-sm" data-lang="en">Lunch</span>
+      <div class="space-y-2.5">
+        <div class="bg-sand-50 rounded-xl p-4">
+          <div class="flex justify-between items-start">
+            <div>
+              <div class="font-bold text-sm" data-lang="ja">五箇商店</div>
+              <div class="font-bold text-sm" data-lang="en">Goka Shop</div>
+              <div class="text-[11px] text-sand-600 mt-0.5" data-lang="ja">食料品・日用品</div>
+              <div class="text-[11px] text-sand-600 mt-0.5" data-lang="en">Groceries & daily goods</div>
+            </div>
+            <div class="text-right">
+              <div class="text-xs font-bold text-sand-700">8:00〜19:00</div>
+              <div class="text-[10px] text-red-500 font-bold mt-0.5" data-lang="ja">日曜定休</div>
+              <div class="text-[10px] text-red-500 font-bold mt-0.5" data-lang="en">Closed Sunday</div>
+            </div>
           </div>
-          <i data-lucide="chevron-down" class="w-4 h-4 text-smoke-400 accordion-arrow"></i>
-        </button>
-        <div class="accordion-content open">
-          <div class="space-y-2 pl-7" id="lunch-list">
-            <div class="flex justify-between items-start py-2 border-b border-smoke-100">
-              <div><div class="font-bold text-sm">龍鳳</div><div class="text-[11px] text-smoke-400" data-lang="ja">中華料理</div><div class="text-[11px] text-smoke-400" data-lang="en">Chinese</div></div>
-              <div class="text-right"><div class="text-[11px] text-smoke-500">11:30〜13:30</div><a href="https://maps.google.com/?q=龍鳳+隠岐の島町" target="_blank" rel="noopener" class="map-btn mt-1"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a></div>
+        </div>
+        <div class="bg-sand-50 rounded-xl p-4">
+          <div class="flex justify-between items-start">
+            <div>
+              <div class="font-bold text-sm">A-COOP</div>
+              <div class="text-[11px] text-sand-600 mt-0.5" data-lang="ja">スーパーマーケット（西郷）</div>
+              <div class="text-[11px] text-sand-600 mt-0.5" data-lang="en">Supermarket (Saigo)</div>
             </div>
-            <div class="flex justify-between items-start py-2 border-b border-smoke-100">
-              <div><div class="font-bold text-sm">そば処 米三郎から三代目</div><div class="text-[11px] text-smoke-400" data-lang="ja">蕎麦・丼</div><div class="text-[11px] text-smoke-400" data-lang="en">Soba noodles</div></div>
-              <div class="text-right"><div class="text-[11px] text-smoke-500">11:30〜13:10</div><a href="https://maps.google.com/?q=そば処+米三郎から三代目+隠岐の島町" target="_blank" rel="noopener" class="map-btn mt-1"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a></div>
-            </div>
-            <div class="flex justify-between items-start py-2 border-b border-smoke-100">
-              <div><div class="font-bold text-sm">Jackと豆の木</div><div class="text-[11px] text-smoke-400" data-lang="ja">洋食</div><div class="text-[11px] text-smoke-400" data-lang="en">Western</div></div>
-              <div class="text-right"><div class="text-[11px] text-smoke-500">11:00〜14:00</div><a href="https://maps.google.com/?q=Jackと豆の木+隠岐の島町" target="_blank" rel="noopener" class="map-btn mt-1"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a></div>
-            </div>
-            <div class="flex justify-between items-start py-2 border-b border-smoke-100">
-              <div><div class="font-bold text-sm">Cafe cocotte</div><div class="text-[11px] text-smoke-400" data-lang="ja">カフェ</div><div class="text-[11px] text-smoke-400" data-lang="en">Cafe</div></div>
-              <div class="text-right"><div class="text-[11px] text-smoke-500">10:00〜16:00</div><a href="https://maps.google.com/?q=Cafe+cocotte+隠岐の島町" target="_blank" rel="noopener" class="map-btn mt-1"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a></div>
-            </div>
-            <div class="flex justify-between items-start py-2 border-b border-smoke-100">
-              <div><div class="font-bold text-sm">Bakehouse BENCH</div><div class="text-[11px] text-smoke-400" data-lang="ja">ドーナツ・バーガー</div><div class="text-[11px] text-smoke-400" data-lang="en">Donuts & Burgers</div></div>
-              <div class="text-right"><div class="text-[11px] text-smoke-500">11:00〜18:00</div><a href="https://maps.google.com/?q=Bakehouse+BENCH+隠岐の島町" target="_blank" rel="noopener" class="map-btn mt-1"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a></div>
-            </div>
-            <div class="flex justify-between items-start py-2">
-              <div><div class="font-bold text-sm">鍋国</div><div class="text-[11px] text-smoke-400" data-lang="ja">うなぎ</div><div class="text-[11px] text-smoke-400" data-lang="en">Unagi eel</div></div>
-              <div class="text-right"><div class="text-[11px] text-smoke-500">11:00〜20:00</div><a href="https://maps.google.com/?q=鍋国+隠岐の島町" target="_blank" rel="noopener" class="map-btn mt-1"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a></div>
+            <div class="text-right">
+              <div class="text-xs font-bold text-sand-700" data-lang="ja">〜19時</div>
+              <div class="text-xs font-bold text-sand-700" data-lang="en">Until 7 PM</div>
             </div>
           </div>
         </div>
       </div>
-      <!-- Dinner -->
-      <div>
-        <button class="accordion-trigger w-full flex items-center justify-between py-2" onclick="toggleAccordion(this)">
-          <div class="flex items-center gap-2">
-            <span class="text-lg">🌙</span>
-            <span class="font-bold text-sm" data-lang="ja">夜ごはん・居酒屋</span>
-            <span class="font-bold text-sm" data-lang="en">Dinner & Izakaya</span>
-          </div>
-          <i data-lucide="chevron-down" class="w-4 h-4 text-smoke-400 accordion-arrow"></i>
-        </button>
-        <div class="accordion-content">
-          <div class="space-y-2 pl-7">
-            <div class="flex justify-between items-start py-2 border-b border-smoke-100">
-              <div><div class="font-bold text-sm">あんづ</div><div class="text-[11px] text-smoke-400" data-lang="ja">海鮮・地酒</div><div class="text-[11px] text-smoke-400" data-lang="en">Seafood & Sake</div></div>
-              <div class="text-right"><div class="text-[11px] text-smoke-500">18:00〜23:00</div><a href="https://maps.google.com/?q=あんづ+隠岐の島町" target="_blank" rel="noopener" class="map-btn mt-1"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a></div>
-            </div>
-            <div class="flex justify-between items-start py-2 border-b border-smoke-100">
-              <div><div class="font-bold text-sm">鱗（うろこ）</div><div class="text-[11px] text-smoke-400" data-lang="ja">海鮮</div><div class="text-[11px] text-smoke-400" data-lang="en">Seafood</div></div>
-              <div class="text-right"><div class="text-[11px] text-smoke-500">17:30〜23:00</div><a href="https://maps.google.com/?q=鱗+隠岐の島町+居酒屋" target="_blank" rel="noopener" class="map-btn mt-1"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a></div>
-            </div>
-            <div class="flex justify-between items-start py-2 border-b border-smoke-100">
-              <div><div class="font-bold text-sm">青柳</div><div class="text-[11px] text-smoke-400" data-lang="ja">海鮮</div><div class="text-[11px] text-smoke-400" data-lang="en">Seafood</div></div>
-              <div class="text-right"><div class="text-[11px] text-smoke-500">17:30〜22:00</div><a href="https://maps.google.com/?q=青柳+隠岐の島町" target="_blank" rel="noopener" class="map-btn mt-1"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a></div>
-            </div>
-            <div class="flex justify-between items-start py-2 border-b border-smoke-100">
-              <div><div class="font-bold text-sm">魚鍋菜</div><div class="text-[11px] text-smoke-400" data-lang="ja">海鮮・島グルメ</div><div class="text-[11px] text-smoke-400" data-lang="en">Local cuisine</div></div>
-              <div class="text-right"><div class="text-[11px] text-smoke-500">17:30〜21:00</div><a href="https://maps.google.com/?q=魚鍋菜+隠岐の島町" target="_blank" rel="noopener" class="map-btn mt-1"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a></div>
-            </div>
-            <div class="flex justify-between items-start py-2 border-b border-smoke-100">
-              <div><div class="font-bold text-sm">焼肉 雪</div><div class="text-[11px] text-smoke-400" data-lang="ja">焼肉</div><div class="text-[11px] text-smoke-400" data-lang="en">Yakiniku BBQ</div></div>
-              <div class="text-right"><div class="text-[11px] text-smoke-500">18:00〜22:00</div><a href="https://maps.google.com/?q=焼肉雪+隠岐の島町" target="_blank" rel="noopener" class="map-btn mt-1"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a></div>
-            </div>
-            <div class="flex justify-between items-start py-2">
-              <div><div class="font-bold text-sm">のみくいハウスDOZI</div><div class="text-[11px] text-smoke-400" data-lang="ja">海鮮</div><div class="text-[11px] text-smoke-400" data-lang="en">Seafood</div></div>
-              <div class="text-right"><div class="text-[11px] text-smoke-500">17:00〜23:00</div><a href="https://maps.google.com/?q=のみくいハウスDOZI+隠岐の島町" target="_blank" rel="noopener" class="map-btn mt-1"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a></div>
-            </div>
-          </div>
-        </div>
+      <div class="bg-amber-50 border border-amber-200 rounded-lg p-2.5 mt-3">
+        <p class="text-[11px] text-amber-700" data-lang="ja"><i data-lucide="info" class="w-3 h-3 inline"></i> 宿の周辺にコンビニはありません。チェックイン前のお買い物がおすすめです。</p>
+        <p class="text-[11px] text-amber-700" data-lang="en"><i data-lucide="info" class="w-3 h-3 inline"></i> No convenience stores nearby. We recommend shopping before check-in.</p>
       </div>
-      <p class="text-[11px] text-smoke-400 mt-3 flex items-center gap-1" data-lang="ja"><i data-lucide="info" class="w-3 h-3"></i>島の飲食店は予約がおすすめ。定休日変更もあるのでお電話で確認を。</p>
-      <p class="text-[11px] text-smoke-400 mt-3 flex items-center gap-1" data-lang="en"><i data-lucide="info" class="w-3 h-3"></i>Reservations recommended. Call ahead to confirm hours.</p>
     </section>
 
-    <!-- ===== SIGHTSEEING (島後のみ) ===== -->
-    <section id="spots" class="guide-card p-5">
+    <!-- ===== RECOMMENDED SPOTS ===== -->
+    <section id="spots" class="portal-card p-5">
       <div class="flex items-center gap-3 mb-4">
-        <div class="w-10 h-10 rounded-xl bg-leaf-100 flex items-center justify-center">
-          <i data-lucide="map-pin" class="w-5 h-5 text-leaf-600"></i>
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
+          <i data-lucide="map-pin" class="w-5 h-5 text-emerald-600"></i>
         </div>
         <div>
-          <h2 class="font-display font-bold text-base" data-lang="ja">島後の観光スポット</h2>
-          <h2 class="font-display font-bold text-base" data-lang="en">Dōgo Island Sightseeing</h2>
-          <p class="text-xs text-smoke-400">UNESCO Global Geopark</p>
+          <h2 class="font-display font-semibold text-base" data-lang="ja">おすすめスポット</h2>
+          <h2 class="font-display font-semibold text-base" data-lang="en">Recommended Spots</h2>
+          <p class="text-[10px] text-sand-500">UNESCO Global Geopark</p>
         </div>
       </div>
-
-      <div class="space-y-3">
-        <div class="bg-smoke-50 rounded-xl p-4">
-          <div class="font-bold text-sm" data-lang="ja">🕯️ ローソク島</div>
-          <div class="font-bold text-sm" data-lang="en">🕯️ Rosoku-jima (Candle Rock)</div>
-          <p class="text-[11px] text-smoke-500 mt-1" data-lang="ja">高さ約20mの奇岩。夕日が先端に重なるとロウソクのように見える絶景。遊覧船から鑑賞（要予約）。</p>
-          <p class="text-[11px] text-smoke-500 mt-1" data-lang="en">20m sea stack. When sunset aligns with its tip, it looks like a giant candle. View from boat tour (reservation required).</p>
+      <div class="space-y-2.5">
+        <div class="bg-sand-50 rounded-xl p-4">
+          <div class="font-bold text-sm" data-lang="ja">ローソク島</div>
+          <div class="font-bold text-sm" data-lang="en">Rosoku-jima (Candle Rock)</div>
+          <p class="text-[11px] text-sand-600 mt-1" data-lang="ja">夕日が岩の先端に重なると巨大なロウソクに。遊覧船から鑑賞（要予約）。</p>
+          <p class="text-[11px] text-sand-600 mt-1" data-lang="en">When sunset aligns with the rock's tip, it looks like a giant candle. View from boat (reservation required).</p>
           <div class="flex items-center gap-2 mt-2">
-            <span class="text-[10px] bg-wood-100 text-wood-600 px-2 py-0.5 rounded-full" data-lang="ja">車30分+遊覧船</span>
-            <span class="text-[10px] bg-wood-100 text-wood-600 px-2 py-0.5 rounded-full" data-lang="en">30 min + boat</span>
+            <span class="text-[10px] bg-sand-200 text-sand-700 px-2 py-0.5 rounded-full" data-lang="ja">車30分+遊覧船</span>
+            <span class="text-[10px] bg-sand-200 text-sand-700 px-2 py-0.5 rounded-full" data-lang="en">30 min + boat</span>
             <a href="https://maps.google.com/?q=ローソク島+隠岐" target="_blank" rel="noopener" class="map-btn"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a>
           </div>
         </div>
-
-        <div class="bg-smoke-50 rounded-xl p-4">
-          <div class="font-bold text-sm" data-lang="ja">💧 壇鏡の滝</div>
-          <div class="font-bold text-sm" data-lang="en">💧 Dangyo Falls</div>
-          <p class="text-[11px] text-smoke-500 mt-1" data-lang="ja">日本の滝百選。高さ50mの雄滝と40mの雌滝。滝の裏側に回れる珍しい「裏見の滝」。</p>
-          <p class="text-[11px] text-smoke-500 mt-1" data-lang="en">Top 100 Waterfalls in Japan. 50m & 40m twin falls. Walk behind the waterfall for a unique view.</p>
+        <div class="bg-sand-50 rounded-xl p-4">
+          <div class="font-bold text-sm" data-lang="ja">壇鏡の滝</div>
+          <div class="font-bold text-sm" data-lang="en">Dangyo Falls</div>
+          <p class="text-[11px] text-sand-600 mt-1" data-lang="ja">日本の滝百選。高さ50mの雄滝と40mの雌滝。滝の裏側に回れる「裏見の滝」。</p>
+          <p class="text-[11px] text-sand-600 mt-1" data-lang="en">Top 100 Waterfalls of Japan. Walk behind the waterfall for a unique view.</p>
           <div class="flex items-center gap-2 mt-2">
-            <span class="text-[10px] bg-wood-100 text-wood-600 px-2 py-0.5 rounded-full" data-lang="ja">車20分</span>
-            <span class="text-[10px] bg-wood-100 text-wood-600 px-2 py-0.5 rounded-full" data-lang="en">20 min drive</span>
+            <span class="text-[10px] bg-sand-200 text-sand-700 px-2 py-0.5 rounded-full" data-lang="ja">車20分</span>
+            <span class="text-[10px] bg-sand-200 text-sand-700 px-2 py-0.5 rounded-full" data-lang="en">20 min drive</span>
             <a href="https://maps.google.com/?q=壇鏡の滝+隠岐" target="_blank" rel="noopener" class="map-btn"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a>
           </div>
         </div>
-
-        <div class="bg-smoke-50 rounded-xl p-4">
-          <div class="font-bold text-sm" data-lang="ja">🌲 乳房杉（ちちすぎ）</div>
-          <div class="font-bold text-sm" data-lang="en">🌲 Chichi-sugi (800-year Cedar)</div>
-          <p class="text-[11px] text-smoke-500 mt-1" data-lang="ja">樹齢約800年の巨大杉。幹から垂れ下がる24本の乳房状の気根が神秘的。</p>
-          <p class="text-[11px] text-smoke-500 mt-1" data-lang="en">~800-year-old giant cedar with 24 mystical udder-shaped aerial roots.</p>
+        <div class="bg-sand-50 rounded-xl p-4">
+          <div class="font-bold text-sm" data-lang="ja">乳房杉（ちちすぎ）</div>
+          <div class="font-bold text-sm" data-lang="en">Chichi-sugi (800-year Cedar)</div>
+          <p class="text-[11px] text-sand-600 mt-1" data-lang="ja">樹齢約800年の巨大杉。24本の乳房状の気根が神秘的。</p>
+          <p class="text-[11px] text-sand-600 mt-1" data-lang="en">~800-year-old giant cedar with 24 mystical aerial roots.</p>
           <div class="flex items-center gap-2 mt-2">
-            <span class="text-[10px] bg-wood-100 text-wood-600 px-2 py-0.5 rounded-full" data-lang="ja">車25分</span>
-            <span class="text-[10px] bg-wood-100 text-wood-600 px-2 py-0.5 rounded-full" data-lang="en">25 min drive</span>
+            <span class="text-[10px] bg-sand-200 text-sand-700 px-2 py-0.5 rounded-full" data-lang="ja">車25分</span>
+            <span class="text-[10px] bg-sand-200 text-sand-700 px-2 py-0.5 rounded-full" data-lang="en">25 min drive</span>
             <a href="https://maps.google.com/?q=乳房杉+隠岐" target="_blank" rel="noopener" class="map-btn"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a>
           </div>
         </div>
-
-        <div class="bg-smoke-50 rounded-xl p-4">
-          <div class="font-bold text-sm" data-lang="ja">🦎 トカゲ岩</div>
-          <div class="font-bold text-sm" data-lang="en">🦎 Tokage-iwa (Lizard Rock)</div>
-          <p class="text-[11px] text-smoke-500 mt-1" data-lang="ja">高さ30mの岩壁にトカゲが這い上がるように見える奇岩。学術的にも貴重。</p>
-          <p class="text-[11px] text-smoke-500 mt-1" data-lang="en">30m rock formation resembling a lizard climbing up a cliff. Geologically significant.</p>
+        <div class="bg-sand-50 rounded-xl p-4">
+          <div class="font-bold text-sm" data-lang="ja">白島海岸</div>
+          <div class="font-bold text-sm" data-lang="en">Shirashima Coast</div>
+          <p class="text-[11px] text-sand-600 mt-1" data-lang="ja">白い岩肌とエメラルドグリーンの海。島後一の景勝地。</p>
+          <p class="text-[11px] text-sand-600 mt-1" data-lang="en">White cliffs against emerald-green sea. Most scenic spot on the island.</p>
           <div class="flex items-center gap-2 mt-2">
-            <span class="text-[10px] bg-wood-100 text-wood-600 px-2 py-0.5 rounded-full" data-lang="ja">車20分+徒歩15分</span>
-            <span class="text-[10px] bg-wood-100 text-wood-600 px-2 py-0.5 rounded-full" data-lang="en">20 min + 15 min walk</span>
-            <a href="https://maps.google.com/?q=トカゲ岩+隠岐" target="_blank" rel="noopener" class="map-btn"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a>
-          </div>
-        </div>
-
-        <div class="bg-smoke-50 rounded-xl p-4">
-          <div class="font-bold text-sm" data-lang="ja">🏖️ 白島海岸</div>
-          <div class="font-bold text-sm" data-lang="en">🏖️ Shirashima Coast</div>
-          <p class="text-[11px] text-smoke-500 mt-1" data-lang="ja">島後一の景勝地。白い岩肌とエメラルドグリーンの海のコントラストが絶景。</p>
-          <p class="text-[11px] text-smoke-500 mt-1" data-lang="en">The most scenic spot on Dōgo. White cliffs against emerald-green sea.</p>
-          <div class="flex items-center gap-2 mt-2">
-            <span class="text-[10px] bg-wood-100 text-wood-600 px-2 py-0.5 rounded-full" data-lang="ja">車40分</span>
-            <span class="text-[10px] bg-wood-100 text-wood-600 px-2 py-0.5 rounded-full" data-lang="en">40 min drive</span>
+            <span class="text-[10px] bg-sand-200 text-sand-700 px-2 py-0.5 rounded-full" data-lang="ja">車40分</span>
+            <span class="text-[10px] bg-sand-200 text-sand-700 px-2 py-0.5 rounded-full" data-lang="en">40 min drive</span>
             <a href="https://maps.google.com/?q=白島海岸+隠岐" target="_blank" rel="noopener" class="map-btn"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a>
           </div>
         </div>
-
-        <div class="bg-smoke-50 rounded-xl p-4">
-          <div class="font-bold text-sm" data-lang="ja">🌊 浄土ヶ浦</div>
-          <div class="font-bold text-sm" data-lang="en">🌊 Jōdo-ga-ura Coast</div>
-          <p class="text-[11px] text-smoke-500 mt-1" data-lang="ja">透明度抜群の海と松が覆う岩礁群。シュノーケル・カヤックのスポットとしても人気。</p>
-          <p class="text-[11px] text-smoke-500 mt-1" data-lang="en">Crystal-clear water with pine-covered rocky islets. Popular for snorkeling & kayaking.</p>
+        <div class="bg-sand-50 rounded-xl p-4">
+          <div class="font-bold text-sm" data-lang="ja">浄土ヶ浦</div>
+          <div class="font-bold text-sm" data-lang="en">Jodo-ga-ura Coast</div>
+          <p class="text-[11px] text-sand-600 mt-1" data-lang="ja">透明度抜群の海と松の岩礁群。シュノーケル・カヤックにも。</p>
+          <p class="text-[11px] text-sand-600 mt-1" data-lang="en">Crystal-clear water. Popular for snorkeling & kayaking.</p>
           <div class="flex items-center gap-2 mt-2">
-            <span class="text-[10px] bg-wood-100 text-wood-600 px-2 py-0.5 rounded-full" data-lang="ja">車30分</span>
-            <span class="text-[10px] bg-wood-100 text-wood-600 px-2 py-0.5 rounded-full" data-lang="en">30 min drive</span>
+            <span class="text-[10px] bg-sand-200 text-sand-700 px-2 py-0.5 rounded-full" data-lang="ja">車30分</span>
+            <span class="text-[10px] bg-sand-200 text-sand-700 px-2 py-0.5 rounded-full" data-lang="en">30 min drive</span>
             <a href="https://maps.google.com/?q=浄土ヶ浦+隠岐" target="_blank" rel="noopener" class="map-btn"><i data-lucide="navigation" class="w-3 h-3"></i>Map</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ===== TRANSPORT（時刻表埋め込み） ===== -->
-    <section id="transport" class="guide-card p-5">
-      <div class="flex items-center gap-3 mb-4">
-        <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-          <i data-lucide="ship" class="w-5 h-5 text-blue-600"></i>
-        </div>
-        <div>
-          <h2 class="font-display font-bold text-base" data-lang="ja">交通アクセス</h2>
-          <h2 class="font-display font-bold text-base" data-lang="en">Transportation</h2>
-        </div>
+    <!-- ===== STAY GUIDE LINK ===== -->
+    <a href="welcome.html" class="portal-card p-5 flex items-center gap-4 group block no-underline text-inherit">
+      <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center flex-shrink-0">
+        <i data-lucide="book-open-text" class="w-6 h-6 text-amber-600"></i>
       </div>
+      <div class="flex-1 min-w-0">
+        <div class="font-display font-semibold text-base" data-lang="ja">滞在ガイドを見る</div>
+        <div class="font-display font-semibold text-base" data-lang="en">View Stay Guide</div>
+        <p class="text-[11px] text-sand-500 mt-0.5" data-lang="ja">気候・服装・グルメ・観光の詳細ガイド</p>
+        <p class="text-[11px] text-sand-500 mt-0.5" data-lang="en">Climate, clothing, food & sightseeing details</p>
+      </div>
+      <i data-lucide="chevron-right" class="w-5 h-5 text-sand-400 group-hover:text-sand-600 transition-colors flex-shrink-0"></i>
+    </a>
 
-      <!-- From guesthouse -->
-      <div class="bg-smoke-50 rounded-xl p-4 mb-4">
-        <div class="font-bold text-xs text-smoke-500 mb-2" data-lang="ja">🏠 宿からの距離</div>
-        <div class="font-bold text-xs text-smoke-500 mb-2" data-lang="en">🏠 From the Guesthouse</div>
-        <div class="space-y-1.5 text-sm">
-          <div class="flex justify-between"><span data-lang="ja">西郷港</span><span data-lang="en">Saigo Port</span><span class="font-bold" data-lang="ja">車25分</span><span class="font-bold" data-lang="en">25 min</span></div>
-          <div class="flex justify-between"><span data-lang="ja">隠岐空港</span><span data-lang="en">Oki Airport</span><span class="font-bold" data-lang="ja">車25分</span><span class="font-bold" data-lang="en">25 min</span></div>
-          <div class="flex justify-between"><span data-lang="ja">南方バス停</span><span data-lang="en">Minamikata Bus Stop</span><span class="font-bold" data-lang="ja">徒歩2分</span><span class="font-bold" data-lang="en">2 min walk</span></div>
-        </div>
+    <!-- ===== CHECK-IN LINK ===== -->
+    <a href="checkin.html" class="portal-card p-5 flex items-center gap-4 group block no-underline text-inherit border-2 border-amber-200">
+      <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center flex-shrink-0">
+        <i data-lucide="clipboard-check" class="w-6 h-6 text-green-600"></i>
       </div>
-
-      <!-- FERRY -->
-      <div class="mb-4">
-        <button class="accordion-trigger w-full flex items-center justify-between py-2" onclick="toggleAccordion(this)">
-          <div class="flex items-center gap-2">
-            <span class="text-lg">🚢</span>
-            <span class="font-bold text-sm" data-lang="ja">フェリー・高速船（隠岐汽船）</span>
-            <span class="font-bold text-sm" data-lang="en">Ferry & Jet (Oki Kisen)</span>
-          </div>
-          <i data-lucide="chevron-down" class="w-4 h-4 text-smoke-400 accordion-arrow"></i>
-        </button>
-        <div class="accordion-content open">
-          <div class="mt-2 space-y-3">
-            <!-- To Oki -->
-            <div class="bg-blue-50 rounded-xl p-3">
-              <div class="text-[11px] font-bold text-blue-700 mb-2 flex items-center gap-1">
-                <span data-lang="ja">🏔️ 本土 → 隠岐（西郷港）</span>
-                <span data-lang="en">🏔️ Mainland → Oki (Saigo)</span>
-              </div>
-              <table class="timetable">
-                <thead><tr>
-                  <th data-lang="ja">便</th><th data-lang="en">Type</th>
-                  <th data-lang="ja">出発</th><th data-lang="en">Depart</th>
-                  <th data-lang="ja">到着</th><th data-lang="en">Arrive</th>
-                  <th data-lang="ja">所要</th><th data-lang="en">Duration</th>
-                </tr></thead>
-                <tbody>
-                  <tr><td data-lang="ja">フェリー</td><td data-lang="en">Ferry</td><td>七類 9:00頃</td><td>西郷 11:30頃</td><td>約2.5h</td></tr>
-                  <tr><td data-lang="ja">フェリー</td><td data-lang="en">Ferry</td><td>境港 14:10</td><td>西郷 18:35</td><td>約4.5h</td></tr>
-                  <tr>
-                    <td><span data-lang="ja">高速船</span><span data-lang="en">Jet</span></td>
-                    <td>七類</td><td>西郷</td><td>約1h10m</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <!-- From Oki -->
-            <div class="bg-blue-50 rounded-xl p-3">
-              <div class="text-[11px] font-bold text-blue-700 mb-2 flex items-center gap-1">
-                <span data-lang="ja">🏝️ 隠岐（西郷港）→ 本土</span>
-                <span data-lang="en">🏝️ Oki (Saigo) → Mainland</span>
-              </div>
-              <table class="timetable">
-                <thead><tr>
-                  <th data-lang="ja">便</th><th data-lang="en">Type</th>
-                  <th data-lang="ja">出発</th><th data-lang="en">Depart</th>
-                  <th data-lang="ja">到着</th><th data-lang="en">Arrive</th>
-                  <th data-lang="ja">所要</th><th data-lang="en">Duration</th>
-                </tr></thead>
-                <tbody>
-                  <tr><td data-lang="ja">フェリー</td><td data-lang="en">Ferry</td><td>西郷 8:30頃</td><td>七類 11:00頃</td><td>約2.5h</td></tr>
-                  <tr><td data-lang="ja">フェリー</td><td data-lang="en">Ferry</td><td>西郷 15:40</td><td>七類 18:05</td><td>約2.5h</td></tr>
-                  <tr>
-                    <td><span data-lang="ja">高速船</span><span data-lang="en">Jet</span></td>
-                    <td>西郷</td><td>七類</td><td>約1h10m</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold" data-lang="ja">⚠️ 季節・曜日でダイヤ変動あり</span>
-              <span class="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold" data-lang="en">⚠️ Schedule varies by season</span>
-              <a href="https://www.oki-kisen.co.jp/" target="_blank" rel="noopener" class="map-btn !bg-blue-100 !text-blue-700">
-                <i data-lucide="external-link" class="w-3 h-3"></i>
-                <span data-lang="ja">最新ダイヤを確認</span>
-                <span data-lang="en">Latest schedule</span>
-              </a>
-            </div>
-          </div>
-        </div>
+      <div class="flex-1 min-w-0">
+        <div class="font-display font-semibold text-base" data-lang="ja">チェックインフォーム</div>
+        <div class="font-display font-semibold text-base" data-lang="en">Check-in Form</div>
+        <p class="text-[11px] text-sand-500 mt-0.5" data-lang="ja">ご到着時にこちらからご記入ください</p>
+        <p class="text-[11px] text-sand-500 mt-0.5" data-lang="en">Please fill in upon arrival</p>
       </div>
-
-      <!-- FLIGHT -->
-      <div class="mb-4">
-        <button class="accordion-trigger w-full flex items-center justify-between py-2" onclick="toggleAccordion(this)">
-          <div class="flex items-center gap-2">
-            <span class="text-lg">✈️</span>
-            <span class="font-bold text-sm" data-lang="ja">飛行機（隠岐空港）</span>
-            <span class="font-bold text-sm" data-lang="en">Flights (Oki Airport)</span>
-          </div>
-          <i data-lucide="chevron-down" class="w-4 h-4 text-smoke-400 accordion-arrow"></i>
-        </button>
-        <div class="accordion-content open">
-          <div class="mt-2 space-y-3">
-            <div class="bg-purple-50 rounded-xl p-3">
-              <div class="text-[11px] font-bold text-purple-700 mb-2" data-lang="ja">✈️ 到着便</div>
-              <div class="text-[11px] font-bold text-purple-700 mb-2" data-lang="en">✈️ Arrivals</div>
-              <table class="timetable">
-                <thead><tr>
-                  <th data-lang="ja">路線</th><th data-lang="en">Route</th>
-                  <th data-lang="ja">便名</th><th data-lang="en">Flight</th>
-                  <th data-lang="ja">出発</th><th data-lang="en">Depart</th>
-                  <th data-lang="ja">到着</th><th data-lang="en">Arrive</th>
-                </tr></thead>
-                <tbody>
-                  <tr><td data-lang="ja">出雲→隠岐</td><td data-lang="en">Izumo→Oki</td><td>JAL 3433</td><td>9:00</td><td>9:30</td></tr>
-                  <tr><td data-lang="ja">伊丹→隠岐</td><td data-lang="en">Osaka→Oki</td><td>JAL 2331</td><td>14:40</td><td>15:30</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="bg-purple-50 rounded-xl p-3">
-              <div class="text-[11px] font-bold text-purple-700 mb-2" data-lang="ja">✈️ 出発便</div>
-              <div class="text-[11px] font-bold text-purple-700 mb-2" data-lang="en">✈️ Departures</div>
-              <table class="timetable">
-                <thead><tr>
-                  <th data-lang="ja">路線</th><th data-lang="en">Route</th>
-                  <th data-lang="ja">便名</th><th data-lang="en">Flight</th>
-                  <th data-lang="ja">出発</th><th data-lang="en">Depart</th>
-                  <th data-lang="ja">到着</th><th data-lang="en">Arrive</th>
-                </tr></thead>
-                <tbody>
-                  <tr><td data-lang="ja">隠岐→出雲</td><td data-lang="en">Oki→Izumo</td><td>JAL 3434</td><td>10:00</td><td>10:30</td></tr>
-                  <tr><td data-lang="ja">隠岐→伊丹</td><td data-lang="en">Oki→Osaka</td><td>JAL 2332</td><td>16:00</td><td>16:40</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p class="text-[10px] text-smoke-400" data-lang="ja">※ 便数が限られます。早めのご予約を。時期により運休の場合あり。</p>
-            <p class="text-[10px] text-smoke-400" data-lang="en">* Limited flights. Book early. Some routes seasonal.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- BUS -->
-      <div>
-        <button class="accordion-trigger w-full flex items-center justify-between py-2" onclick="toggleAccordion(this)">
-          <div class="flex items-center gap-2">
-            <span class="text-lg">🚌</span>
-            <span class="font-bold text-sm" data-lang="ja">路線バス（五箇線）</span>
-            <span class="font-bold text-sm" data-lang="en">Local Bus (Goka Line)</span>
-          </div>
-          <i data-lucide="chevron-down" class="w-4 h-4 text-smoke-400 accordion-arrow"></i>
-        </button>
-        <div class="accordion-content">
-          <div class="mt-2">
-            <div class="bg-green-50 rounded-xl p-3 space-y-2">
-              <div class="text-xs text-smoke-600" data-lang="ja">
-                <div class="font-bold mb-1">五箇線（隠岐一畑交通）</div>
-                隠岐病院・蔵見橋 ⇔ 水若酢前 ⇔ 福浦<br>
-                最寄り: <strong>南方停留所</strong>（徒歩2分）
-              </div>
-              <div class="text-xs text-smoke-600" data-lang="en">
-                <div class="font-bold mb-1">Goka Line (Oki Ichibata)</div>
-                Oki Hospital ⇔ Mizuwakasu ⇔ Fukuura<br>
-                Nearest stop: <strong>Minamikata</strong> (2 min walk)
-              </div>
-              <div class="bg-amber-50 border border-amber-200 rounded-lg p-2 mt-2">
-                <p class="text-[11px] text-amber-700 font-bold" data-lang="ja">⚠️ 1日の本数が非常に少ないです（数本程度）</p>
-                <p class="text-[11px] text-amber-700 font-bold" data-lang="en">⚠️ Very limited service (only a few buses/day)</p>
-                <p class="text-[10px] text-amber-600 mt-1" data-lang="ja">乗り遅れると次の便まで数時間空くことがあります。必ず事前に時刻を確認してください。</p>
-                <p class="text-[10px] text-amber-600 mt-1" data-lang="en">Missing a bus may mean waiting hours. Always check times in advance.</p>
-              </div>
-              <div class="flex gap-2 flex-wrap mt-1">
-                <a href="https://oki.ichibata.co.jp/route-time.html" target="_blank" rel="noopener" class="map-btn !bg-green-100 !text-green-700">
-                  <i data-lucide="external-link" class="w-3 h-3"></i>
-                  <span data-lang="ja">バス時刻表</span>
-                  <span data-lang="en">Bus timetable</span>
-                </a>
-                <a href="tel:08512-2-1281" class="map-btn !bg-green-100 !text-green-700">
-                  <i data-lucide="phone" class="w-3 h-3"></i>
-                  <span data-lang="ja">問合せ</span>
-                  <span data-lang="en">Call</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== HOUSE RULES ===== -->
-    <section id="rules" class="guide-card p-5">
-      <div class="flex items-center gap-3 mb-4">
-        <div class="w-10 h-10 rounded-xl bg-wood-100 flex items-center justify-center">
-          <i data-lucide="book-open" class="w-5 h-5 text-wood-600"></i>
-        </div>
-        <h2 class="font-display font-bold text-base" data-lang="ja">ご滞在のご案内</h2>
-        <h2 class="font-display font-bold text-base" data-lang="en">House Information</h2>
-      </div>
-      <div class="space-y-3">
-        <div class="flex items-start gap-3 bg-smoke-50 rounded-xl p-3">
-          <span class="text-lg mt-0.5">🕐</span>
-          <div>
-            <div class="font-bold text-sm" data-lang="ja">チェックイン / アウト</div><div class="font-bold text-sm" data-lang="en">Check-in / out</div>
-            <div class="text-xs text-smoke-500 mt-0.5" data-lang="ja">IN 16:00〜21:00 / OUT 10:00　事前連絡で変更可</div>
-            <div class="text-xs text-smoke-500 mt-0.5" data-lang="en">IN 16:00–21:00 / OUT 10:00　Flexible with notice</div>
-          </div>
-        </div>
-        <div class="flex items-start gap-3 bg-smoke-50 rounded-xl p-3">
-          <span class="text-lg mt-0.5">🍽️</span>
-          <div>
-            <div class="font-bold text-sm" data-lang="ja">お食事（2食付きプランの方）</div><div class="font-bold text-sm" data-lang="en">Meals (meal plan)</div>
-            <div class="text-xs text-smoke-500 mt-0.5" data-lang="ja">夕食 18:30〜20:00頃　地元食材の手作りごはん</div>
-            <div class="text-xs text-smoke-500 mt-0.5" data-lang="en">Dinner 18:30–20:00　Homemade with local ingredients</div>
-          </div>
-        </div>
-        <div class="flex items-start gap-3 bg-smoke-50 rounded-xl p-3">
-          <span class="text-lg mt-0.5">🚿</span>
-          <div>
-            <div class="font-bold text-sm" data-lang="ja">お風呂</div><div class="font-bold text-sm" data-lang="en">Bath</div>
-            <div class="text-xs text-smoke-500 mt-0.5" data-lang="ja">シャワー・浴槽あり（追い炊きなし）　隠岐温泉GOKAも徒歩15分</div>
-            <div class="text-xs text-smoke-500 mt-0.5" data-lang="en">Shower & tub (no reheating)　Oki Onsen GOKA is 15 min walk</div>
-          </div>
-        </div>
-        <div class="flex items-start gap-3 bg-smoke-50 rounded-xl p-3">
-          <span class="text-lg mt-0.5">👕</span>
-          <div>
-            <div class="font-bold text-sm" data-lang="ja">設備</div><div class="font-bold text-sm" data-lang="en">Amenities</div>
-            <div class="text-xs text-smoke-500 mt-0.5" data-lang="ja">Wi-Fi / エアコン / ドライヤー / 冷蔵庫 / 洗濯機（無料）　※テレビなし</div>
-            <div class="text-xs text-smoke-500 mt-0.5" data-lang="en">Wi-Fi / AC / Dryer / Fridge / Washer (free)　*No TV</div>
-          </div>
-        </div>
-        <div class="flex items-start gap-3 bg-smoke-50 rounded-xl p-3">
-          <span class="text-lg mt-0.5">🐕</span>
-          <div>
-            <div class="font-bold text-sm" data-lang="ja">ペット</div><div class="font-bold text-sm" data-lang="en">Pets</div>
-            <div class="text-xs text-smoke-500 mt-0.5" data-lang="ja">貸切時のみ同伴可（無料）　ケージ・ワクチン証明が必要</div>
-            <div class="text-xs text-smoke-500 mt-0.5" data-lang="en">Allowed during private stays (free)　Cage & vaccine cert required</div>
-          </div>
-        </div>
-        <div class="flex items-start gap-3 bg-smoke-50 rounded-xl p-3">
-          <span class="text-lg mt-0.5">💳</span>
-          <div>
-            <div class="font-bold text-sm" data-lang="ja">お支払い</div><div class="font-bold text-sm" data-lang="en">Payment</div>
-            <div class="text-xs text-smoke-500 mt-0.5" data-lang="ja">現金 / クレジットカード / QRコード決済</div>
-            <div class="text-xs text-smoke-500 mt-0.5" data-lang="en">Cash / Credit card / QR payment</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== SHOPPING ===== -->
-    <section class="guide-card p-5">
-      <div class="flex items-center gap-3 mb-3">
-        <div class="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center">
-          <i data-lucide="shopping-bag" class="w-5 h-5 text-yellow-600"></i>
-        </div>
-        <h2 class="font-display font-bold text-base" data-lang="ja">買い物</h2>
-        <h2 class="font-display font-bold text-base" data-lang="en">Shopping</h2>
-      </div>
-      <div class="bg-yellow-50 rounded-xl p-4">
-        <p class="text-xs text-smoke-500" data-lang="ja">宿の周辺にはコンビニ・スーパーがありません。<br>食料品・飲み物は西郷港エリア（車25分）でお買い求めください。<br><strong>チェックイン前のお買い物がおすすめです。</strong></p>
-        <p class="text-xs text-smoke-500" data-lang="en">No convenience stores or supermarkets nearby.<br>Stock up in the Saigo Port area (25 min drive).<br><strong>We recommend shopping before check-in.</strong></p>
-        <p class="text-[11px] text-smoke-400 mt-1" data-lang="ja">※ 島のお店は20〜21時には閉まります</p>
-        <p class="text-[11px] text-smoke-400 mt-1" data-lang="en">* Most shops close by 8–9 PM</p>
-      </div>
-    </section>
+      <i data-lucide="chevron-right" class="w-5 h-5 text-sand-400 group-hover:text-sand-600 transition-colors flex-shrink-0"></i>
+    </a>
 
     <!-- ===== EMERGENCY ===== -->
-    <section id="emergency" class="guide-card p-5">
+    <section id="emergency" class="portal-card p-5">
       <div class="flex items-center gap-3 mb-4">
-        <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
-          <i data-lucide="phone" class="w-5 h-5 text-red-600"></i>
+        <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
+          <i data-lucide="phone" class="w-5 h-5 text-red-500"></i>
         </div>
-        <h2 class="font-display font-bold text-base" data-lang="ja">緊急連絡先</h2>
-        <h2 class="font-display font-bold text-base" data-lang="en">Emergency Contacts</h2>
+        <h2 class="font-display font-semibold text-base" data-lang="ja">緊急連絡先</h2>
+        <h2 class="font-display font-semibold text-base" data-lang="en">Emergency Contacts</h2>
       </div>
       <div class="space-y-2">
-        <a href="tel:08512-3-1088" class="flex items-center justify-between bg-wood-50 rounded-xl p-4 text-sm">
+        <a href="tel:080-4448-4920" class="flex items-center justify-between bg-sand-50 rounded-xl p-4 text-sm no-underline text-inherit">
           <div>
-            <div class="font-bold" data-lang="ja">宿への連絡</div><div class="font-bold" data-lang="en">Contact Guesthouse</div>
-            <div class="text-xs text-smoke-400">08512-3-1088</div>
+            <div class="font-bold" data-lang="ja">オーナー直通</div>
+            <div class="font-bold" data-lang="en">Owner Direct</div>
+            <div class="text-xs text-sand-500">080-4448-4920</div>
           </div>
-          <div class="w-10 h-10 rounded-full bg-wood-200 flex items-center justify-center"><i data-lucide="phone" class="w-5 h-5 text-wood-700"></i></div>
+          <div class="w-10 h-10 rounded-full bg-sand-200 flex items-center justify-center">
+            <i data-lucide="phone" class="w-5 h-5 text-sand-700"></i>
+          </div>
         </a>
-        <a href="https://lin.ee/a4uWMOX" target="_blank" rel="noopener" class="flex items-center justify-between bg-green-50 rounded-xl p-4 text-sm">
+        <a href="https://lin.ee/a4uWMOX" target="_blank" rel="noopener" class="flex items-center justify-between bg-green-50 rounded-xl p-4 text-sm no-underline text-inherit">
           <div>
-            <div class="font-bold" data-lang="ja">LINEで連絡</div><div class="font-bold" data-lang="en">Contact via LINE</div>
-            <div class="text-xs text-smoke-400" data-lang="ja">気軽にメッセージください</div>
-            <div class="text-xs text-smoke-400" data-lang="en">Feel free to message us</div>
+            <div class="font-bold" data-lang="ja">LINEで連絡</div>
+            <div class="font-bold" data-lang="en">Contact via LINE</div>
+            <div class="text-xs text-sand-500" data-lang="ja">気軽にメッセージください</div>
+            <div class="text-xs text-sand-500" data-lang="en">Feel free to message us</div>
           </div>
-          <div class="w-10 h-10 rounded-full bg-green-200 flex items-center justify-center"><i data-lucide="message-circle" class="w-5 h-5 text-green-700"></i></div>
+          <div class="w-10 h-10 rounded-full bg-green-200 flex items-center justify-center">
+            <i data-lucide="message-circle" class="w-5 h-5 text-green-700"></i>
+          </div>
+        </a>
+        <a href="mailto:info@kusuburu-house.com" class="flex items-center justify-between bg-blue-50 rounded-xl p-4 text-sm no-underline text-inherit">
+          <div>
+            <div class="font-bold">Email</div>
+            <div class="text-xs text-sand-500">info@kusuburu-house.com</div>
+          </div>
+          <div class="w-10 h-10 rounded-full bg-blue-200 flex items-center justify-center">
+            <i data-lucide="mail" class="w-5 h-5 text-blue-700"></i>
+          </div>
         </a>
         <div class="grid grid-cols-2 gap-2 mt-2">
-          <a href="tel:119" class="bg-red-50 rounded-xl p-3 text-center">
-            <div class="font-bold text-red-700 text-sm" data-lang="ja">救急・消防</div><div class="font-bold text-red-700 text-sm" data-lang="en">Ambulance/Fire</div>
+          <a href="tel:119" class="bg-red-50 rounded-xl p-3 text-center no-underline text-inherit">
+            <div class="font-bold text-red-700 text-sm" data-lang="ja">救急・消防</div>
+            <div class="font-bold text-red-700 text-sm" data-lang="en">Ambulance/Fire</div>
             <div class="text-xs text-red-500">119</div>
           </a>
-          <a href="tel:110" class="bg-blue-50 rounded-xl p-3 text-center">
-            <div class="font-bold text-blue-700 text-sm" data-lang="ja">警察</div><div class="font-bold text-blue-700 text-sm" data-lang="en">Police</div>
+          <a href="tel:110" class="bg-blue-50 rounded-xl p-3 text-center no-underline text-inherit">
+            <div class="font-bold text-blue-700 text-sm" data-lang="ja">警察</div>
+            <div class="font-bold text-blue-700 text-sm" data-lang="en">Police</div>
             <div class="text-xs text-blue-500">110</div>
           </a>
         </div>
@@ -739,17 +578,23 @@
 
     <!-- ===== FOOTER ===== -->
     <footer class="text-center pt-6 pb-4">
-      <div class="font-display text-lg font-bold text-wood-700">くすぶるハウス -燻家-</div>
-      <p class="text-xs text-smoke-400 mt-1" data-lang="ja">島根県隠岐郡隠岐の島町南方1227-1</p>
-      <p class="text-xs text-smoke-400 mt-1" data-lang="en">1227-1 Minamikata, Okinoshima, Shimane</p>
+      <div class="font-display text-lg font-semibold text-sand-700">くすぶるハウス -燻家-</div>
+      <p class="text-xs text-sand-500 mt-1" data-lang="ja">島根県隠岐郡隠岐の島町南方1227-1</p>
+      <p class="text-xs text-sand-500 mt-1" data-lang="en">1227-1 Minamikata, Okinoshima, Shimane</p>
       <div class="flex justify-center gap-4 mt-3">
-        <a href="https://kusuburu-house.com/" target="_blank" rel="noopener" class="text-smoke-400 hover:text-wood-500"><i data-lucide="globe" class="w-5 h-5"></i></a>
-        <a href="mailto:info@kusuburu-house.com" class="text-smoke-400 hover:text-wood-500"><i data-lucide="mail" class="w-5 h-5"></i></a>
+        <a href="https://kusuburu-house.com/" target="_blank" rel="noopener" class="text-sand-400 hover:text-sand-600"><i data-lucide="globe" class="w-5 h-5"></i></a>
+        <a href="mailto:info@kusuburu-house.com" class="text-sand-400 hover:text-sand-600"><i data-lucide="mail" class="w-5 h-5"></i></a>
       </div>
-      <p class="text-[10px] text-smoke-300 mt-4" data-lang="ja">情報は変更される場合があります</p>
-      <p class="text-[10px] text-smoke-300 mt-4" data-lang="en">Information subject to change</p>
+      <p class="text-[10px] text-sand-400 mt-4" data-lang="ja">情報は変更される場合があります</p>
+      <p class="text-[10px] text-sand-400 mt-4" data-lang="en">Information subject to change</p>
     </footer>
   </main>
+
+  <!-- Copy toast -->
+  <div class="copy-toast" id="copy-toast">
+    <span data-lang="ja">コピーしました</span>
+    <span data-lang="en">Copied!</span>
+  </div>
 
   <script>
     lucide.createIcons();
@@ -759,87 +604,90 @@
       document.body.classList.toggle('lang-en', lang === 'en');
       document.getElementById('btn-ja').classList.toggle('active', lang === 'ja');
       document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-      localStorage.setItem('guestguide-lang', lang);
+      localStorage.setItem('kusuburu-lang', lang);
     }
-    const savedLang = localStorage.getItem('guestguide-lang');
+    const savedLang = localStorage.getItem('kusuburu-lang');
     if (savedLang) setLang(savedLang);
     else if (navigator.language && !navigator.language.startsWith('ja')) setLang('en');
 
-    // === Accordion ===
-    function toggleAccordion(btn) {
-      const content = btn.nextElementSibling;
-      const arrow = btn.querySelector('.accordion-arrow');
-      content.classList.toggle('open');
-      arrow.classList.toggle('open');
-    }
-
-    // === Copy Wi-Fi ===
-    function copyWifi() {
-      const pass = document.getElementById('wifi-pass').textContent;
-      navigator.clipboard.writeText(pass).then(() => {
-        const btn = document.getElementById('copy-btn');
-        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4 text-green-500"></i>';
-        lucide.createIcons();
-        setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i>'; lucide.createIcons(); }, 1500);
+    // === Copy ===
+    function copyText(text, btn) {
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('copy-toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1500);
+        // Visual feedback on button
+        const icon = btn.querySelector('[data-lucide]');
+        if (icon) {
+          icon.setAttribute('data-lucide', 'check');
+          icon.classList.remove('text-sand-400');
+          icon.classList.add('text-green-500');
+          lucide.createIcons();
+          setTimeout(() => {
+            icon.setAttribute('data-lucide', 'copy');
+            icon.classList.remove('text-green-500');
+            icon.classList.add('text-sand-400');
+            lucide.createIcons();
+          }, 1500);
+        }
       });
     }
 
-    // === Weather (Open-Meteo API, 無料・APIキー不要) ===
+    // === Weather (Open-Meteo API) ===
     const WMO_ICONS = {
-      0: ['☀️','快晴','Clear'], 1: ['🌤️','晴れ','Mostly clear'], 2: ['⛅','くもり時々晴れ','Partly cloudy'],
-      3: ['☁️','くもり','Overcast'], 45: ['🌫️','霧','Fog'], 48: ['🌫️','霧氷','Rime fog'],
-      51: ['🌦️','小雨','Light drizzle'], 53: ['🌦️','雨','Drizzle'], 55: ['🌧️','強い雨','Heavy drizzle'],
-      61: ['🌧️','小雨','Light rain'], 63: ['🌧️','雨','Rain'], 65: ['🌧️','大雨','Heavy rain'],
-      66: ['🌧️','冷たい雨','Freezing rain'], 67: ['🌧️','強い冷たい雨','Heavy freezing rain'],
-      71: ['🌨️','小雪','Light snow'], 73: ['🌨️','雪','Snow'], 75: ['❄️','大雪','Heavy snow'],
-      77: ['🌨️','霰','Snow grains'], 80: ['🌦️','にわか雨','Rain showers'], 81: ['🌧️','雨','Moderate showers'],
-      82: ['⛈️','激しい雨','Violent showers'], 85: ['🌨️','にわか雪','Snow showers'], 86: ['❄️','大雪','Heavy snow showers'],
-      95: ['⛈️','雷雨','Thunderstorm'], 96: ['⛈️','雹を伴う雷雨','T-storm w/ hail'], 99: ['⛈️','激しい雷雨','Heavy t-storm'],
+      0:['☀️','快晴','Clear'],1:['🌤️','晴れ','Mostly clear'],2:['⛅','くもり時々晴れ','Partly cloudy'],
+      3:['☁️','くもり','Overcast'],45:['🌫️','霧','Fog'],48:['🌫️','霧氷','Rime fog'],
+      51:['🌦️','小雨','Light drizzle'],53:['🌦️','雨','Drizzle'],55:['🌧️','強い雨','Heavy drizzle'],
+      61:['🌧️','小雨','Light rain'],63:['🌧️','雨','Rain'],65:['🌧️','大雨','Heavy rain'],
+      66:['🌧️','冷たい雨','Freezing rain'],67:['🌧️','強い冷たい雨','Heavy freezing rain'],
+      71:['🌨️','小雪','Light snow'],73:['🌨️','雪','Snow'],75:['❄️','大雪','Heavy snow'],
+      77:['🌨️','霰','Snow grains'],80:['🌦️','にわか雨','Rain showers'],81:['🌧️','雨','Moderate showers'],
+      82:['⛈️','激しい雨','Violent showers'],85:['🌨️','にわか雪','Snow showers'],86:['❄️','大雪','Heavy snow showers'],
+      95:['⛈️','雷雨','Thunderstorm'],96:['⛈️','雹を伴う雷雨','T-storm w/ hail'],99:['⛈️','激しい雷雨','Heavy t-storm'],
     };
     const DAYS_JA = ['日','月','火','水','木','金','土'];
-    const DAYS_EN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-    async function loadWeather() {
+    async function fetchWeather() {
       try {
-        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=36.21&longitude=133.32&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTokyo&forecast_days=3');
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=36.21&longitude=133.32&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTokyo&forecast_days=3');
         const data = await res.json();
         const container = document.getElementById('weather-container');
         const isEn = document.body.classList.contains('lang-en');
         let html = '';
         for (let i = 0; i < 3; i++) {
-          const date = new Date(data.daily.time[i] + 'T00:00:00');
-          const code = data.daily.weather_code[i];
-          const icon = WMO_ICONS[code] || ['❓','不明','Unknown'];
-          const hi = Math.round(data.daily.temperature_2m_max[i]);
-          const lo = Math.round(data.daily.temperature_2m_min[i]);
-          const rain = data.daily.precipitation_probability_max[i];
+          const date = new Date(data.daily.time[i]);
+          const code = data.daily.weathercode[i];
+          const wmo = WMO_ICONS[code] || ['❓','不明','Unknown'];
           const dayLabel = i === 0
             ? (isEn ? 'Today' : '今日')
             : i === 1
               ? (isEn ? 'Tomorrow' : '明日')
-              : `${date.getMonth()+1}/${date.getDate()}(${isEn ? DAYS_EN[date.getDay()] : DAYS_JA[date.getDay()]})`;
+              : `${date.getMonth()+1}/${date.getDate()}(${DAYS_JA[date.getDay()]})`;
           html += `
             <div class="bg-white/60 rounded-xl p-3 text-center">
-              <div class="text-[11px] font-bold text-smoke-500 mb-1">${dayLabel}</div>
-              <div class="weather-icon mb-1">${icon[0]}</div>
-              <div class="text-[10px] text-smoke-500 mb-1">${isEn ? icon[2] : icon[1]}</div>
-              <div class="font-bold text-sm text-wood-800">${hi}° <span class="text-smoke-400 font-normal text-xs">/ ${lo}°</span></div>
-              <div class="text-[10px] text-sky-600 mt-0.5">☔ ${rain}%</div>
+              <div class="text-[10px] text-sand-500 font-bold mb-1">${dayLabel}</div>
+              <div class="text-3xl mb-1">${wmo[0]}</div>
+              <div class="text-[11px] text-sand-600" data-lang="ja">${wmo[1]}</div>
+              <div class="text-[11px] text-sand-600" data-lang="en">${wmo[2]}</div>
+              <div class="text-sm font-bold mt-1">
+                <span class="text-red-500">${Math.round(data.daily.temperature_2m_max[i])}°</span>
+                <span class="text-sand-400">/</span>
+                <span class="text-blue-500">${Math.round(data.daily.temperature_2m_min[i])}°</span>
+              </div>
+              <div class="text-[10px] text-sand-500 mt-0.5">
+                <i data-lucide="droplets" class="w-3 h-3 inline text-blue-400"></i>
+                ${data.daily.precipitation_probability_max[i]}%
+              </div>
             </div>`;
         }
         container.innerHTML = html;
+        lucide.createIcons();
       } catch (e) {
-        document.getElementById('weather-container').innerHTML = '<div class="col-span-3 text-center text-xs text-smoke-400 py-4">天気情報を取得できませんでした</div>';
+        document.getElementById('weather-container').innerHTML =
+          '<div class="col-span-3 text-center text-xs text-sand-500 py-4"><span data-lang="ja">天気情報を取得できませんでした</span><span data-lang="en">Could not load weather data</span></div>';
       }
     }
-    loadWeather();
-
-    // Re-render weather on language change
-    const origSetLang = setLang;
-    setLang = function(lang) {
-      origSetLang(lang);
-      loadWeather();
-    };
+    fetchWeather();
   </script>
 </body>
 </html>

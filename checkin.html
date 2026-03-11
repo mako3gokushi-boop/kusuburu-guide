@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>チェックイン | くすぶるハウス</title>
+  <meta name="description" content="くすぶるハウス チェックインフォーム">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@0.474.0"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Shippori Mincho"', 'serif'],
+            body: ['"Noto Sans JP"', 'sans-serif'],
+            soft: ['"Zen Maru Gothic"', 'sans-serif'],
+          },
+          colors: {
+            sand: {
+              50:'#faf9f7',100:'#f5f3ef',200:'#e8e4dc',300:'#d4cec3',
+              400:'#b8b0a0',500:'#9a9080',600:'#7a7060',700:'#5c5448',
+              800:'#3d3832',900:'#2a2520',950:'#1a1714'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --surface: #faf9f7;
+      --surface-warm: #f5f3ef;
+      --text-dark: #2a2520;
+      --text-body: #4a4238;
+      --text-muted: #635a4c;
+      --accent: #7a7060;
+      --accent-warm: #b8934f;
+      --border-light: rgba(42,37,32,0.06);
+      --border-medium: rgba(42,37,32,0.12);
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0 }
+    html { scroll-behavior: smooth }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--surface);
+      color: var(--text-dark);
+      overflow-x: hidden;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+    .font-display { font-family: 'Shippori Mincho', serif; }
+
+    /* Lang */
+    .lang-btn {
+      padding: 6px 14px; border-radius: 100px; font-size: 12px;
+      font-weight: 600; cursor: pointer; transition: all 0.2s; border: none;
+    }
+    .lang-btn.active { background: var(--accent-warm); color: white; }
+    .lang-btn:not(.active) { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); }
+
+    [data-lang="en"] { display: none; }
+    body.lang-en [data-lang="ja"] { display: none; }
+    body.lang-en [data-lang="en"] { display: block; }
+    body.lang-en span[data-lang="en"] { display: inline; }
+    body.lang-en div[data-lang="en"] { display: block; }
+    body.lang-en p[data-lang="en"] { display: block; }
+    body.lang-en label[data-lang="en"] { display: block; }
+
+    /* Form */
+    .form-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(42,37,32,0.06), 0 4px 12px rgba(42,37,32,0.03);
+    }
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border-medium);
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--surface);
+      color: var(--text-dark);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent-warm);
+      box-shadow: 0 0 0 3px rgba(184,147,79,0.15);
+    }
+    .form-input::placeholder { color: var(--text-muted); opacity: 0.5; }
+    .form-input.error { border-color: #ef4444; }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-body);
+      margin-bottom: 6px;
+    }
+    .required-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      color: white;
+      background: #ef4444;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .optional-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: var(--surface-warm);
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* Camera */
+    .camera-container {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+    }
+    .camera-container video,
+    .camera-container canvas {
+      width: 100%;
+      display: block;
+      border-radius: 12px;
+    }
+    .camera-overlay {
+      position: absolute;
+      inset: 0;
+      border: 2px dashed rgba(255,255,255,0.4);
+      border-radius: 12px;
+      margin: 16px;
+      pointer-events: none;
+    }
+    .camera-overlay::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      width: 80%;
+      height: 55%;
+      border: 2px solid rgba(184,147,79,0.6);
+      border-radius: 8px;
+    }
+
+    /* Submit button */
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--accent-warm), #9a7a3a);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Success screen */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .success-screen.show { display: block; }
+    .success-check {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      animation: scaleIn 0.4s ease;
+    }
+    @keyframes scaleIn {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    /* Hero */
+    .hero-bg {
+      background: linear-gradient(135deg, #2a2520 0%, #3d3832 40%, #2a2520 100%);
+      position: relative; overflow: hidden;
+    }
+    .hero-bg::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(184,147,79,0.12) 0%, transparent 60%);
+    }
+
+    /* Counter */
+    .counter-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-medium);
+      background: white;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 18px; font-weight: 500;
+      color: var(--text-body);
+      transition: all 0.15s;
+    }
+    .counter-btn:active { background: var(--surface-warm); }
+    .counter-value {
+      width: 40px; text-align: center;
+      font-size: 20px; font-weight: 700;
+    }
+
+    /* Error msg */
+    .field-error {
+      font-size: 11px;
+      color: #ef4444;
+      margin-top: 4px;
+      display: none;
+    }
+    .field-error.show { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="hero-bg text-white px-5 pt-8 pb-6 relative z-10">
+    <div class="flex items-center justify-between relative z-10">
+      <a href="index.html" class="text-sand-400 flex items-center gap-1 text-xs no-underline">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span data-lang="ja">ポータルに戻る</span>
+        <span data-lang="en">Back to Portal</span>
+      </a>
+      <div class="flex gap-2">
+        <button class="lang-btn active" onclick="setLang('ja')" id="btn-ja">JP</button>
+        <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+      </div>
+    </div>
+    <div class="text-center mt-4 relative z-10">
+      <p class="text-[10px] tracking-[0.3em] text-sand-400 mb-2 uppercase font-light">Check-in</p>
+      <h1 class="font-display text-xl font-semibold tracking-wider" data-lang="ja">チェックイン</h1>
+      <h1 class="font-display text-xl font-semibold tracking-wider" data-lang="en">Check-in Form</h1>
+      <p class="text-sand-400 text-xs mt-2" data-lang="ja">ご到着ありがとうございます。以下をご記入ください。</p>
+      <p class="text-sand-400 text-xs mt-2" data-lang="en">Thank you for arriving. Please fill in the form below.</p>
+    </div>
+  </header>
+
+  <!-- ===== FORM ===== -->
+  <main id="form-main" class="px-4 py-6 max-w-lg mx-auto">
+    <form id="checkin-form" novalidate>
+
+      <!-- Guest Info -->
+      <div class="form-card p-5 mb-4">
+        <h2 class="font-display font-semibold text-base mb-4 flex items-center gap-2">
+          <i data-lucide="user" class="w-5 h-5 text-sand-500"></i>
+          <span data-lang="ja">宿泊者情報</span>
+          <span data-lang="en">Guest Information</span>
+        </h2>
+
+        <!-- Name -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">代表者氏名<span class="required-badge">必須</span></label>
+          <label class="form-label" data-lang="en">Full Name<span class="required-badge">Required</span></label>
+          <input type="text" name="name" class="form-input" data-lang-placeholder-ja="例: 山田 太郎" data-lang-placeholder-en="e.g. John Smith" required>
+          <div class="field-error" data-lang="ja">氏名を入力してください</div>
+          <div class="field-error" data-lang="en">Please enter your name</div>
+        </div>
+
+        <!-- Furigana -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">フリガナ<span class="required-badge">必須</span></label>
+          <label class="form-label" data-lang="en">Name (Katakana)<span class="optional-badge">Optional</span></label>
+          <input type="text" name="furigana" class="form-input" data-lang-placeholder-ja="例: ヤマダ タロウ" data-lang-placeholder-en="Katakana reading">
+          <div class="field-error" data-lang="ja">フリガナを入力してください</div>
+          <div class="field-error" data-lang="en">Please enter katakana reading</div>
+        </div>
+
+        <!-- Guest count -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">宿泊人数<span class="required-badge">必須</span></label>
+          <label class="form-label" data-lang="en">Number of Guests<span class="required-badge">Required</span></label>
+          <div class="flex gap-6 mt-2">
+            <div class="flex items-center gap-3">
+              <span class="text-sm text-sand-600" data-lang="ja">大人</span>
+              <span class="text-sm text-sand-600" data-lang="en">Adults</span>
+              <div class="flex items-center gap-1">
+                <button type="button" class="counter-btn" onclick="changeCount('adults',-1)">-</button>
+                <span class="counter-value" id="adults-count">1</span>
+                <button type="button" class="counter-btn" onclick="changeCount('adults',1)">+</button>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-sm text-sand-600" data-lang="ja">子供</span>
+              <span class="text-sm text-sand-600" data-lang="en">Children</span>
+              <div class="flex items-center gap-1">
+                <button type="button" class="counter-btn" onclick="changeCount('children',-1)">-</button>
+                <span class="counter-value" id="children-count">0</span>
+                <button type="button" class="counter-btn" onclick="changeCount('children',1)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dates -->
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div>
+            <label class="form-label" data-lang="ja">チェックイン日<span class="required-badge">必須</span></label>
+            <label class="form-label" data-lang="en">Check-in Date<span class="required-badge">Required</span></label>
+            <input type="date" name="checkin_date" class="form-input" required>
+          </div>
+          <div>
+            <label class="form-label" data-lang="ja">チェックアウト日<span class="required-badge">必須</span></label>
+            <label class="form-label" data-lang="en">Check-out Date<span class="required-badge">Required</span></label>
+            <input type="date" name="checkout_date" class="form-input" required>
+          </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">電話番号<span class="required-badge">必須</span></label>
+          <label class="form-label" data-lang="en">Phone Number<span class="required-badge">Required</span></label>
+          <input type="tel" name="phone" class="form-input" data-lang-placeholder-ja="例: 090-1234-5678" data-lang-placeholder-en="e.g. +81-90-1234-5678" required>
+          <div class="field-error" data-lang="ja">電話番号を入力してください</div>
+          <div class="field-error" data-lang="en">Please enter your phone number</div>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">メールアドレス<span class="optional-badge">任意</span></label>
+          <label class="form-label" data-lang="en">Email<span class="optional-badge">Optional</span></label>
+          <input type="email" name="email" class="form-input" data-lang-placeholder-ja="例: example@email.com" data-lang-placeholder-en="e.g. example@email.com">
+        </div>
+
+        <!-- Zipcode -->
+        <div class="mb-3">
+          <label class="form-label" data-lang="ja">郵便番号</label>
+          <label class="form-label" data-lang="en">Postal Code</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="text" name="zipcode" class="form-input" inputmode="numeric" maxlength="8"
+              data-lang-placeholder-ja="例: 685-0000" data-lang-placeholder-en="e.g. 685-0000"
+              style="flex:1;" oninput="onZipcodeInput(this)">
+            <button type="button" onclick="searchZipcode()" class="form-input"
+              style="flex:none;width:auto;padding:10px 16px;background:var(--accent-warm);color:white;border:none;font-weight:600;font-size:13px;cursor:pointer;border-radius:10px;">
+              <span data-lang="ja">検索</span><span data-lang="en">Search</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">住所（都道府県・市区町村）<span class="required-badge">必須</span></label>
+          <label class="form-label" data-lang="en">Address (City / State)<span class="required-badge">Required</span></label>
+          <input type="text" name="address" class="form-input" data-lang-placeholder-ja="例: 東京都渋谷区神宮前1-2-3" data-lang-placeholder-en="e.g. Tokyo, Japan" required>
+          <div class="field-error" data-lang="ja">住所を入力してください</div>
+          <div class="field-error" data-lang="en">Please enter your address</div>
+        </div>
+      </div>
+
+      <!-- Foreign Guest (conditional) -->
+      <div class="form-card p-5 mb-4">
+        <h2 class="font-display font-semibold text-base mb-4 flex items-center gap-2">
+          <i data-lucide="globe" class="w-5 h-5 text-sand-500"></i>
+          <span data-lang="ja">外国籍の方</span>
+          <span data-lang="en">International Guests</span>
+        </h2>
+
+        <div class="mb-3">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" id="is-foreign" class="w-5 h-5 accent-amber-600 rounded" onchange="toggleForeign()">
+            <span class="text-sm" data-lang="ja">外国籍の方はチェックしてください</span>
+            <span class="text-sm" data-lang="en">Check if you are a non-Japanese national</span>
+          </label>
+        </div>
+
+        <div id="foreign-fields" class="space-y-4 hidden">
+          <!-- Nationality -->
+          <div>
+            <label class="form-label" data-lang="ja">国籍<span class="required-badge">必須</span></label>
+            <label class="form-label" data-lang="en">Nationality<span class="required-badge">Required</span></label>
+            <input type="text" name="nationality" class="form-input" data-lang-placeholder-ja="例: アメリカ合衆国" data-lang-placeholder-en="e.g. United States">
+          </div>
+
+          <!-- Passport Number -->
+          <div>
+            <label class="form-label" data-lang="ja">パスポート番号<span class="required-badge">必須</span></label>
+            <label class="form-label" data-lang="en">Passport Number<span class="required-badge">Required</span></label>
+            <input type="text" name="passport_number" class="form-input" data-lang-placeholder-ja="例: AB1234567" data-lang-placeholder-en="e.g. AB1234567">
+          </div>
+
+          <!-- Passport Photo -->
+          <div>
+            <label class="form-label" data-lang="ja">パスポート写真<span class="required-badge">必須</span></label>
+            <label class="form-label" data-lang="en">Passport Photo<span class="required-badge">Required</span></label>
+
+            <!-- Camera UI -->
+            <div id="camera-section">
+              <div id="camera-preview" class="hidden">
+                <div class="camera-container">
+                  <video id="camera-video" autoplay playsinline></video>
+                  <div class="camera-overlay"></div>
+                </div>
+                <div class="flex gap-3 mt-3 justify-center">
+                  <button type="button" onclick="capturePhoto()" class="px-6 py-2.5 bg-amber-500 text-white rounded-full text-sm font-bold flex items-center gap-2">
+                    <i data-lucide="camera" class="w-4 h-4"></i>
+                    <span data-lang="ja">撮影</span>
+                    <span data-lang="en">Capture</span>
+                  </button>
+                  <button type="button" onclick="stopCamera()" class="px-4 py-2.5 bg-sand-200 text-sand-700 rounded-full text-sm font-bold">
+                    <span data-lang="ja">閉じる</span>
+                    <span data-lang="en">Close</span>
+                  </button>
+                </div>
+              </div>
+
+              <div id="camera-result" class="hidden">
+                <div class="camera-container">
+                  <canvas id="camera-canvas"></canvas>
+                </div>
+                <div class="flex gap-3 mt-3 justify-center">
+                  <button type="button" onclick="retakePhoto()" class="px-4 py-2.5 bg-sand-200 text-sand-700 rounded-full text-sm font-bold flex items-center gap-2">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                    <span data-lang="ja">撮り直す</span>
+                    <span data-lang="en">Retake</span>
+                  </button>
+                </div>
+                <p class="text-center text-xs text-green-600 mt-2 font-bold flex items-center justify-center gap-1">
+                  <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+                  <span data-lang="ja">撮影完了</span>
+                  <span data-lang="en">Photo captured</span>
+                </p>
+              </div>
+
+              <div id="camera-buttons" class="flex gap-3">
+                <button type="button" onclick="startCamera()" class="flex-1 py-3 bg-sand-100 text-sand-700 rounded-xl text-sm font-bold flex items-center justify-center gap-2">
+                  <i data-lucide="camera" class="w-4 h-4"></i>
+                  <span data-lang="ja">カメラで撮影</span>
+                  <span data-lang="en">Take Photo</span>
+                </button>
+                <label class="flex-1 py-3 bg-sand-100 text-sand-700 rounded-xl text-sm font-bold flex items-center justify-center gap-2 cursor-pointer">
+                  <i data-lucide="image" class="w-4 h-4"></i>
+                  <span data-lang="ja">画像を選択</span>
+                  <span data-lang="en">Choose File</span>
+                  <input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleFileSelect(event)">
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Info -->
+      <div class="form-card p-5 mb-4">
+        <h2 class="font-display font-semibold text-base mb-4 flex items-center gap-2">
+          <i data-lucide="info" class="w-5 h-5 text-sand-500"></i>
+          <span data-lang="ja">その他</span>
+          <span data-lang="en">Additional Info</span>
+        </h2>
+
+        <!-- Transportation -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">交通手段<span class="optional-badge">任意</span></label>
+          <label class="form-label" data-lang="en">Transportation<span class="optional-badge">Optional</span></label>
+          <select name="transport" class="form-input">
+            <option value="" data-lang="ja">選択してください</option>
+            <option value="" data-lang="en">Select...</option>
+            <option value="ferry" data-i18n-ja="フェリー" data-i18n-en="Ferry">フェリー</option>
+            <option value="jet" data-i18n-ja="高速船" data-i18n-en="Jet boat">高速船</option>
+            <option value="plane" data-i18n-ja="飛行機" data-i18n-en="Airplane">飛行機</option>
+            <option value="other" data-i18n-ja="その他" data-i18n-en="Other">その他</option>
+          </select>
+        </div>
+
+        <!-- Allergies -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">食事アレルギー<span class="optional-badge">任意</span></label>
+          <label class="form-label" data-lang="en">Food Allergies<span class="optional-badge">Optional</span></label>
+          <input type="text" name="allergies" class="form-input" data-lang-placeholder-ja="例: 甲殻類、卵" data-lang-placeholder-en="e.g. shellfish, eggs">
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <label class="form-label" data-lang="ja">備考<span class="optional-badge">任意</span></label>
+          <label class="form-label" data-lang="en">Notes<span class="optional-badge">Optional</span></label>
+          <textarea name="notes" class="form-input" rows="3" data-lang-placeholder-ja="ご要望など" data-lang-placeholder-en="Any requests or notes"></textarea>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="submit-btn" id="submit-btn">
+        <span data-lang="ja">チェックインを送信</span>
+        <span data-lang="en">Submit Check-in</span>
+      </button>
+    </form>
+
+    <!-- Success Screen -->
+    <div class="success-screen" id="success-screen">
+      <div class="form-card p-8">
+        <div class="success-check">
+          <i data-lucide="check" class="w-10 h-10 text-white"></i>
+        </div>
+        <h2 class="font-display text-xl font-semibold mb-2" data-lang="ja">チェックイン完了</h2>
+        <h2 class="font-display text-xl font-semibold mb-2" data-lang="en">Check-in Complete</h2>
+        <p class="text-sand-600 text-sm mb-6" data-lang="ja">ご記入ありがとうございます。<br>ごゆっくりお過ごしください。</p>
+        <p class="text-sand-600 text-sm mb-6" data-lang="en">Thank you for checking in.<br>Enjoy your stay!</p>
+        <a href="index.html" class="inline-flex items-center gap-2 px-6 py-3 bg-sand-100 text-sand-700 rounded-full text-sm font-bold no-underline">
+          <i data-lucide="home" class="w-4 h-4"></i>
+          <span data-lang="ja">ポータルに戻る</span>
+          <span data-lang="en">Back to Portal</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    // === Language ===
+    function setLang(lang) {
+      document.body.classList.toggle('lang-en', lang === 'en');
+      document.getElementById('btn-ja').classList.toggle('active', lang === 'ja');
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      localStorage.setItem('kusuburu-lang', lang);
+      updatePlaceholders();
+      updateSelectOptions();
+    }
+    function updatePlaceholders() {
+      const isEn = document.body.classList.contains('lang-en');
+      document.querySelectorAll('[data-lang-placeholder-ja]').forEach(el => {
+        el.placeholder = isEn ? el.dataset.langPlaceholderEn : el.dataset.langPlaceholderJa;
+      });
+    }
+    function updateSelectOptions() {
+      const isEn = document.body.classList.contains('lang-en');
+      document.querySelectorAll('option[data-i18n-ja]').forEach(opt => {
+        opt.textContent = isEn ? opt.dataset.i18nEn : opt.dataset.i18nJa;
+      });
+    }
+    const savedLang = localStorage.getItem('kusuburu-lang');
+    if (savedLang) setLang(savedLang);
+    else if (navigator.language && !navigator.language.startsWith('ja')) setLang('en');
+    updatePlaceholders();
+
+    // === Set default dates ===
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    function fmt(d) { return d.toISOString().split('T')[0]; }
+    document.querySelector('[name="checkin_date"]').value = fmt(today);
+    document.querySelector('[name="checkout_date"]').value = fmt(tomorrow);
+
+    // === Counter ===
+    const counts = { adults: 1, children: 0 };
+    function changeCount(type, delta) {
+      const min = type === 'adults' ? 1 : 0;
+      counts[type] = Math.max(min, Math.min(20, counts[type] + delta));
+      document.getElementById(type + '-count').textContent = counts[type];
+    }
+
+    // === Zipcode lookup ===
+    function onZipcodeInput(el) {
+      let v = el.value.replace(/[^\d]/g, '');
+      if (v.length > 3) v = v.slice(0, 3) + '-' + v.slice(3, 7);
+      el.value = v;
+      if (v.replace('-', '').length === 7) searchZipcode();
+    }
+
+    async function searchZipcode() {
+      const raw = document.querySelector('[name="zipcode"]').value.replace(/[^\d]/g, '');
+      if (raw.length !== 7) return;
+      try {
+        const res = await fetch('https://zipcloud.ibsnet.co.jp/api/search?zipcode=' + raw);
+        const data = await res.json();
+        if (data.results && data.results.length > 0) {
+          const r = data.results[0];
+          const addr = r.address1 + r.address2 + r.address3;
+          document.querySelector('[name="address"]').value = addr;
+          document.querySelector('[name="address"]').focus();
+        }
+      } catch (e) {
+        // API失敗時は手動入力に任せる
+      }
+    }
+
+    // === Foreign guest toggle ===
+    function toggleForeign() {
+      const checked = document.getElementById('is-foreign').checked;
+      document.getElementById('foreign-fields').classList.toggle('hidden', !checked);
+    }
+
+    // === Camera ===
+    let cameraStream = null;
+    let passportPhotoData = null;
+
+    async function startCamera() {
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+        });
+        const video = document.getElementById('camera-video');
+        video.srcObject = cameraStream;
+        document.getElementById('camera-preview').classList.remove('hidden');
+        document.getElementById('camera-buttons').classList.add('hidden');
+        document.getElementById('camera-result').classList.add('hidden');
+      } catch (e) {
+        // Camera not available, show file input fallback
+        const isEn = document.body.classList.contains('lang-en');
+        alert(isEn ? 'Camera not available. Please use "Choose File" instead.' : 'カメラを利用できません。「画像を選択」をご利用ください。');
+      }
+    }
+
+    function stopCamera() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(t => t.stop());
+        cameraStream = null;
+      }
+      document.getElementById('camera-preview').classList.add('hidden');
+      document.getElementById('camera-buttons').classList.remove('hidden');
+    }
+
+    function capturePhoto() {
+      const video = document.getElementById('camera-video');
+      const canvas = document.getElementById('camera-canvas');
+      // Scale down if needed (max 1200px)
+      const scale = Math.min(1, 1200 / Math.max(video.videoWidth, video.videoHeight));
+      canvas.width = video.videoWidth * scale;
+      canvas.height = video.videoHeight * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      passportPhotoData = canvas.toDataURL('image/jpeg', 0.8);
+      stopCamera();
+      document.getElementById('camera-result').classList.remove('hidden');
+      document.getElementById('camera-buttons').classList.add('hidden');
+      lucide.createIcons();
+    }
+
+    function retakePhoto() {
+      passportPhotoData = null;
+      document.getElementById('camera-result').classList.add('hidden');
+      startCamera();
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.getElementById('camera-canvas');
+          const scale = Math.min(1, 1200 / Math.max(img.width, img.height));
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          passportPhotoData = canvas.toDataURL('image/jpeg', 0.8);
+          document.getElementById('camera-result').classList.remove('hidden');
+          document.getElementById('camera-buttons').classList.add('hidden');
+          document.getElementById('camera-preview').classList.add('hidden');
+          lucide.createIcons();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // === Form validation & submit ===
+    document.getElementById('checkin-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const isEn = document.body.classList.contains('lang-en');
+      const isForeign = document.getElementById('is-foreign').checked;
+
+      // Clear errors
+      document.querySelectorAll('.form-input.error').forEach(el => el.classList.remove('error'));
+      document.querySelectorAll('.field-error.show').forEach(el => el.classList.remove('show'));
+
+      let valid = true;
+      const requiredFields = ['name', 'phone', 'address'];
+      // Furigana required only for Japanese
+      if (!isEn && !isForeign) requiredFields.push('furigana');
+
+      requiredFields.forEach(name => {
+        const input = document.querySelector(`[name="${name}"]`);
+        if (input && !input.value.trim()) {
+          input.classList.add('error');
+          const errors = input.parentElement.querySelectorAll('.field-error');
+          errors.forEach(err => err.classList.add('show'));
+          valid = false;
+        }
+      });
+
+      // Foreign-specific validation
+      if (isForeign) {
+        ['nationality', 'passport_number'].forEach(name => {
+          const input = document.querySelector(`[name="${name}"]`);
+          if (input && !input.value.trim()) {
+            input.classList.add('error');
+            valid = false;
+          }
+        });
+        if (!passportPhotoData) {
+          valid = false;
+          const isEn = document.body.classList.contains('lang-en');
+          alert(isEn ? 'Please take or upload a passport photo.' : 'パスポートの写真を撮影してください。');
+          return;
+        }
+      }
+
+      if (!valid) {
+        // Scroll to first error
+        const firstError = document.querySelector('.form-input.error');
+        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      // Collect data
+      const formData = {
+        name: document.querySelector('[name="name"]').value.trim(),
+        furigana: document.querySelector('[name="furigana"]').value.trim(),
+        adults: counts.adults,
+        children: counts.children,
+        checkin_date: document.querySelector('[name="checkin_date"]').value,
+        checkout_date: document.querySelector('[name="checkout_date"]').value,
+        phone: document.querySelector('[name="phone"]').value.trim(),
+        email: document.querySelector('[name="email"]').value.trim(),
+        zipcode: document.querySelector('[name="zipcode"]').value.trim(),
+        address: document.querySelector('[name="address"]').value.trim(),
+        is_foreign: isForeign,
+        nationality: isForeign ? document.querySelector('[name="nationality"]').value.trim() : '',
+        passport_number: isForeign ? document.querySelector('[name="passport_number"]').value.trim() : '',
+        passport_photo: isForeign ? passportPhotoData : null,
+        transport: document.querySelector('[name="transport"]').value,
+        allergies: document.querySelector('[name="allergies"]').value.trim(),
+        notes: document.querySelector('[name="notes"]').value.trim(),
+        submitted_at: new Date().toISOString(),
+      };
+
+      // Save to localStorage (Phase 1)
+      const checkins = JSON.parse(localStorage.getItem('kusuburu-checkins') || '[]');
+      checkins.push(formData);
+      localStorage.setItem('kusuburu-checkins', JSON.stringify(checkins));
+
+      // Show success
+      document.getElementById('checkin-form').style.display = 'none';
+      document.getElementById('success-screen').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      lucide.createIcons();
+    });
+
+    // Clear error on input
+    document.querySelectorAll('.form-input').forEach(input => {
+      input.addEventListener('input', function() {
+        this.classList.remove('error');
+        const errors = this.parentElement.querySelectorAll('.field-error');
+        errors.forEach(err => err.classList.remove('show'));
+      });
+    });
+  </script>
+</body>
+</html>
