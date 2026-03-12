@@ -493,11 +493,39 @@
           </select>
         </div>
 
-        <!-- Allergies -->
+        <!-- How did you find us -->
         <div class="mb-4">
-          <label class="form-label" data-lang="ja">食事アレルギー<span class="optional-badge">任意</span></label>
-          <label class="form-label" data-lang="en">Food Allergies<span class="optional-badge">Optional</span></label>
-          <input type="text" name="allergies" class="form-input" data-lang-placeholder-ja="例: 甲殻類、卵" data-lang-placeholder-en="e.g. shellfish, eggs">
+          <label class="form-label" data-lang="ja">どのようにこの宿を知りましたか？<span class="optional-badge">任意</span></label>
+          <label class="form-label" data-lang="en">How did you find us?<span class="optional-badge">Optional</span></label>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="referral" value="sns" class="accent-amber-600"> <span data-lang="ja">SNS</span><span data-lang="en">SNS</span>
+            </label>
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="referral" value="hp" class="accent-amber-600"> <span data-lang="ja">HP</span><span data-lang="en">Website</span>
+            </label>
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="referral" value="referral" class="accent-amber-600"> <span data-lang="ja">紹介</span><span data-lang="en">Referral</span>
+            </label>
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="referral" value="other" class="accent-amber-600"> <span data-lang="ja">その他</span><span data-lang="en">Other</span>
+            </label>
+          </div>
+          <input type="text" name="referral_other" class="form-input mt-2" style="display:none;" data-lang-placeholder-ja="詳しく教えてください" data-lang-placeholder-en="Please tell us more">
+        </div>
+
+        <!-- Looking forward to -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">隠岐の島で１番楽しみにしてることは？<span class="optional-badge">任意</span></label>
+          <label class="form-label" data-lang="en">What are you most looking forward to in Oki Island?<span class="optional-badge">Optional</span></label>
+          <input type="text" name="looking_forward" class="form-input" data-lang-placeholder-ja="例: 釣り、自然散策、美味しいもの" data-lang-placeholder-en="e.g. fishing, nature walks, local food">
+        </div>
+
+        <!-- Ambition before checkout -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">チェックアウト（出発）までにしたい野望はありますか？<span class="optional-badge">任意</span></label>
+          <label class="form-label" data-lang="en">Any ambitions before checkout?<span class="optional-badge">Optional</span></label>
+          <textarea name="ambition" class="form-input" rows="2" data-lang-placeholder-ja="例: ローソク島を見たい！" data-lang-placeholder-en="e.g. I want to see Candle Rock!"></textarea>
         </div>
 
         <!-- Notes -->
@@ -593,6 +621,14 @@
     function fmt(d) { return d.toISOString().split('T')[0]; }
     document.querySelector('[name="checkin_date"]').value = fmt(today);
     document.querySelector('[name="checkout_date"]').value = fmt(tomorrow);
+
+    // === Referral "other" toggle ===
+    document.querySelectorAll('[name="referral"]').forEach(r => {
+      r.addEventListener('change', () => {
+        const otherInput = document.querySelector('[name="referral_other"]');
+        otherInput.style.display = r.value === 'other' && r.checked ? '' : 'none';
+      });
+    });
 
     // === Counter ===
     const counts = { adults: 1, children: 0 };
@@ -775,7 +811,14 @@
         passport_number: isForeign ? document.querySelector('[name="passport_number"]').value.trim() : '',
         passport_photo: isForeign ? passportPhotoData : null,
         transport: document.querySelector('[name="transport"]').value,
-        allergies: document.querySelector('[name="allergies"]').value.trim(),
+        referral: (function() {
+          const r = document.querySelector('[name="referral"]:checked');
+          if (!r) return '';
+          if (r.value === 'other') return 'other: ' + (document.querySelector('[name="referral_other"]').value.trim() || '');
+          return r.value;
+        })(),
+        looking_forward: document.querySelector('[name="looking_forward"]').value.trim(),
+        ambition: document.querySelector('[name="ambition"]').value.trim(),
         notes: document.querySelector('[name="notes"]').value.trim(),
         submitted_at: new Date().toISOString(),
       };
@@ -813,7 +856,7 @@
         nationality: formData.nationality,
         passport_no: formData.passport_number,
         transport: formData.transport,
-        allergies: formData.allergies,
+        allergies: [formData.referral ? '【知ったきっかけ】' + formData.referral : '', formData.looking_forward ? '【楽しみ】' + formData.looking_forward : '', formData.ambition ? '【野望】' + formData.ambition : ''].filter(Boolean).join(' / '),
         notes: formData.notes,
       };
       if (hpVal) serverData.website = hpVal;
