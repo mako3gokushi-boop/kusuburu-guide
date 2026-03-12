@@ -43,3 +43,9 @@ CREATE TABLE IF NOT EXISTS admin_passwords (
   salt TEXT NOT NULL,
   created_at TEXT DEFAULT (datetime('now'))
 );
+
+CREATE TABLE IF NOT EXISTS photo_tokens (
+  token TEXT PRIMARY KEY,
+  checkin_id TEXT NOT NULL,
+  expires_at INTEGER NOT NULL
+);

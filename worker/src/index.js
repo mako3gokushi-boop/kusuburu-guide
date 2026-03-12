@@ -82,12 +82,14 @@ async function verifyPassword(password, salt, hash) {
 async function getEncryptionKey(env) {
   const keyStr = env.ENCRYPTION_KEY;
   if (!keyStr) return null;
+  const saltStr = env.ENCRYPTION_SALT;
+  if (!saltStr) return null;
   const enc = new TextEncoder();
   const keyMaterial = await crypto.subtle.importKey(
     'raw', enc.encode(keyStr), 'PBKDF2', false, ['deriveKey']
   );
   return crypto.subtle.deriveKey(
-    { name: 'PBKDF2', salt: enc.encode('kusuburu-salt'), iterations: 100000, hash: 'SHA-256' },
+    { name: 'PBKDF2', salt: enc.encode(saltStr), iterations: 100000, hash: 'SHA-256' },
     keyMaterial, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
   );
 }
@@ -95,7 +97,7 @@ async function getEncryptionKey(env) {
 async function encryptField(plaintext, env) {
   if (!plaintext) return plaintext;
   const key = await getEncryptionKey(env);
-  if (!key) return plaintext; // No encryption key configured
+  if (!key) throw new Error('ENCRYPTION_NOT_CONFIGURED');
   const enc = new TextEncoder();
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const encrypted = await crypto.subtle.encrypt(
@@ -327,7 +329,7 @@ async function handleChangePassword(request, env, origin) {
 
 async function verifyTurnstile(token, clientIP, env) {
   const secretKey = env.TURNSTILE_SECRET_KEY;
-  if (!secretKey) return true; // Skip if not configured
+  if (!secretKey) return false; // Fail closed if not configured
 
   try {
     const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
@@ -343,7 +345,7 @@ async function verifyTurnstile(token, clientIP, env) {
     return result.success === true;
   } catch (e) {
     console.error('Turnstile verification failed:', e);
-    return true; // Fail open if Turnstile is unreachable
+    return false; // Fail closed if Turnstile is unreachable
   }
 }
 
@@ -457,11 +459,19 @@ async function handleCheckin(request, env, origin) {
   const id = generateUUID();
 
   // Encrypt sensitive fields
-  const encrypted = await encryptSensitiveFields({
-    name: data.name,
-    phone: data.phone,
-    passport_no: data.passport_no || '',
-  }, env);
+  let encrypted;
+  try {
+    encrypted = await encryptSensitiveFields({
+      name: data.name,
+      phone: data.phone,
+      passport_no: data.passport_no || '',
+    }, env);
+  } catch (e) {
+    if (e.message === 'ENCRYPTION_NOT_CONFIGURED') {
+      return jsonResponse({ error: 'Service temporarily unavailable' }, 503, origin, env.ALLOWED_ORIGIN);
+    }
+    throw e;
+  }
 
   await env.DB.prepare(`
     INSERT INTO checkins (id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, status)
@@ -489,7 +499,17 @@ async function handleCheckin(request, env, origin) {
   // Send LINE notification (fire and forget)
   sendLineNotification(env, { ...data, id });
 
-  return jsonResponse({ success: true, id }, 201, origin, env.ALLOWED_ORIGIN);
+  // Generate one-time photo upload token (valid for 5 minutes)
+  let photoUploadToken = null;
+  if (data.is_foreign) {
+    photoUploadToken = generateUUID();
+    const expiresAt = Math.floor(Date.now() / 1000) + 300; // 5 minutes
+    await env.DB.prepare(
+      'INSERT INTO photo_tokens (token, checkin_id, expires_at) VALUES (?, ?, ?)'
+    ).bind(photoUploadToken, id, expiresAt).run();
+  }
+
+  return jsonResponse({ success: true, id, photo_upload_token: photoUploadToken }, 201, origin, env.ALLOWED_ORIGIN);
 }
 
 async function handlePhotoUpload(request, env, origin) {
@@ -500,12 +520,13 @@ async function handlePhotoUpload(request, env, origin) {
   }
 
   const contentType = request.headers.get('Content-Type') || '';
-  let photoData, checkinId;
+  let photoData, checkinId, uploadToken;
 
   if (contentType.includes('application/json')) {
     const data = await request.json();
     photoData = data.photo; // base64 string
     checkinId = data.checkin_id;
+    uploadToken = data.photo_upload_token;
   } else {
     return jsonResponse({ error: 'Content-Type must be application/json' }, 400, origin, env.ALLOWED_ORIGIN);
   }
@@ -513,6 +534,20 @@ async function handlePhotoUpload(request, env, origin) {
   if (!checkinId || !photoData) {
     return jsonResponse({ error: 'Missing checkin_id or photo' }, 400, origin, env.ALLOWED_ORIGIN);
   }
+
+  // Verify one-time photo upload token
+  if (!uploadToken) {
+    return jsonResponse({ error: 'Photo upload token required' }, 401, origin, env.ALLOWED_ORIGIN);
+  }
+  const now = Math.floor(Date.now() / 1000);
+  const tokenRecord = await env.DB.prepare(
+    'SELECT token, checkin_id, expires_at FROM photo_tokens WHERE token = ?'
+  ).bind(uploadToken).first();
+  if (!tokenRecord || tokenRecord.checkin_id !== checkinId || tokenRecord.expires_at < now) {
+    return jsonResponse({ error: 'Invalid or expired upload token' }, 401, origin, env.ALLOWED_ORIGIN);
+  }
+  // Delete the token (one-time use)
+  await env.DB.prepare('DELETE FROM photo_tokens WHERE token = ?').bind(uploadToken).run();
 
   // Check size (base64 is ~33% larger than binary)
   if (photoData.length > MAX_PHOTO_SIZE * 1.34) {
@@ -852,6 +887,10 @@ export default {
         console.log(`Auto-delete photos: ${photoDeleted} expired passport photos removed`);
       }
     }
+
+    // Clean up expired photo upload tokens
+    const nowSec = Math.floor(Date.now() / 1000);
+    await env.DB.prepare('DELETE FROM photo_tokens WHERE expires_at < ?').bind(nowSec).run();
 
     // Auto-delete personal data: 3 years after checkout (旅館業法準拠)
     const dataRetentionCutoff = new Date();

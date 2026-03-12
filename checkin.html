@@ -829,7 +829,7 @@
               await fetch(API_URL + '/checkin/photo', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ checkin_id: result.id, photo: formData.passport_photo }),
+                body: JSON.stringify({ checkin_id: result.id, photo: formData.passport_photo, photo_upload_token: result.photo_upload_token }),
               });
             } catch (photoErr) {
               console.warn('Photo upload failed (data saved):', photoErr);
@@ -895,7 +895,7 @@
               await fetch(API_URL + '/checkin/photo', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ checkin_id: result.id, photo: item.passport_photo }),
+                body: JSON.stringify({ checkin_id: result.id, photo: item.passport_photo, photo_upload_token: result.photo_upload_token }),
               });
             } catch (e) { /* photo upload failed, data already saved */ }
           }

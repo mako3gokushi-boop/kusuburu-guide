@@ -632,8 +632,16 @@
           headers: { 'Authorization': 'Bearer ' + authToken },
         });
         const data = await res.json();
-        if (data.photo) {
-          container.innerHTML = `<img src="${data.photo}" style="max-width:100%;border-radius:8px;">`;
+        if (data.photo && (data.photo.startsWith('data:image/jpeg') || data.photo.startsWith('data:image/png'))) {
+          const img = document.createElement('img');
+          img.src = data.photo;
+          img.style.maxWidth = '100%';
+          img.style.borderRadius = '8px';
+          container.innerHTML = '';
+          container.appendChild(img);
+          btn.style.display = 'none';
+        } else if (data.photo) {
+          container.innerHTML = '<p class="text-sand-400 text-xs">写真を表示できません</p>';
           btn.style.display = 'none';
         } else {
           container.innerHTML = '<p class="text-sand-400 text-xs">写真なし</p>';
