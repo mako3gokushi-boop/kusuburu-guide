@@ -6,8 +6,8 @@
   <title>チェックイン | くすぶるハウス</title>
   <meta name="description" content="くすぶるハウス チェックインフォーム">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  <script src="https://unpkg.com/lucide@0.474.0" integrity="sha384-v603kcXNcgCKKUSXXrVUrlif1WiIlSX2GKL+nt2QeZj3Qbe3G++NolA8bAznTLbQ" crossorigin="anonymous"></script>
+  <!-- Turnstile api.js is loaded dynamically only when sitekey is configured -->
+  <script src="https://unpkg.com/lucide@0.474.0" integrity="sha384-wkxmY9HYHJVzx0oZ7k8stpLQ7g7ogSqBha75ozCZmxFadwtaIw5dzXKVWWfi9I36" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
@@ -540,18 +540,23 @@
   </main>
 
   <script>
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 
     // === Turnstile CAPTCHA ===
     let turnstileToken = null;
     function onTurnstileSuccess(token) { turnstileToken = token; }
     function onTurnstileExpired() { turnstileToken = null; }
 
-    // Show Turnstile card if sitekey is configured
+    // Show Turnstile card and load api.js only if sitekey is configured
     (function() {
       const el = document.querySelector('.cf-turnstile');
       if (el && el.dataset.sitekey) {
         document.getElementById('turnstile-card').style.display = '';
+        const s = document.createElement('script');
+        s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+        s.async = true;
+        s.defer = true;
+        document.head.appendChild(s);
       }
     })();
 
@@ -671,7 +676,7 @@
       stopCamera();
       document.getElementById('camera-result').classList.remove('hidden');
       document.getElementById('camera-buttons').classList.add('hidden');
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     function retakePhoto() {
@@ -697,7 +702,7 @@
           document.getElementById('camera-result').classList.remove('hidden');
           document.getElementById('camera-buttons').classList.add('hidden');
           document.getElementById('camera-preview').classList.add('hidden');
-          lucide.createIcons();
+          if (typeof lucide !== 'undefined') lucide.createIcons();
         };
         img.src = e.target.result;
       };
@@ -864,7 +869,7 @@
           ss.querySelector('.form-card').appendChild(offlineMsg);
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
       }
     });
 
