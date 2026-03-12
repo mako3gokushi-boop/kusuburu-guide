@@ -4,6 +4,8 @@
 const RATE_LIMIT_MAX = 10;
 const RATE_LIMIT_WINDOW = 3600; // 1 hour in seconds
 const MAX_PHOTO_SIZE = 5 * 1024 * 1024; // 5MB
+const LOGIN_MAX_ATTEMPTS = 5;
+const LOGIN_LOCKOUT_SECONDS = 900; // 15 minutes
 
 function escapeHtml(str) {
   if (!str) return '';
@@ -39,19 +41,233 @@ function jsonResponse(data, status = 200, origin = '', allowedOrigin = '') {
   });
 }
 
+// --- Password Hashing (PBKDF2) ---
+
+async function hashPassword(password, salt) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']
+  );
+  const bits = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt: enc.encode(salt), iterations: 100000, hash: 'SHA-256' },
+    keyMaterial, 256
+  );
+  return btoa(String.fromCharCode(...new Uint8Array(bits)));
+}
+
+async function verifyPassword(password, salt, hash) {
+  const computed = await hashPassword(password, salt);
+  // Constant-time comparison
+  if (computed.length !== hash.length) return false;
+  let result = 0;
+  for (let i = 0; i < computed.length; i++) {
+    result |= computed.charCodeAt(i) ^ hash.charCodeAt(i);
+  }
+  return result === 0;
+}
+
+// --- Login Attempt Tracking ---
+
+async function checkLoginAttempts(clientIP, env) {
+  const now = Math.floor(Date.now() / 1000);
+  const windowStart = now - LOGIN_LOCKOUT_SECONDS;
+
+  // Clean old entries
+  await env.DB.prepare('DELETE FROM login_attempts WHERE timestamp < ?').bind(windowStart).run();
+
+  // Count recent failed attempts
+  const count = await env.DB.prepare(
+    'SELECT COUNT(*) as cnt FROM login_attempts WHERE ip = ? AND timestamp > ? AND success = 0'
+  ).bind(clientIP, windowStart).first();
+
+  return {
+    locked: count && count.cnt >= LOGIN_MAX_ATTEMPTS,
+    attempts: count ? count.cnt : 0,
+    remaining: LOGIN_MAX_ATTEMPTS - (count ? count.cnt : 0),
+  };
+}
+
+async function recordLoginAttempt(clientIP, success, env) {
+  const now = Math.floor(Date.now() / 1000);
+  await env.DB.prepare(
+    'INSERT INTO login_attempts (ip, timestamp, success) VALUES (?, ?, ?)'
+  ).bind(clientIP, now, success ? 1 : 0).run();
+}
+
+// --- Suspicious Access LINE Notification ---
+
+async function sendSecurityAlert(env, alertType, details) {
+  const token = env.LINE_CHANNEL_TOKEN;
+  const userId = env.LINE_USER_ID;
+  if (!token || !userId) return;
+
+  const alerts = {
+    rate_limit: `⚠️ レート制限超過\nIP: ${details.ip}`,
+    honeypot: `🤖 ボット検知（ハニーポット）\nIP: ${details.ip}`,
+    login_lockout: `🔒 ログイン5回失敗 — アカウントロック\nIP: ${details.ip}`,
+  };
+
+  const message = alerts[alertType] || `⚠️ 不審アクセス: ${alertType}`;
+
+  try {
+    await fetch('https://api.line.me/v2/bot/message/push', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        to: userId,
+        messages: [{ type: 'text', text: message }],
+      }),
+    });
+  } catch (e) {
+    console.error('Security alert LINE notification failed:', e);
+  }
+}
+
+// --- Auth ---
+
 async function verifyAdmin(request, env) {
   const authHeader = request.headers.get('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) return false;
   const token = authHeader.slice(7);
-  const adminToken = env.ADMIN_TOKEN;
-  if (adminToken && token === adminToken) return true;
+
+  // Check session tokens in admin_tokens table
   const result = await env.DB.prepare('SELECT token FROM admin_tokens WHERE token = ?').bind(token).first();
   return !!result;
 }
 
+async function handleLogin(request, env, origin) {
+  const clientIP = request.headers.get('CF-Connecting-IP') || 'unknown';
+
+  // Check if IP is locked out
+  const loginStatus = await checkLoginAttempts(clientIP, env);
+  if (loginStatus.locked) {
+    // Send LINE alert on lockout
+    sendSecurityAlert(env, 'login_lockout', { ip: clientIP });
+    return jsonResponse({
+      error: 'Too many login attempts. Please wait 15 minutes.',
+      locked: true,
+      lockout_minutes: 15,
+    }, 429, origin, env.ALLOWED_ORIGIN);
+  }
+
+  let data;
+  try {
+    data = await request.json();
+  } catch {
+    return jsonResponse({ error: 'Invalid JSON' }, 400, origin, env.ALLOWED_ORIGIN);
+  }
+
+  const password = data.password;
+  if (!password || typeof password !== 'string') {
+    return jsonResponse({ error: 'Password required' }, 400, origin, env.ALLOWED_ORIGIN);
+  }
+
+  // Check if custom password is set in D1
+  const customPw = await env.DB.prepare('SELECT password_hash, salt FROM admin_passwords ORDER BY id DESC LIMIT 1').first();
+
+  let authenticated = false;
+  let needsPasswordChange = false;
+
+  if (customPw) {
+    // Verify against hashed password
+    authenticated = await verifyPassword(password, customPw.salt, customPw.password_hash);
+  } else {
+    // Fall back to ADMIN_TOKEN env var (initial "0000" password)
+    const adminToken = env.ADMIN_TOKEN;
+    authenticated = adminToken && password === adminToken;
+    if (authenticated) {
+      needsPasswordChange = true;
+    }
+  }
+
+  if (!authenticated) {
+    await recordLoginAttempt(clientIP, false, env);
+    const remaining = loginStatus.remaining - 1;
+    return jsonResponse({
+      error: 'Invalid password',
+      remaining_attempts: Math.max(0, remaining),
+    }, 401, origin, env.ALLOWED_ORIGIN);
+  }
+
+  // Record successful login
+  await recordLoginAttempt(clientIP, true, env);
+
+  // Clear failed attempts for this IP on success
+  await env.DB.prepare(
+    'DELETE FROM login_attempts WHERE ip = ? AND success = 0'
+  ).bind(clientIP).run();
+
+  // Generate session token
+  const sessionToken = generateUUID();
+  await env.DB.prepare(
+    'INSERT INTO admin_tokens (token, created_at) VALUES (?, datetime(\'now\'))'
+  ).bind(sessionToken).run();
+
+  return jsonResponse({
+    success: true,
+    token: sessionToken,
+    needs_password_change: needsPasswordChange,
+  }, 200, origin, env.ALLOWED_ORIGIN);
+}
+
+async function handleChangePassword(request, env, origin) {
+  if (!await verifyAdmin(request, env)) {
+    return jsonResponse({ error: 'Unauthorized' }, 401, origin, env.ALLOWED_ORIGIN);
+  }
+
+  let data;
+  try {
+    data = await request.json();
+  } catch {
+    return jsonResponse({ error: 'Invalid JSON' }, 400, origin, env.ALLOWED_ORIGIN);
+  }
+
+  const newPassword = data.new_password;
+  if (!newPassword || typeof newPassword !== 'string' || newPassword.length < 4) {
+    return jsonResponse({ error: 'Password must be at least 4 characters' }, 400, origin, env.ALLOWED_ORIGIN);
+  }
+
+  // Generate salt and hash
+  const salt = generateUUID();
+  const hash = await hashPassword(newPassword, salt);
+
+  // Delete old password records and insert new
+  await env.DB.prepare('DELETE FROM admin_passwords').run();
+  await env.DB.prepare(
+    'INSERT INTO admin_passwords (password_hash, salt) VALUES (?, ?)'
+  ).bind(hash, salt).run();
+
+  return jsonResponse({ success: true }, 200, origin, env.ALLOWED_ORIGIN);
+}
+
+// --- Turnstile Verification ---
+
+async function verifyTurnstile(token, clientIP, env) {
+  const secretKey = env.TURNSTILE_SECRET_KEY;
+  if (!secretKey) return true; // Skip if not configured
+
+  try {
+    const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        secret: secretKey,
+        response: token,
+        remoteip: clientIP,
+      }),
+    });
+    const result = await res.json();
+    return result.success === true;
+  } catch (e) {
+    console.error('Turnstile verification failed:', e);
+    return true; // Fail open if Turnstile is unreachable
+  }
+}
+
 async function checkRateLimit(clientIP, env) {
-  const key = `ratelimit:${clientIP}`;
-  // Use D1 for simple rate limiting
   const now = Math.floor(Date.now() / 1000);
   const windowStart = now - RATE_LIMIT_WINDOW;
 
@@ -106,6 +322,7 @@ async function handleCheckin(request, env, origin) {
   const clientIP = request.headers.get('CF-Connecting-IP') || 'unknown';
   const allowed = await checkRateLimit(clientIP, env);
   if (!allowed) {
+    sendSecurityAlert(env, 'rate_limit', { ip: clientIP });
     return jsonResponse({ error: 'Rate limit exceeded. Try again later.' }, 429, origin, env.ALLOWED_ORIGIN);
   }
 
@@ -118,8 +335,19 @@ async function handleCheckin(request, env, origin) {
 
   // Honeypot check (bot trap)
   if (data.website || data.url || data.company_url) {
-    // Silently accept but don't save — bots fill hidden fields
+    sendSecurityAlert(env, 'honeypot', { ip: clientIP });
     return jsonResponse({ success: true, id: 'ok' }, 201, origin, env.ALLOWED_ORIGIN);
+  }
+
+  // Turnstile CAPTCHA verification
+  if (data.cf_turnstile_response) {
+    const turnstileValid = await verifyTurnstile(data.cf_turnstile_response, clientIP, env);
+    if (!turnstileValid) {
+      return jsonResponse({ error: 'CAPTCHA verification failed' }, 403, origin, env.ALLOWED_ORIGIN);
+    }
+  } else if (env.TURNSTILE_SECRET_KEY) {
+    // Turnstile is configured but no token provided
+    return jsonResponse({ error: 'CAPTCHA token required' }, 400, origin, env.ALLOWED_ORIGIN);
   }
 
   // Validate required fields
@@ -468,6 +696,14 @@ export default {
       }
       if (path === '/checkin/photo' && method === 'POST') {
         return handlePhotoUpload(request, env, origin);
+      }
+
+      // Auth endpoints
+      if (path === '/admin/login' && method === 'POST') {
+        return handleLogin(request, env, origin);
+      }
+      if (path === '/admin/change-password' && method === 'POST') {
+        return handleChangePassword(request, env, origin);
       }
 
       // Admin endpoints

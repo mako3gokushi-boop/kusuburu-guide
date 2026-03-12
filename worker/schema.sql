@@ -30,3 +30,16 @@ CREATE TABLE IF NOT EXISTS rate_limits (
   ip TEXT,
   timestamp INTEGER
 );
+
+CREATE TABLE IF NOT EXISTS login_attempts (
+  ip TEXT,
+  timestamp INTEGER,
+  success INTEGER DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS admin_passwords (
+  id INTEGER PRIMARY KEY,
+  password_hash TEXT NOT NULL,
+  salt TEXT NOT NULL,
+  created_at TEXT DEFAULT (datetime('now'))
+);

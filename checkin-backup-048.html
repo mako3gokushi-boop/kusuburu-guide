@@ -6,7 +6,6 @@
   <title>チェックイン | くすぶるハウス</title>
   <meta name="description" content="くすぶるハウス チェックインフォーム">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script src="https://unpkg.com/lucide@0.474.0"></script>
   <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
@@ -508,11 +507,6 @@
         </div>
       </div>
 
-      <!-- Turnstile CAPTCHA -->
-      <div class="form-card p-5 mb-4" id="turnstile-card" style="display:none;">
-        <div class="cf-turnstile" data-sitekey="" data-callback="onTurnstileSuccess" data-expired-callback="onTurnstileExpired"></div>
-      </div>
-
       <!-- Submit -->
       <button type="submit" class="submit-btn" id="submit-btn">
         <span data-lang="ja">チェックインを送信</span>
@@ -541,19 +535,6 @@
 
   <script>
     lucide.createIcons();
-
-    // === Turnstile CAPTCHA ===
-    let turnstileToken = null;
-    function onTurnstileSuccess(token) { turnstileToken = token; }
-    function onTurnstileExpired() { turnstileToken = null; }
-
-    // Show Turnstile card if sitekey is configured
-    (function() {
-      const el = document.querySelector('.cf-turnstile');
-      if (el && el.dataset.sitekey) {
-        document.getElementById('turnstile-card').style.display = '';
-      }
-    })();
 
     // === Language ===
     function setLang(lang) {
@@ -812,7 +793,6 @@
         notes: formData.notes,
       };
       if (hpVal) serverData.website = hpVal;
-      if (turnstileToken) serverData.cf_turnstile_response = turnstileToken;
 
       try {
         const res = await fetch(API_URL + '/checkin', {
