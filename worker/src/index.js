@@ -600,7 +600,7 @@ async function handleAdminCheckins(request, env, origin) {
   const dateFrom = url.searchParams.get('date_from');
   const dateTo = url.searchParams.get('date_to');
 
-  let query = 'SELECT id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, address, is_foreign, nationality, transport, status, created_at FROM checkins WHERE 1=1';
+  let query = 'SELECT id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, address, is_foreign, nationality, transport, status, admin_memo, created_at FROM checkins WHERE 1=1';
   const params = [];
 
   if (status) {
@@ -637,7 +637,7 @@ async function handleAdminCheckinDetail(env, id, request, origin) {
   }
 
   const checkin = await env.DB.prepare(
-    'SELECT id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, status, created_at FROM checkins WHERE id = ?'
+    'SELECT id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, status, admin_memo, created_at FROM checkins WHERE id = ?'
   ).bind(id).first();
 
   if (!checkin) {
@@ -726,6 +726,13 @@ async function handleAdminUpdate(env, id, request, origin) {
     params.push(data.checkout_date);
   }
 
+  // Admin memo update
+  if (data.admin_memo !== undefined) {
+    const memo = String(data.admin_memo || '').slice(0, 1000);
+    updates.push('admin_memo = ?');
+    params.push(memo);
+  }
+
   if (updates.length === 0) {
     return jsonResponse({ error: 'No valid fields to update' }, 400, origin, env.ALLOWED_ORIGIN);
   }
@@ -741,13 +748,13 @@ async function handleAdminCsvExport(request, env, origin) {
   }
 
   const result = await env.DB.prepare(
-    'SELECT name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, status, created_at FROM checkins ORDER BY created_at DESC'
+    'SELECT name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, admin_memo, status, created_at FROM checkins ORDER BY created_at DESC'
   ).all();
 
   // Decrypt sensitive fields for CSV export
   const decryptedResults = await decryptCheckins(result.results || [], env);
 
-  const headers = ['氏名', 'フリガナ', '大人', '子供', 'チェックイン', 'チェックアウト', '電話番号', 'メール', '郵便番号', '住所', '外国籍', '国籍', 'パスポート番号', '交通手段', 'アレルギー', '備考', 'ステータス', '登録日時'];
+  const headers = ['氏名', 'フリガナ', '大人', '子供', 'チェックイン', 'チェックアウト', '電話番号', 'メール', '郵便番号', '住所', '外国籍', '国籍', 'パスポート番号', '交通手段', 'アレルギー', '備考', 'オーナーメモ', 'ステータス', '登録日時'];
   const csvRows = [headers.join(',')];
 
   for (const row of decryptedResults) {
@@ -756,7 +763,7 @@ async function handleAdminCsvExport(request, env, origin) {
       row.checkin_date, row.checkout_date, row.phone, row.email,
       row.zipcode, row.address, row.is_foreign ? 'はい' : 'いいえ',
       row.nationality, row.passport_no, row.transport,
-      row.allergies, row.notes, row.status, row.created_at
+      row.allergies, row.notes, row.admin_memo, row.status, row.created_at
     ].map(v => `"${String(v || '').replace(/"/g, '""')}"`);
     csvRows.push(csvRow.join(','));
   }

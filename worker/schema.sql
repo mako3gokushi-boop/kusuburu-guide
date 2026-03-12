@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS checkins (
   transport TEXT,
   allergies TEXT,
   notes TEXT,
+  admin_memo TEXT DEFAULT '',
   status TEXT DEFAULT 'pending',
   created_at TEXT DEFAULT (datetime('now'))
 );
