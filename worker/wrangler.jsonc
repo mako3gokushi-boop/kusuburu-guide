@@ -9,6 +9,12 @@
       "database_id": "bd7ce54b-3789-4840-a5d2-88cdb1fbcddb"
     }
   ],
+  "r2_buckets": [
+    {
+      "binding": "PHOTOS",
+      "bucket_name": "kusuburu-photos"
+    }
+  ],
   "vars": {
     "ALLOWED_ORIGIN": "https://kusuburu.ritoukoubou.com"
   },

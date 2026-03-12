@@ -6,6 +6,8 @@ const RATE_LIMIT_WINDOW = 3600; // 1 hour in seconds
 const MAX_PHOTO_SIZE = 5 * 1024 * 1024; // 5MB
 const LOGIN_MAX_ATTEMPTS = 5;
 const LOGIN_LOCKOUT_SECONDS = 900; // 15 minutes
+const PHOTO_RETENTION_DAYS = 30; // days after checkout to keep passport photos
+const DATA_RETENTION_YEARS = 3; // years after checkout to keep personal data (旅館業法)
 
 function escapeHtml(str) {
   if (!str) return '';
@@ -31,12 +33,21 @@ function corsHeaders(origin, allowedOrigin) {
   };
 }
 
+function securityHeaders() {
+  return {
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+  };
+}
+
 function jsonResponse(data, status = 200, origin = '', allowedOrigin = '') {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
       'Content-Type': 'application/json',
       ...corsHeaders(origin, allowedOrigin),
+      ...securityHeaders(),
     },
   });
 }
@@ -64,6 +75,75 @@ async function verifyPassword(password, salt, hash) {
     result |= computed.charCodeAt(i) ^ hash.charCodeAt(i);
   }
   return result === 0;
+}
+
+// --- AES-256-GCM Encryption ---
+
+async function getEncryptionKey(env) {
+  const keyStr = env.ENCRYPTION_KEY;
+  if (!keyStr) return null;
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw', enc.encode(keyStr), 'PBKDF2', false, ['deriveKey']
+  );
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt: enc.encode('kusuburu-salt'), iterations: 100000, hash: 'SHA-256' },
+    keyMaterial, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
+  );
+}
+
+async function encryptField(plaintext, env) {
+  if (!plaintext) return plaintext;
+  const key = await getEncryptionKey(env);
+  if (!key) return plaintext; // No encryption key configured
+  const enc = new TextEncoder();
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encrypted = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv }, key, enc.encode(plaintext)
+  );
+  // Format: base64(iv):base64(ciphertext)
+  const ivB64 = btoa(String.fromCharCode(...iv));
+  const ctB64 = btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+  return `ENC:${ivB64}:${ctB64}`;
+}
+
+async function decryptField(ciphertext, env) {
+  if (!ciphertext || !ciphertext.startsWith('ENC:')) return ciphertext;
+  const key = await getEncryptionKey(env);
+  if (!key) return ciphertext;
+  try {
+    const parts = ciphertext.slice(4).split(':');
+    if (parts.length !== 2) return ciphertext;
+    const iv = Uint8Array.from(atob(parts[0]), c => c.charCodeAt(0));
+    const ct = Uint8Array.from(atob(parts[1]), c => c.charCodeAt(0));
+    const decrypted = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv }, key, ct
+    );
+    return new TextDecoder().decode(decrypted);
+  } catch (e) {
+    console.error('Decryption failed:', e);
+    return '[decryption error]';
+  }
+}
+
+async function encryptSensitiveFields(data, env) {
+  return {
+    name: await encryptField(data.name, env),
+    phone: await encryptField(data.phone, env),
+    passport_no: await encryptField(data.passport_no, env),
+  };
+}
+
+async function decryptCheckin(checkin, env) {
+  if (!checkin) return checkin;
+  checkin.name = await decryptField(checkin.name, env);
+  checkin.phone = await decryptField(checkin.phone, env);
+  checkin.passport_no = await decryptField(checkin.passport_no, env);
+  return checkin;
+}
+
+async function decryptCheckins(checkins, env) {
+  return Promise.all(checkins.map(c => decryptCheckin({ ...c }, env)));
 }
 
 // --- Login Attempt Tracking ---
@@ -376,24 +456,31 @@ async function handleCheckin(request, env, origin) {
 
   const id = generateUUID();
 
+  // Encrypt sensitive fields
+  const encrypted = await encryptSensitiveFields({
+    name: data.name,
+    phone: data.phone,
+    passport_no: data.passport_no || '',
+  }, env);
+
   await env.DB.prepare(`
     INSERT INTO checkins (id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, status)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
   `).bind(
     id,
-    data.name,
+    encrypted.name,
     data.furigana || '',
     adults,
     children,
     data.checkin_date,
     data.checkout_date,
-    data.phone,
+    encrypted.phone,
     data.email || '',
     data.zipcode || '',
     data.address || '',
     data.is_foreign ? 1 : 0,
     data.nationality || '',
-    data.passport_no || '',
+    encrypted.passport_no,
     data.transport || '',
     data.allergies || '',
     data.notes || ''
@@ -437,9 +524,32 @@ async function handlePhotoUpload(request, env, origin) {
     return jsonResponse({ error: 'Only JPEG/PNG allowed' }, 400, origin, env.ALLOWED_ORIGIN);
   }
 
-  // Store in D1 (since R2 is not enabled)
-  await env.DB.prepare('UPDATE checkins SET passport_photo = ? WHERE id = ?')
-    .bind(photoData, checkinId).run();
+  // Store in R2 if available, otherwise D1 fallback
+  if (env.PHOTOS) {
+    // Extract binary from base64 data URL
+    const base64Part = photoData.split(',')[1];
+    const binaryStr = atob(base64Part);
+    const bytes = new Uint8Array(binaryStr.length);
+    for (let i = 0; i < binaryStr.length; i++) {
+      bytes[i] = binaryStr.charCodeAt(i);
+    }
+    const contentType = photoData.startsWith('data:image/png') ? 'image/png' : 'image/jpeg';
+    const ext = contentType === 'image/png' ? 'png' : 'jpg';
+    const r2Key = `passport/${checkinId}.${ext}`;
+
+    await env.PHOTOS.put(r2Key, bytes, {
+      httpMetadata: { contentType },
+      customMetadata: { checkinId },
+    });
+
+    // Store R2 key reference in D1 (not the photo data itself)
+    await env.DB.prepare('UPDATE checkins SET passport_photo = ? WHERE id = ?')
+      .bind(`r2:${r2Key}`, checkinId).run();
+  } else {
+    // D1 fallback (legacy)
+    await env.DB.prepare('UPDATE checkins SET passport_photo = ? WHERE id = ?')
+      .bind(photoData, checkinId).run();
+  }
 
   return jsonResponse({ success: true }, 200, origin, env.ALLOWED_ORIGIN);
 }
@@ -481,7 +591,9 @@ async function handleAdminCheckins(request, env, origin) {
   const stmt = env.DB.prepare(query);
   const result = params.length > 0 ? await stmt.bind(...params).all() : await stmt.all();
 
-  return jsonResponse({ checkins: result.results }, 200, origin, env.ALLOWED_ORIGIN);
+  // Decrypt sensitive fields
+  const decrypted = await decryptCheckins(result.results || [], env);
+  return jsonResponse({ checkins: decrypted }, 200, origin, env.ALLOWED_ORIGIN);
 }
 
 async function handleAdminCheckinDetail(env, id, request, origin) {
@@ -497,7 +609,9 @@ async function handleAdminCheckinDetail(env, id, request, origin) {
     return jsonResponse({ error: 'Not found' }, 404, origin, env.ALLOWED_ORIGIN);
   }
 
-  return jsonResponse({ checkin }, 200, origin, env.ALLOWED_ORIGIN);
+  // Decrypt sensitive fields
+  const decrypted = await decryptCheckin({ ...checkin }, env);
+  return jsonResponse({ checkin: decrypted }, 200, origin, env.ALLOWED_ORIGIN);
 }
 
 async function handleAdminPhoto(env, id, request, origin) {
@@ -510,12 +624,39 @@ async function handleAdminPhoto(env, id, request, origin) {
     return jsonResponse({ error: 'No photo found' }, 404, origin, env.ALLOWED_ORIGIN);
   }
 
+  // Check if stored in R2
+  if (result.passport_photo.startsWith('r2:') && env.PHOTOS) {
+    const r2Key = result.passport_photo.slice(3);
+    const obj = await env.PHOTOS.get(r2Key);
+    if (!obj) {
+      return jsonResponse({ error: 'Photo deleted or expired' }, 404, origin, env.ALLOWED_ORIGIN);
+    }
+    const bytes = await obj.arrayBuffer();
+    const base64 = btoa(String.fromCharCode(...new Uint8Array(bytes)));
+    const contentType = obj.httpMetadata?.contentType || 'image/jpeg';
+    const dataUrl = `data:${contentType};base64,${base64}`;
+    return jsonResponse({ photo: dataUrl }, 200, origin, env.ALLOWED_ORIGIN);
+  }
+
+  // Legacy D1 base64 storage
   return jsonResponse({ photo: result.passport_photo }, 200, origin, env.ALLOWED_ORIGIN);
 }
 
 async function handleAdminDelete(env, id, request, origin) {
   if (!await verifyAdmin(request, env)) {
     return jsonResponse({ error: 'Unauthorized' }, 401, origin, env.ALLOWED_ORIGIN);
+  }
+
+  // Delete R2 photo if exists
+  if (env.PHOTOS) {
+    const photo = await env.DB.prepare('SELECT passport_photo FROM checkins WHERE id = ?').bind(id).first();
+    if (photo && photo.passport_photo && photo.passport_photo.startsWith('r2:')) {
+      try {
+        await env.PHOTOS.delete(photo.passport_photo.slice(3));
+      } catch (e) {
+        console.error('Failed to delete R2 photo:', e);
+      }
+    }
   }
 
   await env.DB.prepare('DELETE FROM checkins WHERE id = ?').bind(id).run();
@@ -568,10 +709,13 @@ async function handleAdminCsvExport(request, env, origin) {
     'SELECT name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, status, created_at FROM checkins ORDER BY created_at DESC'
   ).all();
 
+  // Decrypt sensitive fields for CSV export
+  const decryptedResults = await decryptCheckins(result.results || [], env);
+
   const headers = ['氏名', 'フリガナ', '大人', '子供', 'チェックイン', 'チェックアウト', '電話番号', 'メール', '郵便番号', '住所', '外国籍', '国籍', 'パスポート番号', '交通手段', 'アレルギー', '備考', 'ステータス', '登録日時'];
   const csvRows = [headers.join(',')];
 
-  for (const row of result.results) {
+  for (const row of decryptedResults) {
     const csvRow = [
       row.name, row.furigana, row.adults, row.children,
       row.checkin_date, row.checkout_date, row.phone, row.email,
@@ -589,6 +733,7 @@ async function handleAdminCsvExport(request, env, origin) {
       'Content-Type': 'text/csv; charset=utf-8',
       'Content-Disposition': 'attachment; filename="checkins.csv"',
       ...corsHeaders(origin, env.ALLOWED_ORIGIN),
+      ...securityHeaders(),
     },
   });
 }
@@ -660,19 +805,65 @@ async function handleAdminStatsMonthly(request, env, origin, month) {
     "SELECT id, name, furigana, adults, children, checkin_date, checkout_date, phone, status, created_at FROM checkins WHERE strftime('%Y-%m', checkin_date) = ? ORDER BY checkin_date"
   ).bind(month).all();
 
-  return jsonResponse({ month, checkins: result.results || [] }, 200, origin, env.ALLOWED_ORIGIN);
+  const decrypted = await decryptCheckins(result.results || [], env);
+  return jsonResponse({ month, checkins: decrypted }, 200, origin, env.ALLOWED_ORIGIN);
 }
 
 // --- Main Router ---
 
 export default {
   async scheduled(event, env, ctx) {
-    // Auto-checkout: JST 06:00 daily (UTC 21:00)
     const today = new Date().toISOString().split('T')[0];
-    const result = await env.DB.prepare(
+
+    // Auto-checkout: JST 06:00 daily (UTC 21:00)
+    const checkoutResult = await env.DB.prepare(
       "UPDATE checkins SET status = 'checked_out' WHERE checkout_date < ? AND status = 'checked_in'"
     ).bind(today).run();
-    console.log(`Auto-checkout: ${result.meta.changes} records updated`);
+    console.log(`Auto-checkout: ${checkoutResult.meta.changes} records updated`);
+
+    // Auto-delete passport photos from R2: 30 days after checkout
+    if (env.PHOTOS) {
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() - PHOTO_RETENTION_DAYS);
+      const cutoff = cutoffDate.toISOString().split('T')[0];
+
+      const expiredPhotos = await env.DB.prepare(
+        "SELECT id, passport_photo FROM checkins WHERE status = 'checked_out' AND checkout_date < ? AND passport_photo IS NOT NULL AND passport_photo != ''"
+      ).bind(cutoff).all();
+
+      let photoDeleted = 0;
+      for (const row of (expiredPhotos.results || [])) {
+        if (row.passport_photo && row.passport_photo.startsWith('r2:')) {
+          const r2Key = row.passport_photo.slice(3);
+          try {
+            await env.PHOTOS.delete(r2Key);
+            await env.DB.prepare('UPDATE checkins SET passport_photo = NULL WHERE id = ?').bind(row.id).run();
+            photoDeleted++;
+          } catch (e) {
+            console.error(`Failed to delete R2 photo for ${row.id}:`, e);
+          }
+        } else if (row.passport_photo && !row.passport_photo.startsWith('r2:')) {
+          // Legacy D1 base64 photo — clear it
+          await env.DB.prepare('UPDATE checkins SET passport_photo = NULL WHERE id = ?').bind(row.id).run();
+          photoDeleted++;
+        }
+      }
+      if (photoDeleted > 0) {
+        console.log(`Auto-delete photos: ${photoDeleted} expired passport photos removed`);
+      }
+    }
+
+    // Auto-delete personal data: 3 years after checkout (旅館業法準拠)
+    const dataRetentionCutoff = new Date();
+    dataRetentionCutoff.setFullYear(dataRetentionCutoff.getFullYear() - DATA_RETENTION_YEARS);
+    const dataCutoff = dataRetentionCutoff.toISOString().split('T')[0];
+
+    const deleteResult = await env.DB.prepare(
+      "DELETE FROM checkins WHERE status = 'checked_out' AND checkout_date < ?"
+    ).bind(dataCutoff).run();
+    if (deleteResult.meta.changes > 0) {
+      console.log(`Auto-delete data: ${deleteResult.meta.changes} records older than ${DATA_RETENTION_YEARS} years removed`);
+    }
   },
 
   async fetch(request, env) {
@@ -685,7 +876,7 @@ export default {
     if (method === 'OPTIONS') {
       return new Response(null, {
         status: 204,
-        headers: corsHeaders(origin, env.ALLOWED_ORIGIN),
+        headers: { ...corsHeaders(origin, env.ALLOWED_ORIGIN), ...securityHeaders() },
       });
     }
 
