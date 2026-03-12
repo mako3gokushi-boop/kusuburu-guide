@@ -214,12 +214,14 @@
         <div class="flex justify-between items-center">
           <span class="text-xs text-sand-500" data-lang="ja">パスワード</span>
           <span class="text-xs text-sand-500" data-lang="en">Password</span>
-          <span class="font-mono font-bold text-sm text-sand-800 bg-white px-3 py-1.5 rounded-lg flex items-center gap-2" data-lang="ja">
-            確認中
-          </span>
-          <span class="font-mono font-bold text-sm text-sand-800 bg-white px-3 py-1.5 rounded-lg flex items-center gap-2" data-lang="en">
-            TBD
-          </span>
+          <button onclick="copyText('87654321', this)" class="font-mono font-bold text-sm text-sand-800 bg-white px-3 py-1.5 rounded-lg hover:bg-sand-100 transition-colors flex items-center gap-2" data-lang="ja">
+            87654321
+            <i data-lucide="copy" class="w-3.5 h-3.5 text-sand-400"></i>
+          </button>
+          <button onclick="copyText('87654321', this)" class="font-mono font-bold text-sm text-sand-800 bg-white px-3 py-1.5 rounded-lg hover:bg-sand-100 transition-colors flex items-center gap-2" data-lang="en">
+            87654321
+            <i data-lucide="copy" class="w-3.5 h-3.5 text-sand-400"></i>
+          </button>
         </div>
       </div>
     </section>
