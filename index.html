@@ -92,14 +92,14 @@
     .lang-btn:not(.active) { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); }
 
     /* i18n */
-    [data-lang="en"] { display: none; }
-    body.lang-en [data-lang="ja"] { display: none; }
-    body.lang-en [data-lang="en"] { display: block; }
-    body.lang-en span[data-lang="en"] { display: inline; }
-    body.lang-en a[data-lang="en"] { display: inline-flex; }
-    body.lang-en button[data-lang="en"] { display: inline-flex; }
-    body.lang-en div[data-lang="en"] { display: block; }
-    body.lang-en p[data-lang="en"] { display: block; }
+    [data-lang="en"] { display: none !important; }
+    body.lang-en [data-lang="ja"] { display: none !important; }
+    body.lang-en [data-lang="en"] { display: block !important; }
+    body.lang-en span[data-lang="en"] { display: inline !important; }
+    body.lang-en a[data-lang="en"] { display: inline-flex !important; }
+    body.lang-en button[data-lang="en"] { display: inline-flex !important; }
+    body.lang-en div[data-lang="en"] { display: block !important; }
+    body.lang-en p[data-lang="en"] { display: block !important; }
 
     /* Weather skeleton */
     .weather-skeleton { animation: pulse 1.5s ease-in-out infinite; background: #e8e4dc; border-radius: 8px; }
