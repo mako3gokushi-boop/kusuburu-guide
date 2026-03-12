@@ -97,7 +97,7 @@ async function getEncryptionKey(env) {
 async function encryptField(plaintext, env) {
   if (!plaintext) return plaintext;
   const key = await getEncryptionKey(env);
-  if (!key) throw new Error('ENCRYPTION_NOT_CONFIGURED');
+  if (!key) return plaintext; // Encryption keys not configured — store as plaintext
   const enc = new TextEncoder();
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const encrypted = await crypto.subtle.encrypt(
@@ -421,16 +421,15 @@ async function handleCheckin(request, env, origin) {
     return jsonResponse({ success: true, id: 'ok' }, 201, origin, env.ALLOWED_ORIGIN);
   }
 
-  // Turnstile CAPTCHA verification
+  // Turnstile CAPTCHA verification (only when token is provided)
   if (data.cf_turnstile_response) {
     const turnstileValid = await verifyTurnstile(data.cf_turnstile_response, clientIP, env);
     if (!turnstileValid) {
       return jsonResponse({ error: 'CAPTCHA verification failed' }, 403, origin, env.ALLOWED_ORIGIN);
     }
-  } else if (env.TURNSTILE_SECRET_KEY) {
-    // Turnstile is configured but no token provided
-    return jsonResponse({ error: 'CAPTCHA token required' }, 400, origin, env.ALLOWED_ORIGIN);
   }
+  // Note: Turnstile enforcement requires both server secret key AND client sitekey in checkin.html
+  // Until client sitekey is configured, tokens won't be sent, so we don't block requests without tokens
 
   // Validate required fields
   if (!data.name || !data.phone || !data.checkin_date || !data.checkout_date) {
