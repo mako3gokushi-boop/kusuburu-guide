@@ -899,6 +899,41 @@ export default {
     const nowSec = Math.floor(Date.now() / 1000);
     await env.DB.prepare('DELETE FROM photo_tokens WHERE expires_at < ?').bind(nowSec).run();
 
+    // Weekly backup: D1 → R2 (every Sunday = day 0)
+    if (env.PHOTOS) {
+      const dayOfWeek = new Date().getUTCDay();
+      if (dayOfWeek === 0) { // Sunday
+        try {
+          const allData = await env.DB.prepare(
+            'SELECT * FROM checkins ORDER BY created_at DESC'
+          ).all();
+          const backup = {
+            timestamp: new Date().toISOString(),
+            record_count: (allData.results || []).length,
+            checkins: allData.results || [],
+          };
+          const backupKey = `backups/checkins-${today}.json`;
+          await env.PHOTOS.put(backupKey, JSON.stringify(backup), {
+            httpMetadata: { contentType: 'application/json' },
+          });
+          console.log(`Backup: ${backup.record_count} records saved to R2 (${backupKey})`);
+
+          // Keep only last 12 backups (3 months)
+          const list = await env.PHOTOS.list({ prefix: 'backups/checkins-' });
+          const backupFiles = list.objects.sort((a, b) => a.key.localeCompare(b.key));
+          if (backupFiles.length > 12) {
+            const toDelete = backupFiles.slice(0, backupFiles.length - 12);
+            for (const file of toDelete) {
+              await env.PHOTOS.delete(file.key);
+            }
+            console.log(`Backup cleanup: ${toDelete.length} old backups removed`);
+          }
+        } catch (e) {
+          console.error('Backup failed:', e);
+        }
+      }
+    }
+
     // Auto-delete personal data: 3 years after checkout (旅館業法準拠)
     const dataRetentionCutoff = new Date();
     dataRetentionCutoff.setFullYear(dataRetentionCutoff.getFullYear() - DATA_RETENTION_YEARS);
