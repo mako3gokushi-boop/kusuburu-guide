@@ -605,7 +605,7 @@
             <div><span class="text-sand-400 text-xs">交通手段</span><br>${esc(c.transport||'-')}</div>
             <div><span class="text-sand-400 text-xs">アレルギー</span><br>${esc(c.allergies||'-')}</div>
             <div class="col-span-2"><span class="text-sand-400 text-xs">備考</span><br>${esc(c.notes||'-')}</div>
-            <div class="col-span-2"><span class="text-sand-400 text-xs">登録日時</span><br>${c.created_at||'-'}</div>
+            <div class="col-span-2"><span class="text-sand-400 text-xs">登録日時</span><br>${c.created_at ? new Date(c.created_at + 'Z').toLocaleString('ja-JP', {timeZone:'Asia/Tokyo'}) : '-'}</div>
           </div>
           <div class="mt-4 pt-3 border-t border-sand-100">
             <label class="text-xs font-semibold text-sand-500 block mb-1">オーナーメモ</label>
