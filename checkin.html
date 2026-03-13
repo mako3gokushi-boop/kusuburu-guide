@@ -298,6 +298,13 @@
           <div class="field-error" data-lang="en">Please enter katakana reading</div>
         </div>
 
+        <!-- Receipt name -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">領収書の宛名<span class="optional-badge">任意</span></label>
+          <label class="form-label" data-lang="en">Receipt Name<span class="optional-badge">Optional</span></label>
+          <input type="text" name="receipt_name" class="form-input" data-lang-placeholder-ja="領収書を希望の方は宛名を入力" data-lang-placeholder-en="Enter name for receipt if needed">
+        </div>
+
         <!-- Guest count -->
         <div class="mb-4">
           <label class="form-label" data-lang="ja">宿泊人数<span class="required-badge">必須</span></label>
@@ -798,6 +805,7 @@
       const formData = {
         name: document.querySelector('[name="name"]').value.trim(),
         furigana: document.querySelector('[name="furigana"]').value.trim(),
+        receipt_name: document.querySelector('[name="receipt_name"]').value.trim(),
         adults: counts.adults,
         children: counts.children,
         checkin_date: document.querySelector('[name="checkin_date"]').value,
@@ -844,6 +852,7 @@
       const serverData = {
         name: formData.name,
         furigana: formData.furigana,
+        receipt_name: formData.receipt_name,
         adults: formData.adults,
         children: formData.children,
         checkin_date: formData.checkin_date,
