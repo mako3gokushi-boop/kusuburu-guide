@@ -584,6 +584,7 @@
           <div class="grid grid-cols-2 gap-3 text-sm">
             <div><span class="text-sand-400 text-xs">フリガナ</span><br>${esc(c.furigana||'-')}</div>
             <div><span class="text-sand-400 text-xs">ステータス</span><br><span class="status-badge status-${c.status}">${statusLabels[c.status]||c.status}</span></div>
+            ${c.receipt_name ? `<div class="col-span-2"><span class="text-sand-400 text-xs">領収書宛名</span><br><span class="font-semibold text-amber-700">${esc(c.receipt_name)}</span></div>` : ''}
             <div><span class="text-sand-400 text-xs">大人</span><br>${c.adults||0}名</div>
             <div><span class="text-sand-400 text-xs">子供</span><br>${c.children||0}名</div>
             <div><span class="text-sand-400 text-xs">チェックイン</span><br>${c.checkin_date||'-'}</div>
