@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>くすぶるセッション｜隠岐の島で焚き火を囲む1泊2日</title>
+  <meta name="description" content="「このままでいいのかな」と思うなら、もう気づいてる。隠岐の島の古民家で1日1組限定。焚き火を囲んで本音を口にする1泊2日の体験。まずは無料Zoomで話してみませんか。">
+  <!-- OGP -->
+  <meta property="og:title" content="くすぶったまま、島に来てみなよ。">
+  <meta property="og:description" content="隠岐の島で人生の心の芯を釣り上げる。1日1組限定・1泊2食・くすぶるセッション付き。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="">
+  <meta property="og:url" content="">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          colors: {
+            night: '#1c2833',
+            'night-light': '#2c3e50',
+            ember: '#e67e22',
+            'ember-dark': '#d35400',
+            'ember-red': '#c0392b',
+            warmwhite: '#fdf6ee',
+            'warmwhite-dark': '#f5ebe0',
+          },
+          fontFamily: {
+            serif: ['"Noto Serif JP"', 'serif'],
+            sans: ['"Noto Sans JP"', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Serif JP', serif; color: #1c2833; }
+    .font-sans-jp { font-family: 'Noto Sans JP', sans-serif; }
+
+    /* Fade-in animation */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Checkbox styling */
+    .check-item::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #b0a898;
+      border-radius: 3px;
+      margin-right: 12px;
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+
+    /* Floating CTA */
+    .floating-cta {
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+    .floating-cta.show {
+      transform: translateY(0);
+    }
+
+    /* Timeline */
+    .timeline-line {
+      position: absolute;
+      left: 24px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, #e67e22, #c0392b);
+    }
+    @media (min-width: 768px) {
+      .timeline-line {
+        left: 50%;
+        transform: translateX(-1px);
+      }
+    }
+
+    /* CTA button pulse */
+    @keyframes gentle-pulse {
+      0%, 100% { box-shadow: 0 4px 14px rgba(230, 126, 34, 0.3); }
+      50% { box-shadow: 0 4px 24px rgba(230, 126, 34, 0.5); }
+    }
+    .cta-btn {
+      animation: gentle-pulse 3s ease-in-out infinite;
+    }
+    .cta-btn:hover {
+      animation: none;
+    }
+
+    /* Ritual cards */
+    .ritual-card {
+      background: rgba(253, 246, 238, 0.9);
+      backdrop-filter: blur(4px);
+    }
+  </style>
+</head>
+<body class="bg-warmwhite">
+
+  <!-- ============================================ -->
+  <!-- S1: First View -->
+  <!-- ============================================ -->
+  <section id="s1" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <!-- Background: dark gradient simulating bonfire night (replace with photo) -->
+    <div class="absolute inset-0 bg-gradient-to-b from-night via-night-light to-[#1a1a2e]"></div>
+    <!-- Simulated fire glow -->
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-radial rounded-full opacity-20" style="background: radial-gradient(ellipse, #e67e22 0%, transparent 70%);"></div>
+
+    <div class="relative z-10 text-center px-6 max-w-2xl mx-auto">
+      <h1 class="text-white text-3xl md:text-5xl leading-relaxed md:leading-relaxed font-semibold tracking-wide mb-6">
+        くすぶったまま、<br>島に来てみなよ。
+      </h1>
+      <p class="text-warmwhite/80 text-lg md:text-2xl leading-relaxed mb-4">
+        隠岐の島で人生の心の芯を釣り上げる。
+      </p>
+      <p class="text-warmwhite/50 text-sm md:text-base font-sans-jp mt-6 tracking-widest">
+        1日1組限定 / 1泊2食 / くすぶるセッション
+      </p>
+      <div class="mt-12">
+        <a href="#s7" class="cta-btn inline-block bg-ember hover:bg-ember-dark text-white font-sans-jp font-bold text-base md:text-lg px-10 py-4 rounded-lg transition-colors duration-300">
+          まず30分、話してみる
+        </a>
+        <p class="text-warmwhite/40 text-xs mt-3 font-sans-jp">無料Zoom相談 &mdash; 顔を合わせるところから</p>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+      <div class="w-6 h-10 border-2 border-warmwhite/30 rounded-full flex justify-center pt-2">
+        <div class="w-1 h-3 bg-warmwhite/50 rounded-full animate-bounce"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- S2: こんな気持ち、ない？ -->
+  <!-- ============================================ -->
+  <section id="s2" class="py-24 md:py-36 px-6">
+    <div class="max-w-xl mx-auto text-center">
+      <div class="fade-in">
+        <p class="text-2xl md:text-3xl leading-relaxed mb-16">
+          「このままでいいのかな」と思うなら、<br class="hidden md:inline">もう気づいてる。
+        </p>
+      </div>
+
+      <div class="fade-in space-y-5 text-left max-w-md mx-auto">
+        <div class="check-item flex items-start text-base md:text-lg leading-relaxed text-night/80">
+          仕事は順調。でも「これだ」って感覚がない
+        </div>
+        <div class="check-item flex items-start text-base md:text-lg leading-relaxed text-night/80">
+          転職サイトは開く。でも応募はしない
+        </div>
+        <div class="check-item flex items-start text-base md:text-lg leading-relaxed text-night/80">
+          飲み会で愚痴は言える。でも本音は言えない
+        </div>
+        <div class="check-item flex items-start text-base md:text-lg leading-relaxed text-night/80">
+          「やりたいこと」を聞かれると、言葉に詰まる
+        </div>
+        <div class="check-item flex items-start text-base md:text-lg leading-relaxed text-night/80">
+          薄々わかってる。でも口に出す場所がない
+        </div>
+      </div>
+
+      <div class="fade-in mt-16">
+        <p class="text-base md:text-lg text-night/60 leading-relaxed">
+          全部あてはまらなくていい。<br>
+          ひとつでも「あ」と思ったなら、読み進めてみて。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- S3: くすぶるセッションとは -->
+  <!-- ============================================ -->
+  <section id="s3" class="py-24 md:py-36 px-6 bg-warmwhite-dark">
+    <div class="max-w-xl mx-auto text-center">
+      <div class="fade-in">
+        <h2 class="font-sans-jp text-xl md:text-2xl font-bold text-night/40 tracking-widest mb-8">KUSUBURU SESSION</h2>
+        <p class="text-2xl md:text-3xl leading-relaxed mb-4">
+          コーチングじゃない。<br>リトリートでもない。
+        </p>
+        <p class="text-2xl md:text-3xl leading-relaxed mb-16">
+          一番近い言葉は<span class="text-ember-red font-semibold">「通過儀礼」</span>。
+        </p>
+      </div>
+
+      <div class="fade-in text-base md:text-lg leading-loose text-night/80 mb-16 text-left md:text-center">
+        <p class="mb-6">
+          昔から人は、人生の転機に「旅」をしてきた。<br class="hidden md:inline">
+          お遍路、巡礼、修行。
+        </p>
+        <p class="mb-6">
+          目的地が人を変えるんじゃなくて、<br class="hidden md:inline">
+          「行くと決めたこと」と「帰ってきたこと」が人を変える。
+        </p>
+      </div>
+
+      <!-- Ritual 3-step cards -->
+      <div class="fade-in grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <div class="ritual-card rounded-xl p-6 text-center">
+          <div class="text-4xl mb-3 opacity-60">&#9312;</div>
+          <p class="font-sans-jp text-sm text-night/40 mb-2">日常から離れる</p>
+          <p class="text-base leading-relaxed">都会を離れて、<br>遠い隠岐の島に渡る</p>
+        </div>
+        <div class="ritual-card rounded-xl p-6 text-center">
+          <div class="text-4xl mb-3 opacity-60">&#9313;</div>
+          <p class="font-sans-jp text-sm text-night/40 mb-2">非日常の儀式</p>
+          <p class="text-base leading-relaxed">古民家で飯を食い、<br>焚き火を囲んで本音を口にする</p>
+        </div>
+        <div class="ritual-card rounded-xl p-6 text-center">
+          <div class="text-4xl mb-3 opacity-60">&#9314;</div>
+          <p class="font-sans-jp text-sm text-night/40 mb-2">お守りを持って帰る</p>
+          <p class="text-base leading-relaxed">問いのお守りと黒文字の香りを<br>持って日常に帰る</p>
+        </div>
+      </div>
+
+      <div class="fade-in text-base md:text-lg leading-loose text-night/80 text-left md:text-center">
+        <p class="mb-6">
+          1泊2日で「人生が変わる」とは言わない。
+        </p>
+        <p class="mb-6">
+          でも「薄々わかっていたことを、<br class="hidden md:inline">焚き火の前で口に出す」ことはできる。
+        </p>
+        <p class="font-semibold text-night">
+          口に出した瞬間、それは「決意」になる。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- S4: 1泊2日の流れ -->
+  <!-- ============================================ -->
+  <section id="s4" class="py-24 md:py-36 px-6">
+    <div class="max-w-3xl mx-auto">
+      <div class="fade-in text-center mb-16">
+        <h2 class="font-sans-jp text-xl md:text-2xl font-bold text-night/40 tracking-widest mb-8">1 NIGHT, 2 DAYS</h2>
+        <p class="text-2xl md:text-3xl leading-relaxed">
+          なにも決めなくていい1泊2日。
+        </p>
+      </div>
+
+      <!-- Timeline -->
+      <div class="relative">
+        <div class="timeline-line md:hidden"></div>
+
+        <!-- Timeline items -->
+        <div class="space-y-12 md:space-y-16">
+
+          <!-- Pre-visit: Zoom -->
+          <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
+            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember flex items-center justify-center md:hidden">
+              <span class="text-white text-xs font-sans-jp font-bold">Zoom</span>
+            </div>
+            <div class="md:text-right">
+              <span class="hidden md:inline-block font-sans-jp text-sm text-ember font-bold px-3 py-1 bg-ember/10 rounded-full mb-3">予約前</span>
+              <p class="font-sans-jp text-sm text-ember font-bold mb-1 md:hidden">予約前</p>
+              <h3 class="text-lg md:text-xl font-semibold mb-2">無料Zoom 30分</h3>
+              <p class="text-night/60 text-sm md:text-base leading-relaxed">あっきーと顔合わせ。島の話を少しだけ。<br>「この人なら話せそう」と思えたら、予約へ。</p>
+            </div>
+            <div class="hidden md:block">
+              <div class="w-full h-48 bg-night/5 rounded-xl flex items-center justify-center text-night/20 font-sans-jp text-sm">Zoom画面イメージ</div>
+            </div>
+          </div>
+
+          <!-- 15:00 -->
+          <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
+            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember/80 flex items-center justify-center md:hidden">
+              <span class="text-white text-[10px] font-sans-jp font-bold">15:00</span>
+            </div>
+            <div class="hidden md:block md:order-2">
+              <span class="font-sans-jp text-sm text-ember font-bold px-3 py-1 bg-ember/10 rounded-full mb-3 inline-block">15:00</span>
+              <h3 class="text-lg md:text-xl font-semibold mb-2">港にお迎え</h3>
+              <p class="text-night/60 text-sm md:text-base leading-relaxed">車の中では島の話だけ。<br>「あそこで釣れるんよ」</p>
+            </div>
+            <div class="md:order-1">
+              <div class="w-full h-48 bg-night/5 rounded-xl flex items-center justify-center text-night/20 font-sans-jp text-sm hidden md:flex">港の風景</div>
+              <div class="md:hidden">
+                <h3 class="text-lg font-semibold mb-2">港にお迎え</h3>
+                <p class="text-night/60 text-sm leading-relaxed">車の中では島の話だけ。「あそこで釣れるんよ」</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 16:00 -->
+          <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
+            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember/70 flex items-center justify-center md:hidden">
+              <span class="text-white text-[10px] font-sans-jp font-bold">16:00</span>
+            </div>
+            <div class="md:text-right">
+              <span class="hidden md:inline-block font-sans-jp text-sm text-ember font-bold px-3 py-1 bg-ember/10 rounded-full mb-3">16:00</span>
+              <h3 class="text-lg md:text-xl font-semibold mb-2">くすぶるハウスに到着</h3>
+              <p class="text-night/60 text-sm md:text-base leading-relaxed">荷物を置いて、少し休む。<br>古民家の静けさに体がゆるむ。</p>
+            </div>
+            <div class="hidden md:block">
+              <div class="w-full h-48 bg-night/5 rounded-xl flex items-center justify-center text-night/20 font-sans-jp text-sm">古民家の外観</div>
+            </div>
+          </div>
+
+          <!-- 18:00 -->
+          <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
+            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember-red/70 flex items-center justify-center md:hidden">
+              <span class="text-white text-[10px] font-sans-jp font-bold">18:00</span>
+            </div>
+            <div class="hidden md:block md:order-2">
+              <span class="font-sans-jp text-sm text-ember font-bold px-3 py-1 bg-ember/10 rounded-full mb-3 inline-block">18:00</span>
+              <h3 class="text-lg md:text-xl font-semibold mb-2">あっきーの手料理で夕食</h3>
+              <p class="text-night/60 text-sm md:text-base leading-relaxed">島の食材。食卓を囲みながら。<br>「この人は敵じゃない」と体で感じる。</p>
+            </div>
+            <div class="md:order-1">
+              <div class="w-full h-48 bg-night/5 rounded-xl flex items-center justify-center text-night/20 font-sans-jp text-sm hidden md:flex">食卓と料理</div>
+              <div class="md:hidden">
+                <h3 class="text-lg font-semibold mb-2">あっきーの手料理で夕食</h3>
+                <p class="text-night/60 text-sm leading-relaxed">島の食材。食卓を囲みながら。<br>「この人は敵じゃない」と体で感じる。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 20:00 - bonfire (highlight) -->
+          <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
+            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember-red flex items-center justify-center md:hidden">
+              <span class="text-white text-[10px] font-sans-jp font-bold">20:00</span>
+            </div>
+            <div class="md:text-right">
+              <span class="hidden md:inline-block font-sans-jp text-sm text-ember-red font-bold px-3 py-1 bg-ember-red/10 rounded-full mb-3">20:00</span>
+              <h3 class="text-xl md:text-2xl font-semibold mb-2 text-ember-red">焚き火セッション</h3>
+              <p class="text-night/70 text-sm md:text-base leading-relaxed">火を見ながら、ただ話す。2〜3時間。<br>薄々わかっていたことを、口に出す。<br><span class="font-semibold text-night">これが核心の時間。</span></p>
+            </div>
+            <div class="hidden md:block">
+              <div class="w-full h-56 bg-gradient-to-t from-night to-night-light rounded-xl flex items-center justify-center">
+                <span class="text-warmwhite/30 font-sans-jp text-sm">焚き火の写真</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Morning -->
+          <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
+            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember/40 flex items-center justify-center md:hidden">
+              <span class="text-white text-[10px] font-sans-jp font-bold">翌朝</span>
+            </div>
+            <div class="hidden md:block md:order-2">
+              <span class="font-sans-jp text-sm text-ember font-bold px-3 py-1 bg-ember/10 rounded-full mb-3 inline-block">翌朝</span>
+              <h3 class="text-lg md:text-xl font-semibold mb-2">朝食。軽い会話だけ</h3>
+              <p class="text-night/60 text-sm md:text-base leading-relaxed">寝ている間に頭が整理される。<br>朝、「何かが違う」。</p>
+            </div>
+            <div class="md:order-1">
+              <div class="w-full h-48 bg-night/5 rounded-xl flex items-center justify-center text-night/20 font-sans-jp text-sm hidden md:flex">朝の光が差す古民家</div>
+              <div class="md:hidden">
+                <h3 class="text-lg font-semibold mb-2">朝食。軽い会話だけ</h3>
+                <p class="text-night/60 text-sm leading-relaxed">寝ている間に頭が整理される。<br>朝、「何かが違う」。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 09:00 -->
+          <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
+            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember/30 flex items-center justify-center md:hidden">
+              <span class="text-white text-[10px] font-sans-jp font-bold">09:00</span>
+            </div>
+            <div class="md:text-right">
+              <span class="hidden md:inline-block font-sans-jp text-sm text-ember font-bold px-3 py-1 bg-ember/10 rounded-full mb-3">09:00</span>
+              <h3 class="text-lg md:text-xl font-semibold mb-2">振り返りワーク</h3>
+              <p class="text-night/60 text-sm md:text-base leading-relaxed">昨夜の言葉を一緒に振り返る。<br>「変わった」というより「見えた」感覚。</p>
+            </div>
+            <div class="hidden md:block">
+              <div class="w-full h-48 bg-night/5 rounded-xl flex items-center justify-center text-night/20 font-sans-jp text-sm">テーブルの上のシート</div>
+            </div>
+          </div>
+
+          <!-- 10:00 -->
+          <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
+            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember/20 flex items-center justify-center md:hidden">
+              <span class="text-night/40 text-[10px] font-sans-jp font-bold">10:00</span>
+            </div>
+            <div class="hidden md:block md:order-2">
+              <span class="font-sans-jp text-sm text-ember font-bold px-3 py-1 bg-ember/10 rounded-full mb-3 inline-block">10:00</span>
+              <h3 class="text-lg md:text-xl font-semibold mb-2">問いのお守りを一緒に作る</h3>
+              <p class="text-night/60 text-sm md:text-base leading-relaxed">黒文字の香りと、あっきーの手書きの問い。<br>あの夜を持って帰る。</p>
+            </div>
+            <div class="md:order-1">
+              <div class="w-full h-48 bg-night/5 rounded-xl flex items-center justify-center text-night/20 font-sans-jp text-sm hidden md:flex">お守りのアップ</div>
+              <div class="md:hidden">
+                <h3 class="text-lg font-semibold mb-2">問いのお守りを一緒に作る</h3>
+                <p class="text-night/60 text-sm leading-relaxed">黒文字の香りと、あっきーの手書きの問い。<br>あの夜を持って帰る。</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 11:00 -->
+          <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
+            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-night/10 flex items-center justify-center md:hidden">
+              <span class="text-night/40 text-[10px] font-sans-jp font-bold">11:00</span>
+            </div>
+            <div class="md:text-right">
+              <span class="hidden md:inline-block font-sans-jp text-sm text-night/40 font-bold px-3 py-1 bg-night/5 rounded-full mb-3">11:00</span>
+              <h3 class="text-lg md:text-xl font-semibold mb-2">送迎。港へ</h3>
+              <p class="text-night/60 text-sm md:text-base leading-relaxed">「またいつでも来いよ」</p>
+            </div>
+            <div class="hidden md:block">
+              <div class="w-full h-48 bg-night/5 rounded-xl flex items-center justify-center text-night/20 font-sans-jp text-sm">港で手を振る</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- CTA after timeline -->
+      <div class="fade-in text-center mt-20">
+        <a href="#s7" class="cta-btn inline-block bg-ember hover:bg-ember-dark text-white font-sans-jp font-bold text-base md:text-lg px-10 py-4 rounded-lg transition-colors duration-300">
+          まず30分、話してみる
+        </a>
+        <p class="text-night/30 text-xs mt-3 font-sans-jp">無料Zoom相談 &mdash; 顔を合わせるところから</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- S5: あっきーという人間 -->
+  <!-- ============================================ -->
+  <section id="s5" class="py-24 md:py-36 px-6 bg-warmwhite-dark">
+    <div class="max-w-xl mx-auto">
+      <div class="fade-in text-center mb-12">
+        <h2 class="font-sans-jp text-xl md:text-2xl font-bold text-night/40 tracking-widest mb-8">ABOUT</h2>
+        <p class="text-2xl md:text-3xl leading-relaxed">
+          出会ったことのない友達。
+        </p>
+      </div>
+
+      <!-- Photo placeholder -->
+      <div class="fade-in mb-12">
+        <div class="w-full aspect-[4/3] bg-night/5 rounded-2xl flex items-center justify-center text-night/20 font-sans-jp text-sm">
+          あっきーの写真
+        </div>
+      </div>
+
+      <!-- Profile text -->
+      <div class="fade-in text-base md:text-lg leading-loose text-night/80">
+        <p class="mb-6">あっきー。神奈川出身。</p>
+        <p class="mb-6">
+          新卒で入った会社が経営不振になった日、<br>「まてよ、自由だ」と思った。
+        </p>
+        <p class="mb-6">
+          25歳で隠岐の島に渡り、居酒屋、バー、<br class="md:hidden">キッチンカー、農業、材木屋 &mdash; 何でもやった。
+        </p>
+        <p class="mb-6">
+          ふわふわしていた自分が、<br class="md:hidden">この島で初めて燃えた。
+        </p>
+        <p class="mb-6">
+          特別なスキルはなんもない。
+        </p>
+        <p class="mb-6">
+          でも自分自身が「くすぶり &rarr; 燃焼」を通ってきた。<br>
+          だから、今くすぶっている人が来た時、<br class="md:hidden">「大丈夫だよ」と言える。
+        </p>
+        <p class="mb-6">
+          答えは出せない。<br>
+          でも、あなたが口に出す瞬間に、そばにいられる。
+        </p>
+      </div>
+
+      <!-- Quotes from people around -->
+      <div class="fade-in flex flex-wrap gap-4 justify-center mt-12">
+        <div class="bg-white/60 px-5 py-3 rounded-full text-sm text-night/60 italic">
+          「会うと元気になる」
+        </div>
+        <div class="bg-white/60 px-5 py-3 rounded-full text-sm text-night/60 italic">
+          「大丈夫そう」
+        </div>
+        <div class="bg-white/60 px-5 py-3 rounded-full text-sm text-night/60 italic">
+          「なんか話しやすい」
+        </div>
+      </div>
+
+      <!-- Not a coach -->
+      <div class="fade-in mt-12 text-center">
+        <p class="text-night/40 text-sm font-sans-jp leading-relaxed">
+          先輩じゃない。コーチでもない。<br>
+          初めて会うのに、なぜか話せてしまう人。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- S6: 持って帰るもの -->
+  <!-- ============================================ -->
+  <section id="s6" class="py-24 md:py-36 px-6">
+    <div class="max-w-xl mx-auto">
+      <div class="fade-in text-center mb-12">
+        <h2 class="font-sans-jp text-xl md:text-2xl font-bold text-night/40 tracking-widest mb-8">OMAMORI</h2>
+        <p class="text-2xl md:text-3xl leading-relaxed">
+          香りが、あの夜を<br class="md:hidden">思い出させてくれる。
+        </p>
+      </div>
+
+      <!-- Omamori photo placeholder -->
+      <div class="fade-in mb-12">
+        <div class="w-full aspect-[3/2] bg-night/5 rounded-2xl flex items-center justify-center text-night/20 font-sans-jp text-sm">
+          問いのお守り（麻袋 + 手書きカード + 黒文字）
+        </div>
+      </div>
+
+      <div class="fade-in text-base md:text-lg leading-loose text-night/80">
+        <p class="mb-6">
+          焚き火の前で口に出した言葉を、<br class="md:hidden">あっきーが名刺大のカードに手書きする。
+        </p>
+        <p class="mb-6">
+          隠岐の島の「黒文字」という木の香り袋と一緒に、<br class="md:hidden">小さな麻袋に入れてお守りに。
+        </p>
+        <p class="mb-6">
+          バッグにつけておく。たまに香りを嗅ぐ。<br>
+          あの夜のことを思い出す。
+        </p>
+        <p class="font-semibold text-night">
+          「俺、あの時こう言ったんだった」<br>
+          &mdash; それが日常の中の通過儀礼になる。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- S7: 料金・予約の流れ -->
+  <!-- ============================================ -->
+  <section id="s7" class="py-24 md:py-36 px-6 bg-warmwhite-dark">
+    <div class="max-w-xl mx-auto">
+      <div class="fade-in text-center mb-16">
+        <h2 class="font-sans-jp text-xl md:text-2xl font-bold text-night/40 tracking-widest mb-8">RESERVATION</h2>
+        <p class="text-2xl md:text-3xl leading-relaxed">
+          まず、顔を合わせるところから。
+        </p>
+      </div>
+
+      <!-- 3 Steps -->
+      <div class="fade-in space-y-8 mb-16">
+        <div class="flex items-start gap-5">
+          <div class="flex-shrink-0 w-12 h-12 bg-ember/10 rounded-full flex items-center justify-center">
+            <span class="font-sans-jp font-bold text-ember">1</span>
+          </div>
+          <div>
+            <h3 class="font-sans-jp font-bold text-lg mb-1">無料Zoom相談（30分）</h3>
+            <p class="text-night/60 text-sm md:text-base leading-relaxed">
+              あっきーと顔を合わせて話す。<br>
+              合わないと感じたらここで終わってOK。無料。気軽に。
+            </p>
+          </div>
+        </div>
+        <div class="flex items-start gap-5">
+          <div class="flex-shrink-0 w-12 h-12 bg-ember/10 rounded-full flex items-center justify-center">
+            <span class="font-sans-jp font-bold text-ember">2</span>
+          </div>
+          <div>
+            <h3 class="font-sans-jp font-bold text-lg mb-1">日程調整 + お支払い</h3>
+            <p class="text-night/60 text-sm md:text-base leading-relaxed">
+              繁忙期以外の平日から日程を選ぶ。<br>
+              事前ヒアリングシートを記入。
+            </p>
+          </div>
+        </div>
+        <div class="flex items-start gap-5">
+          <div class="flex-shrink-0 w-12 h-12 bg-ember/10 rounded-full flex items-center justify-center">
+            <span class="font-sans-jp font-bold text-ember">3</span>
+          </div>
+          <div>
+            <h3 class="font-sans-jp font-bold text-lg mb-1">島に来る</h3>
+            <p class="text-night/60 text-sm md:text-base leading-relaxed">
+              あっきーが港 or 空港にお迎え。<br>
+              あとは何も考えなくていい。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price -->
+      <div class="fade-in bg-white/80 rounded-2xl p-8 mb-8 text-center">
+        <p class="font-sans-jp text-sm text-night/40 mb-4 tracking-widest">PRICE</p>
+        <p class="text-4xl md:text-5xl font-bold text-night mb-2 font-sans-jp">
+          60,000<span class="text-xl">円</span><span class="text-base font-normal text-night/40 ml-1">（税込）</span>
+        </p>
+        <p class="text-night/60 text-sm mt-4 leading-relaxed">
+          1名 / 1泊2食 / くすぶるセッション込み
+        </p>
+        <div class="mt-6 pt-6 border-t border-night/10 text-left">
+          <p class="font-sans-jp text-xs text-night/40 mb-3">含まれるもの:</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-xs bg-night/5 px-3 py-1 rounded-full text-night/60 font-sans-jp">1泊2食</span>
+            <span class="text-xs bg-night/5 px-3 py-1 rounded-full text-night/60 font-sans-jp">焚き火セッション</span>
+            <span class="text-xs bg-night/5 px-3 py-1 rounded-full text-night/60 font-sans-jp">振り返りワーク</span>
+            <span class="text-xs bg-night/5 px-3 py-1 rounded-full text-night/60 font-sans-jp">問いのお守り</span>
+            <span class="text-xs bg-night/5 px-3 py-1 rounded-full text-night/60 font-sans-jp">送迎</span>
+            <span class="text-xs bg-night/5 px-3 py-1 rounded-full text-night/60 font-sans-jp">フォローアップ</span>
+          </div>
+          <p class="font-sans-jp text-xs text-night/30 mt-4">
+            ※ 隠岐の島までの交通費（フェリー or 飛行機）は含まれません
+          </p>
+        </div>
+      </div>
+
+      <!-- Main CTA -->
+      <div class="fade-in text-center">
+        <a href="#" class="cta-btn inline-block bg-ember hover:bg-ember-dark text-white font-sans-jp font-bold text-lg w-full max-w-sm py-5 rounded-lg transition-colors duration-300">
+          まず30分、話してみる
+        </a>
+        <p class="text-night/40 text-sm mt-4 font-sans-jp">予約した日が、動き出した日になる。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- S8: 体験者の声 -->
+  <!-- ============================================ -->
+  <section id="s8" class="py-24 md:py-36 px-6">
+    <div class="max-w-xl mx-auto">
+      <div class="fade-in text-center mb-12">
+        <h2 class="font-sans-jp text-xl md:text-2xl font-bold text-night/40 tracking-widest mb-8">VOICES</h2>
+        <p class="text-2xl md:text-3xl leading-relaxed">
+          火を囲んだ人たちの声。
+        </p>
+      </div>
+
+      <!-- Placeholder: pre-test launch state -->
+      <div class="fade-in space-y-8">
+        <div class="bg-white/60 rounded-2xl p-8">
+          <p class="text-night/60 italic text-base md:text-lg leading-relaxed mb-4">
+            「会うと元気になる。理由はわからない。<br>でも、あっきーのそばにいると大丈夫な気がする」
+          </p>
+          <p class="font-sans-jp text-sm text-night/30">&mdash; あっきーの友人</p>
+        </div>
+
+        <div class="bg-white/60 rounded-2xl p-8">
+          <p class="text-night/60 italic text-base md:text-lg leading-relaxed mb-4">
+            「話しやすいんよ。なんも構えなくていい感じ。<br>気づいたら本音言ってた」
+          </p>
+          <p class="font-sans-jp text-sm text-night/30">&mdash; 島の知人</p>
+        </div>
+
+        <div class="bg-white/60 rounded-2xl p-8">
+          <p class="text-night/60 italic text-base md:text-lg leading-relaxed mb-4">
+            「島で燻った気持ちが、たしかに燃えた」
+          </p>
+          <p class="font-sans-jp text-sm text-night/30">&mdash; あっきー自身の言葉</p>
+        </div>
+      </div>
+
+      <div class="fade-in text-center mt-12">
+        <p class="text-night/30 text-sm font-sans-jp">
+          ※ テスト体験後、参加者の声を掲載予定です
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- S9: 最後のひと押し -->
+  <!-- ============================================ -->
+  <section id="s9" class="relative py-24 md:py-36 px-6 overflow-hidden">
+    <!-- Dark background -->
+    <div class="absolute inset-0 bg-gradient-to-b from-night via-night-light to-night"></div>
+    <!-- Subtle fire glow -->
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] opacity-15" style="background: radial-gradient(ellipse, #e67e22 0%, transparent 70%);"></div>
+
+    <div class="relative z-10 max-w-xl mx-auto text-center">
+      <div class="fade-in">
+        <p class="text-warmwhite text-xl md:text-2xl leading-loose mb-8">
+          「このままでいいのかな」と思うなら、<br>もう気づいてる。
+        </p>
+        <p class="text-warmwhite/70 text-base md:text-lg leading-loose mb-8">
+          答えは出てる。<br>ただ、口に出す場所がないだけだ。
+        </p>
+        <p class="text-warmwhite text-lg md:text-xl leading-loose mb-4">
+          隠岐の島に来てみなよ。
+        </p>
+        <p class="text-warmwhite/70 text-base md:text-lg leading-loose mb-4">
+          古民家で飯を食って、焚き火を囲んで、<br>
+          なんもない男と、何も決めなくていい夜を過ごそう。
+        </p>
+        <p class="text-warmwhite text-lg md:text-xl leading-loose font-semibold mb-12">
+          翌朝、自分が何を決めたか、わかる。
+        </p>
+      </div>
+
+      <div class="fade-in">
+        <a href="#" class="cta-btn inline-block bg-ember hover:bg-ember-dark text-white font-sans-jp font-bold text-lg w-full max-w-sm py-5 rounded-lg transition-colors duration-300">
+          1日1組。あなたのための夜を予約する。
+        </a>
+        <p class="text-warmwhite/30 text-sm mt-6 font-sans-jp">
+          DMでもOK。<a href="https://www.instagram.com/kusuburuhouse/" target="_blank" rel="noopener" class="underline hover:text-warmwhite/50 transition-colors">Instagram @kusuburuhouse</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- Footer -->
+  <!-- ============================================ -->
+  <footer class="bg-night py-12 px-6">
+    <div class="max-w-xl mx-auto text-center">
+      <p class="text-warmwhite/80 text-lg mb-2">くすぶるハウス</p>
+      <p class="text-warmwhite/30 text-xs font-sans-jp mb-6">島根県隠岐郡隠岐の島町南方 1227-1</p>
+      <div class="flex justify-center gap-6 mb-8">
+        <a href="https://www.instagram.com/kusuburuhouse/" target="_blank" rel="noopener" class="text-warmwhite/40 hover:text-warmwhite/70 transition-colors font-sans-jp text-sm">Instagram</a>
+        <a href="https://lin.ee/a4uWMOX" target="_blank" rel="noopener" class="text-warmwhite/40 hover:text-warmwhite/70 transition-colors font-sans-jp text-sm">LINE</a>
+      </div>
+      <p class="text-warmwhite/20 text-xs font-sans-jp">&copy; 2026 kusuburu house. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ============================================ -->
+  <!-- Floating CTA (mobile only) -->
+  <!-- ============================================ -->
+  <div id="floatingCta" class="floating-cta fixed bottom-0 left-0 right-0 z-50 md:hidden">
+    <div class="bg-night/90 backdrop-blur-sm px-4 py-3 flex items-center justify-center">
+      <a href="#s7" class="bg-ember hover:bg-ember-dark text-white font-sans-jp font-bold text-sm w-full max-w-sm py-3 rounded-lg transition-colors duration-300 text-center block">
+        まず30分、話してみる
+      </a>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- Scripts -->
+  <!-- ============================================ -->
+  <script>
+    // Intersection Observer for fade-in
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Floating CTA: show after scrolling past S1, hide when scrolling up
+    const s1 = document.getElementById('s1');
+    const floatingCta = document.getElementById('floatingCta');
+    let lastScrollY = 0;
+
+    function updateFloatingCta() {
+      const scrollY = window.scrollY;
+      const s1Bottom = s1.offsetTop + s1.offsetHeight;
+      const isScrollingDown = scrollY > lastScrollY;
+
+      if (scrollY > s1Bottom && isScrollingDown) {
+        floatingCta.classList.add('show');
+      } else if (!isScrollingDown && scrollY < s1Bottom) {
+        floatingCta.classList.remove('show');
+      }
+
+      // Hide near bottom (S9 CTA is visible)
+      const s9 = document.getElementById('s9');
+      if (s9 && scrollY + window.innerHeight > s9.offsetTop + 100) {
+        floatingCta.classList.remove('show');
+      } else if (scrollY > s1Bottom && isScrollingDown) {
+        floatingCta.classList.add('show');
+      }
+
+      lastScrollY = scrollY;
+    }
+
+    window.addEventListener('scroll', updateFloatingCta, { passive: true });
+  </script>
+
+</body>
+</html>
