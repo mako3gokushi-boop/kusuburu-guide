@@ -93,16 +93,59 @@
       }
     }
 
-    /* CTA button pulse */
+    /* CTA button — explicit styles to override Tailwind CDN issues */
+    .cta-btn {
+      background-color: #e67e22 !important;
+      color: #fff !important;
+      display: inline-block;
+      font-weight: 700;
+      border-radius: 8px;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      animation: gentle-pulse 3s ease-in-out infinite;
+    }
+    .cta-btn:hover {
+      background-color: #d35400 !important;
+      animation: none;
+    }
     @keyframes gentle-pulse {
       0%, 100% { box-shadow: 0 4px 14px rgba(230, 126, 34, 0.3); }
       50% { box-shadow: 0 4px 24px rgba(230, 126, 34, 0.5); }
     }
-    .cta-btn {
-      animation: gentle-pulse 3s ease-in-out infinite;
+
+    /* Floating CTA button */
+    .floating-cta-btn {
+      background-color: #e67e22 !important;
+      color: #fff !important;
+      display: block;
+      text-align: center;
+      font-weight: 700;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
     }
-    .cta-btn:hover {
-      animation: none;
+    .floating-cta-btn:hover {
+      background-color: #d35400 !important;
+    }
+
+    /* Step number circles */
+    .step-circle {
+      background-color: rgba(230, 126, 34, 0.1);
+      color: #e67e22;
+      font-weight: 700;
+    }
+
+    /* Timeline dots */
+    .tl-dot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .tl-dot span {
+      color: #fff;
+      font-weight: 700;
     }
 
     /* Ritual cards */
@@ -110,6 +153,31 @@
       background: rgba(253, 246, 238, 0.9);
       backdrop-filter: blur(4px);
     }
+
+    /* Color overrides for Tailwind CDN custom color+opacity compatibility */
+    .text-night\/80, [class*="text-night/80"] { color: rgba(28, 40, 51, 0.8) !important; }
+    .text-night\/70, [class*="text-night/70"] { color: rgba(28, 40, 51, 0.7) !important; }
+    .text-night\/60, [class*="text-night/60"] { color: rgba(28, 40, 51, 0.6) !important; }
+    .text-night\/40, [class*="text-night/40"] { color: rgba(28, 40, 51, 0.4) !important; }
+    .text-night\/30, [class*="text-night/30"] { color: rgba(28, 40, 51, 0.3) !important; }
+    .text-night\/20, [class*="text-night/20"] { color: rgba(28, 40, 51, 0.2) !important; }
+    .bg-night\/5, [class*="bg-night/5"] { background-color: rgba(28, 40, 51, 0.05) !important; }
+    .bg-night\/10, [class*="bg-night/10"] { background-color: rgba(28, 40, 51, 0.1) !important; }
+    .bg-night\/90, [class*="bg-night/90"] { background-color: rgba(28, 40, 51, 0.9) !important; }
+    .border-night\/10, [class*="border-night/10"] { border-color: rgba(28, 40, 51, 0.1) !important; }
+    .text-warmwhite\/80, [class*="text-warmwhite/80"] { color: rgba(253, 246, 238, 0.8) !important; }
+    .text-warmwhite\/70, [class*="text-warmwhite/70"] { color: rgba(253, 246, 238, 0.7) !important; }
+    .text-warmwhite\/50, [class*="text-warmwhite/50"] { color: rgba(253, 246, 238, 0.5) !important; }
+    .text-warmwhite\/40, [class*="text-warmwhite/40"] { color: rgba(253, 246, 238, 0.4) !important; }
+    .text-warmwhite\/30, [class*="text-warmwhite/30"] { color: rgba(253, 246, 238, 0.3) !important; }
+    .text-warmwhite\/20, [class*="text-warmwhite/20"] { color: rgba(253, 246, 238, 0.2) !important; }
+    .bg-warmwhite\/30, [class*="bg-warmwhite/30"] { background-color: rgba(253, 246, 238, 0.3) !important; }
+    .bg-white\/60, [class*="bg-white/60"] { background-color: rgba(255, 255, 255, 0.6) !important; }
+    .bg-white\/80, [class*="bg-white/80"] { background-color: rgba(255, 255, 255, 0.8) !important; }
+    .bg-ember\/10, [class*="bg-ember/10"] { background-color: rgba(230, 126, 34, 0.1) !important; }
+    .text-ember, [class*="text-ember"] { color: #e67e22 !important; }
+    .bg-ember, [class*="bg-ember"]:not([class*="bg-ember/"]) { background-color: #e67e22 !important; }
+    .text-ember-red, [class*="text-ember-red"] { color: #c0392b !important; }
   </style>
 </head>
 <body class="bg-warmwhite">
@@ -127,24 +195,24 @@
       <h1 class="text-white text-3xl md:text-5xl leading-relaxed md:leading-relaxed font-semibold tracking-wide mb-6">
         くすぶったまま、<br>島に来てみなよ。
       </h1>
-      <p class="text-warmwhite/80 text-lg md:text-2xl leading-relaxed mb-4">
+      <p class="text-lg md:text-2xl" style="color:rgba(253,246,238,0.8) leading-relaxed mb-4">
         隠岐の島で人生の心の芯を釣り上げる。
       </p>
-      <p class="text-warmwhite/50 text-sm md:text-base font-sans-jp mt-6 tracking-widest">
-        1日1組限定 / 1泊2食 / くすぶるセッション
+      <p style="color:rgba(253,246,238,0.5);" class="text-sm md:text-base font-sans-jp mt-6 tracking-widest">
+        1日1組限定 / 1泊2食 / 焚き火の前で、ただ話す夜
       </p>
       <div class="mt-12">
         <a href="#s7" class="cta-btn inline-block bg-ember hover:bg-ember-dark text-white font-sans-jp font-bold text-base md:text-lg px-10 py-4 rounded-lg transition-colors duration-300">
           まず30分、話してみる
         </a>
-        <p class="text-warmwhite/40 text-xs mt-3 font-sans-jp">無料Zoom相談 &mdash; 顔を合わせるところから</p>
+        <p class="text-xs mt-3 font-sans-jp" style="color:rgba(253,246,238,0.4)">無料Zoom相談 &mdash; 顔を合わせるところから</p>
       </div>
     </div>
 
     <!-- Scroll indicator -->
     <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
-      <div class="w-6 h-10 border-2 border-warmwhite/30 rounded-full flex justify-center pt-2">
-        <div class="w-1 h-3 bg-warmwhite/50 rounded-full animate-bounce"></div>
+      <div class="w-6 h-10 border-2 rounded-full" style="border-color:rgba(253,246,238,0.3) flex justify-center pt-2">
+        <div class="w-1 h-3 rounded-full" style="background-color:rgba(253,246,238,0.5) animate-bounce"></div>
       </div>
     </div>
   </section>
@@ -161,20 +229,20 @@
       </div>
 
       <div class="fade-in space-y-5 text-left max-w-md mx-auto">
-        <div class="check-item flex items-start text-base md:text-lg leading-relaxed text-night/80">
+        <div class="check-item flex items-start text-base md:text-lg leading-relaxed" style="color:rgba(28,40,51,0.8);">
           仕事は順調。でも「これだ」って感覚がない
         </div>
-        <div class="check-item flex items-start text-base md:text-lg leading-relaxed text-night/80">
+        <div class="check-item flex items-start text-base md:text-lg leading-relaxed" style="color:rgba(28,40,51,0.8);">
           転職サイトは開く。でも応募はしない
         </div>
-        <div class="check-item flex items-start text-base md:text-lg leading-relaxed text-night/80">
+        <div class="check-item flex items-start text-base md:text-lg leading-relaxed" style="color:rgba(28,40,51,0.8);">
           飲み会で愚痴は言える。でも本音は言えない
         </div>
-        <div class="check-item flex items-start text-base md:text-lg leading-relaxed text-night/80">
-          「やりたいこと」を聞かれると、言葉に詰まる
+        <div class="check-item flex items-start text-base md:text-lg leading-relaxed" style="color:rgba(28,40,51,0.8);">
+          「やりたいこと」を聞かれると、つい黙る
         </div>
-        <div class="check-item flex items-start text-base md:text-lg leading-relaxed text-night/80">
-          薄々わかってる。でも口に出す場所がない
+        <div class="check-item flex items-start text-base md:text-lg leading-relaxed" style="color:rgba(28,40,51,0.8);">
+          答えは薄々わかってる。でも口に出す場所がない
         </div>
       </div>
 
@@ -208,8 +276,8 @@
           お遍路、巡礼、修行。
         </p>
         <p class="mb-6">
-          目的地が人を変えるんじゃなくて、<br class="hidden md:inline">
-          「行くと決めたこと」と「帰ってきたこと」が人を変える。
+          目的地じゃない。<br class="hidden md:inline">
+          「行くと決めたこと」と「帰ってきたこと」が、人を動かす。
         </p>
       </div>
 
@@ -234,12 +302,12 @@
 
       <div class="fade-in text-base md:text-lg leading-loose text-night/80 text-left md:text-center">
         <p class="mb-6">
-          1泊2日で「人生が変わる」とは言わない。
+          1泊2日で何かが解決するとは言わない。
         </p>
         <p class="mb-6">
           でも「薄々わかっていたことを、<br class="hidden md:inline">焚き火の前で口に出す」ことはできる。
         </p>
-        <p class="font-semibold text-night">
+        <p class="font-semibold" style="color:#1c2833;">
           口に出した瞬間、それは「決意」になる。
         </p>
       </div>
@@ -267,11 +335,11 @@
 
           <!-- Pre-visit: Zoom -->
           <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
-            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember flex items-center justify-center md:hidden">
-              <span class="text-white text-xs font-sans-jp font-bold">Zoom</span>
+            <div class="tl-dot absolute left-3 top-1 md:hidden" style="background-color:#e67e22;">
+              <span class="text-xs font-sans-jp">Zoom</span>
             </div>
             <div class="md:text-right">
-              <span class="hidden md:inline-block font-sans-jp text-sm text-ember font-bold px-3 py-1 bg-ember/10 rounded-full mb-3">予約前</span>
+              <span class="hidden md:inline-block font-sans-jp text-sm font-bold px-3 py-1 rounded-full" style="color:#e67e22;background-color:rgba(230,126,34,0.1) mb-3">予約前</span>
               <p class="font-sans-jp text-sm text-ember font-bold mb-1 md:hidden">予約前</p>
               <h3 class="text-lg md:text-xl font-semibold mb-2">無料Zoom 30分</h3>
               <p class="text-night/60 text-sm md:text-base leading-relaxed">あっきーと顔合わせ。島の話を少しだけ。<br>「この人なら話せそう」と思えたら、予約へ。</p>
@@ -283,11 +351,11 @@
 
           <!-- 15:00 -->
           <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
-            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember/80 flex items-center justify-center md:hidden">
+            <div class="tl-dot absolute left-3 top-1 md:hidden" style="background-color:rgba(230,126,34,0.8)">
               <span class="text-white text-[10px] font-sans-jp font-bold">15:00</span>
             </div>
             <div class="hidden md:block md:order-2">
-              <span class="font-sans-jp text-sm text-ember font-bold px-3 py-1 bg-ember/10 rounded-full mb-3 inline-block">15:00</span>
+              <span class="font-sans-jp text-sm font-bold px-3 py-1 rounded-full" style="color:#e67e22;background-color:rgba(230,126,34,0.1) mb-3 inline-block">15:00</span>
               <h3 class="text-lg md:text-xl font-semibold mb-2">港にお迎え</h3>
               <p class="text-night/60 text-sm md:text-base leading-relaxed">車の中では島の話だけ。<br>「あそこで釣れるんよ」</p>
             </div>
@@ -302,11 +370,11 @@
 
           <!-- 16:00 -->
           <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
-            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember/70 flex items-center justify-center md:hidden">
+            <div class="tl-dot absolute left-3 top-1 md:hidden" style="background-color:rgba(230,126,34,0.7)">
               <span class="text-white text-[10px] font-sans-jp font-bold">16:00</span>
             </div>
             <div class="md:text-right">
-              <span class="hidden md:inline-block font-sans-jp text-sm text-ember font-bold px-3 py-1 bg-ember/10 rounded-full mb-3">16:00</span>
+              <span class="hidden md:inline-block font-sans-jp text-sm font-bold px-3 py-1 rounded-full" style="color:#e67e22;background-color:rgba(230,126,34,0.1) mb-3">16:00</span>
               <h3 class="text-lg md:text-xl font-semibold mb-2">くすぶるハウスに到着</h3>
               <p class="text-night/60 text-sm md:text-base leading-relaxed">荷物を置いて、少し休む。<br>古民家の静けさに体がゆるむ。</p>
             </div>
@@ -317,11 +385,11 @@
 
           <!-- 18:00 -->
           <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
-            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember-red/70 flex items-center justify-center md:hidden">
+            <div class="tl-dot absolute left-3 top-1 md:hidden" style="background-color:rgba(192,57,43,0.7)">
               <span class="text-white text-[10px] font-sans-jp font-bold">18:00</span>
             </div>
             <div class="hidden md:block md:order-2">
-              <span class="font-sans-jp text-sm text-ember font-bold px-3 py-1 bg-ember/10 rounded-full mb-3 inline-block">18:00</span>
+              <span class="font-sans-jp text-sm font-bold px-3 py-1 rounded-full" style="color:#e67e22;background-color:rgba(230,126,34,0.1) mb-3 inline-block">18:00</span>
               <h3 class="text-lg md:text-xl font-semibold mb-2">あっきーの手料理で夕食</h3>
               <p class="text-night/60 text-sm md:text-base leading-relaxed">島の食材。食卓を囲みながら。<br>「この人は敵じゃない」と体で感じる。</p>
             </div>
@@ -336,12 +404,12 @@
 
           <!-- 20:00 - bonfire (highlight) -->
           <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
-            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember-red flex items-center justify-center md:hidden">
+            <div class="tl-dot absolute left-3 top-1 md:hidden" style="background-color:#c0392b">
               <span class="text-white text-[10px] font-sans-jp font-bold">20:00</span>
             </div>
             <div class="md:text-right">
-              <span class="hidden md:inline-block font-sans-jp text-sm text-ember-red font-bold px-3 py-1 bg-ember-red/10 rounded-full mb-3">20:00</span>
-              <h3 class="text-xl md:text-2xl font-semibold mb-2 text-ember-red">焚き火セッション</h3>
+              <span class="hidden md:inline-block font-sans-jp text-sm font-bold px-3 py-1 rounded-full" style="color:#c0392b;background-color:rgba(192,57,43,0.1) mb-3">20:00</span>
+              <h3 class="text-xl md:text-2xl font-semibold mb-2" style="color:#c0392b;">焚き火セッション</h3>
               <p class="text-night/70 text-sm md:text-base leading-relaxed">火を見ながら、ただ話す。2〜3時間。<br>薄々わかっていたことを、口に出す。<br><span class="font-semibold text-night">これが核心の時間。</span></p>
             </div>
             <div class="hidden md:block">
@@ -353,11 +421,11 @@
 
           <!-- Morning -->
           <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
-            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember/40 flex items-center justify-center md:hidden">
+            <div class="tl-dot absolute left-3 top-1 md:hidden" style="background-color:rgba(230,126,34,0.4)">
               <span class="text-white text-[10px] font-sans-jp font-bold">翌朝</span>
             </div>
             <div class="hidden md:block md:order-2">
-              <span class="font-sans-jp text-sm text-ember font-bold px-3 py-1 bg-ember/10 rounded-full mb-3 inline-block">翌朝</span>
+              <span class="font-sans-jp text-sm font-bold px-3 py-1 rounded-full" style="color:#e67e22;background-color:rgba(230,126,34,0.1) mb-3 inline-block">翌朝</span>
               <h3 class="text-lg md:text-xl font-semibold mb-2">朝食。軽い会話だけ</h3>
               <p class="text-night/60 text-sm md:text-base leading-relaxed">寝ている間に頭が整理される。<br>朝、「何かが違う」。</p>
             </div>
@@ -372,13 +440,13 @@
 
           <!-- 09:00 -->
           <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
-            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember/30 flex items-center justify-center md:hidden">
+            <div class="tl-dot absolute left-3 top-1 md:hidden" style="background-color:rgba(230,126,34,0.3)">
               <span class="text-white text-[10px] font-sans-jp font-bold">09:00</span>
             </div>
             <div class="md:text-right">
-              <span class="hidden md:inline-block font-sans-jp text-sm text-ember font-bold px-3 py-1 bg-ember/10 rounded-full mb-3">09:00</span>
+              <span class="hidden md:inline-block font-sans-jp text-sm font-bold px-3 py-1 rounded-full" style="color:#e67e22;background-color:rgba(230,126,34,0.1) mb-3">09:00</span>
               <h3 class="text-lg md:text-xl font-semibold mb-2">振り返りワーク</h3>
-              <p class="text-night/60 text-sm md:text-base leading-relaxed">昨夜の言葉を一緒に振り返る。<br>「変わった」というより「見えた」感覚。</p>
+              <p class="text-night/60 text-sm md:text-base leading-relaxed">昨夜の言葉を一緒に振り返る。<br>「見えた」という感覚がある。</p>
             </div>
             <div class="hidden md:block">
               <div class="w-full h-48 bg-night/5 rounded-xl flex items-center justify-center text-night/20 font-sans-jp text-sm">テーブルの上のシート</div>
@@ -387,11 +455,11 @@
 
           <!-- 10:00 -->
           <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
-            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-ember/20 flex items-center justify-center md:hidden">
+            <div class="tl-dot absolute left-3 top-1 md:hidden" style="background-color:rgba(230,126,34,0.2)">
               <span class="text-night/40 text-[10px] font-sans-jp font-bold">10:00</span>
             </div>
             <div class="hidden md:block md:order-2">
-              <span class="font-sans-jp text-sm text-ember font-bold px-3 py-1 bg-ember/10 rounded-full mb-3 inline-block">10:00</span>
+              <span class="font-sans-jp text-sm font-bold px-3 py-1 rounded-full" style="color:#e67e22;background-color:rgba(230,126,34,0.1) mb-3 inline-block">10:00</span>
               <h3 class="text-lg md:text-xl font-semibold mb-2">問いのお守りを一緒に作る</h3>
               <p class="text-night/60 text-sm md:text-base leading-relaxed">黒文字の香りと、あっきーの手書きの問い。<br>あの夜を持って帰る。</p>
             </div>
@@ -406,7 +474,7 @@
 
           <!-- 11:00 -->
           <div class="fade-in relative pl-14 md:pl-0 md:grid md:grid-cols-2 md:gap-12 md:items-center">
-            <div class="absolute left-3 top-1 w-10 h-10 rounded-full bg-night/10 flex items-center justify-center md:hidden">
+            <div class="tl-dot absolute left-3 top-1 md:hidden" style="background-color:rgba(28,40,51,0.1)">
               <span class="text-night/40 text-[10px] font-sans-jp font-bold">11:00</span>
             </div>
             <div class="md:text-right">
@@ -491,9 +559,9 @@
 
       <!-- Not a coach -->
       <div class="fade-in mt-12 text-center">
-        <p class="text-night/40 text-sm font-sans-jp leading-relaxed">
+        <p style="color:rgba(28,40,51,0.4);" class="text-sm font-sans-jp leading-relaxed">
           先輩じゃない。コーチでもない。<br>
-          初めて会うのに、なぜか話せてしまう人。
+          初めて会うのに、なぜか本音が出る。そういう人。
         </p>
       </div>
     </div>
@@ -552,20 +620,20 @@
       <!-- 3 Steps -->
       <div class="fade-in space-y-8 mb-16">
         <div class="flex items-start gap-5">
-          <div class="flex-shrink-0 w-12 h-12 bg-ember/10 rounded-full flex items-center justify-center">
-            <span class="font-sans-jp font-bold text-ember">1</span>
+          <div class="step-circle flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center">
+            <span class="font-sans-jp font-bold" style="color:#e67e22;">1</span>
           </div>
           <div>
             <h3 class="font-sans-jp font-bold text-lg mb-1">無料Zoom相談（30分）</h3>
-            <p class="text-night/60 text-sm md:text-base leading-relaxed">
-              あっきーと顔を合わせて話す。<br>
-              合わないと感じたらここで終わってOK。無料。気軽に。
+            <p style="color:rgba(28,40,51,0.6);" class="text-sm md:text-base leading-relaxed">
+              あっきーと顔を合わせて、島の話を少しだけ。<br>
+              「違うな」と思ったらそれでOK。無料。気軽に。
             </p>
           </div>
         </div>
         <div class="flex items-start gap-5">
-          <div class="flex-shrink-0 w-12 h-12 bg-ember/10 rounded-full flex items-center justify-center">
-            <span class="font-sans-jp font-bold text-ember">2</span>
+          <div class="step-circle flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center">
+            <span class="font-sans-jp font-bold" style="color:#e67e22;">2</span>
           </div>
           <div>
             <h3 class="font-sans-jp font-bold text-lg mb-1">日程調整 + お支払い</h3>
@@ -576,8 +644,8 @@
           </div>
         </div>
         <div class="flex items-start gap-5">
-          <div class="flex-shrink-0 w-12 h-12 bg-ember/10 rounded-full flex items-center justify-center">
-            <span class="font-sans-jp font-bold text-ember">3</span>
+          <div class="step-circle flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center">
+            <span class="font-sans-jp font-bold" style="color:#e67e22;">3</span>
           </div>
           <div>
             <h3 class="font-sans-jp font-bold text-lg mb-1">島に来る</h3>
@@ -685,14 +753,14 @@
         <p class="text-warmwhite/70 text-base md:text-lg leading-loose mb-8">
           答えは出てる。<br>ただ、口に出す場所がないだけだ。
         </p>
-        <p class="text-warmwhite text-lg md:text-xl leading-loose mb-4">
+        <p style="color:#fdf6ee;" class="text-lg md:text-xl leading-loose mb-4">
           隠岐の島に来てみなよ。
         </p>
-        <p class="text-warmwhite/70 text-base md:text-lg leading-loose mb-4">
+        <p style="color:rgba(253,246,238,0.7);" class="text-base md:text-lg leading-loose mb-4">
           古民家で飯を食って、焚き火を囲んで、<br>
           なんもない男と、何も決めなくていい夜を過ごそう。
         </p>
-        <p class="text-warmwhite text-lg md:text-xl leading-loose font-semibold mb-12">
+        <p style="color:#fdf6ee;" class="text-lg md:text-xl leading-loose font-semibold mb-12">
           翌朝、自分が何を決めたか、わかる。
         </p>
       </div>
@@ -701,8 +769,8 @@
         <a href="#" class="cta-btn inline-block bg-ember hover:bg-ember-dark text-white font-sans-jp font-bold text-lg w-full max-w-sm py-5 rounded-lg transition-colors duration-300">
           1日1組。あなたのための夜を予約する。
         </a>
-        <p class="text-warmwhite/30 text-sm mt-6 font-sans-jp">
-          DMでもOK。<a href="https://www.instagram.com/kusuburuhouse/" target="_blank" rel="noopener" class="underline hover:text-warmwhite/50 transition-colors">Instagram @kusuburuhouse</a>
+        <p class="text-sm mt-6 font-sans-jp" style="color:rgba(253,246,238,0.3);">
+          DMでもOK。気軽にメッセージください。<br><a href="https://www.instagram.com/kusuburuhouse/" target="_blank" rel="noopener" class="underline hover:opacity-70 transition-opacity" style="color:rgba(253,246,238,0.5);">Instagram @kusuburuhouse</a>
         </p>
       </div>
     </div>
@@ -713,13 +781,13 @@
   <!-- ============================================ -->
   <footer class="bg-night py-12 px-6">
     <div class="max-w-xl mx-auto text-center">
-      <p class="text-warmwhite/80 text-lg mb-2">くすぶるハウス</p>
-      <p class="text-warmwhite/30 text-xs font-sans-jp mb-6">島根県隠岐郡隠岐の島町南方 1227-1</p>
+      <p class="text-lg mb-2" style="color:rgba(253,246,238,0.8)">くすぶるハウス</p>
+      <p class="text-xs font-sans-jp mb-6" style="color:rgba(253,246,238,0.3)">島根県隠岐郡隠岐の島町南方 1227-1</p>
       <div class="flex justify-center gap-6 mb-8">
-        <a href="https://www.instagram.com/kusuburuhouse/" target="_blank" rel="noopener" class="text-warmwhite/40 hover:text-warmwhite/70 transition-colors font-sans-jp text-sm">Instagram</a>
-        <a href="https://lin.ee/a4uWMOX" target="_blank" rel="noopener" class="text-warmwhite/40 hover:text-warmwhite/70 transition-colors font-sans-jp text-sm">LINE</a>
+        <a href="https://www.instagram.com/kusuburuhouse/" target="_blank" rel="noopener" class="hover:opacity-80 transition-colors font-sans-jp text-sm" style="color:rgba(253,246,238,0.4);">Instagram</a>
+        <a href="https://lin.ee/a4uWMOX" target="_blank" rel="noopener" class="hover:opacity-80 transition-colors font-sans-jp text-sm" style="color:rgba(253,246,238,0.4);">LINE</a>
       </div>
-      <p class="text-warmwhite/20 text-xs font-sans-jp">&copy; 2026 kusuburu house. All rights reserved.</p>
+      <p class="text-xs font-sans-jp" style="color:rgba(253,246,238,0.2)">&copy; 2026 kusuburu house. All rights reserved.</p>
     </div>
   </footer>
 
@@ -728,7 +796,7 @@
   <!-- ============================================ -->
   <div id="floatingCta" class="floating-cta fixed bottom-0 left-0 right-0 z-50 md:hidden">
     <div class="bg-night/90 backdrop-blur-sm px-4 py-3 flex items-center justify-center">
-      <a href="#s7" class="bg-ember hover:bg-ember-dark text-white font-sans-jp font-bold text-sm w-full max-w-sm py-3 rounded-lg transition-colors duration-300 text-center block">
+      <a href="#s7" class="floating-cta-btn font-sans-jp text-sm w-full max-w-sm py-3">
         まず30分、話してみる
       </a>
     </div>
