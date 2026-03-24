@@ -803,33 +803,31 @@ async function handleAdminStats(request, env, origin) {
   if (to) { dateFilter += " AND strftime('%Y-%m', checkin_date) <= ?"; dateParams.push(to); }
 
   const monthlyStmt = env.DB.prepare(
-    "SELECT strftime('%Y-%m', checkin_date) as month, COUNT(*) as count FROM checkins WHERE 1=1" + dateFilter + " GROUP BY month ORDER BY month DESC LIMIT 24"
+    "SELECT strftime('%Y-%m', checkin_date) as month, SUM(adults + children) as count FROM checkins WHERE 1=1" + dateFilter + " GROUP BY month ORDER BY month DESC LIMIT 24"
   );
   const nationalityStmt = env.DB.prepare(
-    "SELECT nationality, COUNT(*) as count FROM checkins WHERE is_foreign = 1 AND nationality != ''" + dateFilter + " GROUP BY nationality ORDER BY count DESC"
+    "SELECT nationality, SUM(adults + children) as count FROM checkins WHERE is_foreign = 1 AND nationality != ''" + dateFilter + " GROUP BY nationality ORDER BY count DESC"
   );
   const avgStmt = env.DB.prepare(
     "SELECT AVG(julianday(checkout_date) - julianday(checkin_date)) as avg_stay FROM checkins WHERE checkout_date IS NOT NULL AND checkin_date IS NOT NULL" + dateFilter
   );
   const totalStmt = env.DB.prepare(
-    "SELECT COUNT(*) as total FROM checkins WHERE 1=1" + dateFilter
+    "SELECT SUM(adults + children) as total FROM checkins WHERE 1=1" + dateFilter
   );
   const weekdayStmt = env.DB.prepare(
-    "SELECT CAST(strftime('%w', checkin_date) AS INTEGER) as dow, COUNT(*) as count FROM checkins WHERE 1=1" + dateFilter + " GROUP BY dow ORDER BY dow"
+    "SELECT CAST(strftime('%w', checkin_date) AS INTEGER) as dow, SUM(adults + children) as count FROM checkins WHERE 1=1" + dateFilter + " GROUP BY dow ORDER BY dow"
   );
   const repeaterStmt = env.DB.prepare(
     "SELECT name, COUNT(*) as visits FROM checkins WHERE 1=1" + dateFilter + " GROUP BY name HAVING visits > 1 ORDER BY visits DESC LIMIT 20"
   );
   const bookingSiteStmt = env.DB.prepare(
-    "SELECT booking_site, COUNT(*) as count FROM checkins WHERE booking_site IS NOT NULL AND booking_site != ''" + dateFilter + " GROUP BY booking_site ORDER BY count DESC"
+    "SELECT booking_site, SUM(adults + children) as count FROM checkins WHERE booking_site != '' AND booking_site IS NOT NULL" + dateFilter + " GROUP BY booking_site ORDER BY count DESC"
   );
   const ageGroupStmt = env.DB.prepare(
-    "SELECT CASE WHEN age < 20 THEN '10代以下' WHEN age < 30 THEN '20代' WHEN age < 40 THEN '30代' WHEN age < 50 THEN '40代' WHEN age < 60 THEN '50代' WHEN age >= 60 THEN '60代以上' ELSE '不明' END as age_group, COUNT(*) as count FROM checkins WHERE age IS NOT NULL AND age > 0" + dateFilter + " GROUP BY age_group ORDER BY MIN(age)"
+    "SELECT CASE WHEN age < 20 THEN '10代以下' WHEN age < 30 THEN '20代' WHEN age < 40 THEN '30代' WHEN age < 50 THEN '40代' WHEN age < 60 THEN '50代' ELSE '60代以上' END as age_group, SUM(adults + children) as count FROM checkins WHERE age > 0" + dateFilter + " GROUP BY age_group ORDER BY MIN(age)"
   );
   const prefectureStmt = env.DB.prepare(
-    "SELECT CASE " +
-    "WHEN address LIKE '北海道%' THEN '北海道' WHEN address LIKE '青森県%' THEN '青森県' WHEN address LIKE '岩手県%' THEN '岩手県' WHEN address LIKE '宮城県%' THEN '宮城県' WHEN address LIKE '秋田県%' THEN '秋田県' WHEN address LIKE '山形県%' THEN '山形県' WHEN address LIKE '福島県%' THEN '福島県' WHEN address LIKE '茨城県%' THEN '茨城県' WHEN address LIKE '栃木県%' THEN '栃木県' WHEN address LIKE '群馬県%' THEN '群馬県' WHEN address LIKE '埼玉県%' THEN '埼玉県' WHEN address LIKE '千葉県%' THEN '千葉県' WHEN address LIKE '東京都%' THEN '東京都' WHEN address LIKE '神奈川県%' THEN '神奈川県' WHEN address LIKE '新潟県%' THEN '新潟県' WHEN address LIKE '富山県%' THEN '富山県' WHEN address LIKE '石川県%' THEN '石川県' WHEN address LIKE '福井県%' THEN '福井県' WHEN address LIKE '山梨県%' THEN '山梨県' WHEN address LIKE '長野県%' THEN '長野県' WHEN address LIKE '岐阜県%' THEN '岐阜県' WHEN address LIKE '静岡県%' THEN '静岡県' WHEN address LIKE '愛知県%' THEN '愛知県' WHEN address LIKE '三重県%' THEN '三重県' WHEN address LIKE '滋賀県%' THEN '滋賀県' WHEN address LIKE '京都府%' THEN '京都府' WHEN address LIKE '大阪府%' THEN '大阪府' WHEN address LIKE '兵庫県%' THEN '兵庫県' WHEN address LIKE '奈良県%' THEN '奈良県' WHEN address LIKE '和歌山県%' THEN '和歌山県' WHEN address LIKE '鳥取県%' THEN '鳥取県' WHEN address LIKE '島根県%' THEN '島根県' WHEN address LIKE '岡山県%' THEN '岡山県' WHEN address LIKE '広島県%' THEN '広島県' WHEN address LIKE '山口県%' THEN '山口県' WHEN address LIKE '徳島県%' THEN '徳島県' WHEN address LIKE '香川県%' THEN '香川県' WHEN address LIKE '愛媛県%' THEN '愛媛県' WHEN address LIKE '高知県%' THEN '高知県' WHEN address LIKE '福岡県%' THEN '福岡県' WHEN address LIKE '佐賀県%' THEN '佐賀県' WHEN address LIKE '長崎県%' THEN '長崎県' WHEN address LIKE '熊本県%' THEN '熊本県' WHEN address LIKE '大分県%' THEN '大分県' WHEN address LIKE '宮崎県%' THEN '宮崎県' WHEN address LIKE '鹿児島県%' THEN '鹿児島県' WHEN address LIKE '沖縄県%' THEN '沖縄県' " +
-    "ELSE NULL END as prefecture, COUNT(*) as count FROM checkins WHERE is_foreign = 0 AND address IS NOT NULL AND address != ''" + dateFilter + " GROUP BY prefecture HAVING prefecture IS NOT NULL ORDER BY count DESC"
+    "SELECT CASE WHEN address LIKE '北海道%' THEN '北海道' WHEN address LIKE '青森県%' THEN '青森県' WHEN address LIKE '岩手県%' THEN '岩手県' WHEN address LIKE '宮城県%' THEN '宮城県' WHEN address LIKE '秋田県%' THEN '秋田県' WHEN address LIKE '山形県%' THEN '山形県' WHEN address LIKE '福島県%' THEN '福島県' WHEN address LIKE '茨城県%' THEN '茨城県' WHEN address LIKE '栃木県%' THEN '栃木県' WHEN address LIKE '群馬県%' THEN '群馬県' WHEN address LIKE '埼玉県%' THEN '埼玉県' WHEN address LIKE '千葉県%' THEN '千葉県' WHEN address LIKE '東京都%' THEN '東京都' WHEN address LIKE '神奈川県%' THEN '神奈川県' WHEN address LIKE '新潟県%' THEN '新潟県' WHEN address LIKE '富山県%' THEN '富山県' WHEN address LIKE '石川県%' THEN '石川県' WHEN address LIKE '福井県%' THEN '福井県' WHEN address LIKE '山梨県%' THEN '山梨県' WHEN address LIKE '長野県%' THEN '長野県' WHEN address LIKE '岐阜県%' THEN '岐阜県' WHEN address LIKE '静岡県%' THEN '静岡県' WHEN address LIKE '愛知県%' THEN '愛知県' WHEN address LIKE '三重県%' THEN '三重県' WHEN address LIKE '滋賀県%' THEN '滋賀県' WHEN address LIKE '京都府%' THEN '京都府' WHEN address LIKE '大阪府%' THEN '大阪府' WHEN address LIKE '兵庫県%' THEN '兵庫県' WHEN address LIKE '奈良県%' THEN '奈良県' WHEN address LIKE '和歌山県%' THEN '和歌山県' WHEN address LIKE '鳥取県%' THEN '鳥取県' WHEN address LIKE '島根県%' THEN '島根県' WHEN address LIKE '岡山県%' THEN '岡山県' WHEN address LIKE '広島県%' THEN '広島県' WHEN address LIKE '山口県%' THEN '山口県' WHEN address LIKE '徳島県%' THEN '徳島県' WHEN address LIKE '香川県%' THEN '香川県' WHEN address LIKE '愛媛県%' THEN '愛媛県' WHEN address LIKE '高知県%' THEN '高知県' WHEN address LIKE '福岡県%' THEN '福岡県' WHEN address LIKE '佐賀県%' THEN '佐賀県' WHEN address LIKE '長崎県%' THEN '長崎県' WHEN address LIKE '熊本県%' THEN '熊本県' WHEN address LIKE '大分県%' THEN '大分県' WHEN address LIKE '宮崎県%' THEN '宮崎県' WHEN address LIKE '鹿児島県%' THEN '鹿児島県' WHEN address LIKE '沖縄県%' THEN '沖縄県' ELSE 'その他' END as prefecture, SUM(adults + children) as count FROM checkins WHERE address IS NOT NULL AND address != '' AND is_foreign = 0" + dateFilter + " GROUP BY prefecture ORDER BY count DESC"
   );
 
   const bind = (stmt) => dateParams.length > 0 ? stmt.bind(...dateParams) : stmt;

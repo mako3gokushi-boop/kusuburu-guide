@@ -894,7 +894,7 @@
           data: {
             labels: dowLabels,
             datasets: [{
-              label: 'チェックイン数',
+              label: '人数',
               data: dowData,
               backgroundColor: dowColors,
               borderRadius: 4,
@@ -1094,7 +1094,7 @@
       const rows = [['月', '宿泊者数']];
       (d.monthly || []).forEach(m => rows.push([m.month, m.count]));
       rows.push([]);
-      rows.push(['曜日', 'チェックイン数']);
+      rows.push(['曜日', '人数']);
       const dowNames = ['日', '月', '火', '水', '木', '金', '土'];
       const dowMap = {};
       (d.weekday || []).forEach(w => { dowMap[w.dow] = w.count; });
@@ -1106,7 +1106,7 @@
       rows.push(['リピーター', '回数']);
       (d.repeaters || []).forEach(r => rows.push([r.name, r.visits]));
       rows.push([]);
-      rows.push(['予約サイト', '件数']);
+      rows.push(['予約サイト', '人数']);
       const bsLabelMap = { oki_tabi: '隠岐の島旅', homepage: 'ホームページ', phone: '電話', line: 'LINE', email: 'メール' };
       (d.booking_sites || []).forEach(b => rows.push([bsLabelMap[b.booking_site] || b.booking_site, b.count]));
       rows.push([]);
