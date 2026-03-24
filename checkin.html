@@ -535,6 +535,86 @@
           <textarea name="ambition" class="form-input" rows="2" data-lang-placeholder-ja="例: ローソク島を見たい！" data-lang-placeholder-en="e.g. I want to see Candle Rock!"></textarea>
         </div>
 
+        <!-- Age -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">年齢（代表者）<span class="required-badge">必須</span></label>
+          <label class="form-label" data-lang="en">Age (Representative)<span class="required-badge">Required</span></label>
+          <input type="number" name="age" class="form-input" min="0" max="120" inputmode="numeric"
+            data-lang-placeholder-ja="例: 35" data-lang-placeholder-en="e.g. 35" required>
+          <div class="field-error" data-lang="ja">年齢を入力してください</div>
+          <div class="field-error" data-lang="en">Please enter your age</div>
+        </div>
+
+        <!-- Booking site -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">予約サイト<span class="required-badge">必須</span></label>
+          <label class="form-label" data-lang="en">Booking Source<span class="required-badge">Required</span></label>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="booking_site" value="oki_tabi" class="accent-amber-600"> <span data-lang="ja">隠岐の島旅</span><span data-lang="en">Oki no Shima Tabi</span>
+            </label>
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="booking_site" value="homepage" class="accent-amber-600"> <span data-lang="ja">ホームページ</span><span data-lang="en">Website</span>
+            </label>
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="booking_site" value="phone" class="accent-amber-600"> <span data-lang="ja">電話</span><span data-lang="en">Phone</span>
+            </label>
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="booking_site" value="line" class="accent-amber-600"> <span>LINE</span>
+            </label>
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="booking_site" value="email" class="accent-amber-600"> <span data-lang="ja">メール</span><span data-lang="en">Email</span>
+            </label>
+          </div>
+          <div class="field-error" id="booking-site-error" data-lang="ja">予約サイトを選択してください</div>
+          <div class="field-error" id="booking-site-error-en" data-lang="en">Please select a booking source</div>
+        </div>
+
+        <!-- SNS posting consent -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">SNS掲載<span class="required-badge">必須</span></label>
+          <label class="form-label" data-lang="en">SNS Posting<span class="required-badge">Required</span></label>
+          <p class="text-xs text-sand-500 mb-2" data-lang="ja">食事風景、釣り体験、焚き火体験風景 など</p>
+          <p class="text-xs text-sand-500 mb-2" data-lang="en">e.g. meal scenes, fishing experience, bonfire scenes</p>
+          <div class="flex flex-wrap gap-2">
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="sns_consent" value="ok" class="accent-amber-600"> <span data-lang="ja">OK</span><span data-lang="en">OK</span>
+            </label>
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="sns_consent" value="face_hidden" class="accent-amber-600"> <span data-lang="ja">顔隠せばOK</span><span data-lang="en">OK if face hidden</span>
+            </label>
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="sns_consent" value="ng" class="accent-amber-600"> <span>NG</span>
+            </label>
+          </div>
+          <div class="field-error" id="sns-consent-error" data-lang="ja">SNS掲載の可否を選択してください</div>
+          <div class="field-error" id="sns-consent-error-en" data-lang="en">Please select SNS posting preference</div>
+        </div>
+
+        <!-- Checkout photo consent -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">チェックアウト時の記念撮影<span class="required-badge">必須</span></label>
+          <label class="form-label" data-lang="en">Checkout Commemorative Photo<span class="required-badge">Required</span></label>
+          <div class="flex flex-wrap gap-2">
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="photo_consent" value="ok" class="accent-amber-600"> <span data-lang="ja">OK</span><span data-lang="en">OK</span>
+            </label>
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="photo_consent" value="ng" class="accent-amber-600"> <span>NG</span>
+            </label>
+          </div>
+          <div class="field-error" id="photo-consent-error" data-lang="ja">記念撮影の可否を選択してください</div>
+          <div class="field-error" id="photo-consent-error-en" data-lang="en">Please select photo preference</div>
+        </div>
+
+        <!-- Companion relationship (optional) -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">同行者との関係性<span class="optional-badge">任意</span></label>
+          <label class="form-label" data-lang="en">Relationship with Companions<span class="optional-badge">Optional</span></label>
+          <input type="text" name="companion_relation" class="form-input"
+            data-lang-placeholder-ja="例: 家族旅行、友人、カップル" data-lang-placeholder-en="e.g. family trip, friends, couple">
+        </div>
+
         <!-- Notes -->
         <div>
           <label class="form-label" data-lang="ja">備考<span class="optional-badge">任意</span></label>
@@ -763,7 +843,7 @@
       document.querySelectorAll('.field-error.show').forEach(el => el.classList.remove('show'));
 
       let valid = true;
-      const requiredFields = ['name', 'phone', 'address'];
+      const requiredFields = ['name', 'phone', 'address', 'age'];
       // Furigana required only for Japanese
       if (!isEn && !isForeign) requiredFields.push('furigana');
 
@@ -776,6 +856,26 @@
           valid = false;
         }
       });
+
+      // Validate radio required fields
+      const bookingSiteChecked = document.querySelector('[name="booking_site"]:checked');
+      if (!bookingSiteChecked) {
+        document.getElementById('booking-site-error').classList.add('show');
+        document.getElementById('booking-site-error-en').classList.add('show');
+        valid = false;
+      }
+      const snsConsentChecked = document.querySelector('[name="sns_consent"]:checked');
+      if (!snsConsentChecked) {
+        document.getElementById('sns-consent-error').classList.add('show');
+        document.getElementById('sns-consent-error-en').classList.add('show');
+        valid = false;
+      }
+      const photoConsentChecked = document.querySelector('[name="photo_consent"]:checked');
+      if (!photoConsentChecked) {
+        document.getElementById('photo-consent-error').classList.add('show');
+        document.getElementById('photo-consent-error-en').classList.add('show');
+        valid = false;
+      }
 
       // Foreign-specific validation
       if (isForeign) {
@@ -819,6 +919,11 @@
         passport_number: isForeign ? document.querySelector('[name="passport_number"]').value.trim() : '',
         passport_photo: isForeign ? passportPhotoData : null,
         transport: document.querySelector('[name="transport"]').value,
+        age: parseInt(document.querySelector('[name="age"]').value) || 0,
+        booking_site: bookingSiteChecked ? bookingSiteChecked.value : '',
+        sns_consent: snsConsentChecked ? snsConsentChecked.value : '',
+        photo_consent: photoConsentChecked ? photoConsentChecked.value : '',
+        companion_relation: document.querySelector('[name="companion_relation"]').value.trim(),
         referral: (function() {
           const r = document.querySelector('[name="referral"]:checked');
           if (!r) return '';
@@ -865,6 +970,11 @@
         nationality: formData.nationality,
         passport_no: formData.passport_number,
         transport: formData.transport,
+        age: formData.age,
+        booking_site: formData.booking_site,
+        sns_consent: formData.sns_consent,
+        photo_consent: formData.photo_consent,
+        companion_relation: formData.companion_relation,
         allergies: [formData.referral ? '【知ったきっかけ】' + formData.referral : '', formData.looking_forward ? '【楽しみ】' + formData.looking_forward : '', formData.ambition ? '【野望】' + formData.ambition : ''].filter(Boolean).join(' / '),
         notes: formData.notes,
       };
@@ -940,6 +1050,9 @@
             zipcode: item.zipcode, address: item.address, is_foreign: item.is_foreign,
             nationality: item.nationality, passport_no: item.passport_number,
             transport: item.transport, allergies: item.allergies, notes: item.notes,
+            age: item.age || 0, booking_site: item.booking_site || '',
+            sns_consent: item.sns_consent || '', photo_consent: item.photo_consent || '',
+            companion_relation: item.companion_relation || '',
           };
           const res = await fetch(API_URL + '/checkin', {
             method: 'POST',
