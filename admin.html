@@ -2,10 +2,1150 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>404</title>
-  <style>body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#faf9f7;color:#635a4c;}p{font-size:14px;}</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理画面 | くすぶるハウス</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@0.474.0" integrity="sha384-wkxmY9HYHJVzx0oZ7k8stpLQ7g7ogSqBha75ozCZmxFadwtaIw5dzXKVWWfi9I36" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Shippori Mincho"', 'serif'],
+            body: ['"Noto Sans JP"', 'sans-serif'],
+          },
+          colors: {
+            sand: {
+              50:'#faf9f7',100:'#f5f3ef',200:'#e8e4dc',300:'#d4cec3',
+              400:'#b8b0a0',500:'#9a9080',600:'#7a7060',700:'#5c5448',
+              800:'#3d3832',900:'#2a2520',950:'#1a1714'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --surface: #faf9f7;
+      --surface-warm: #f5f3ef;
+      --text-dark: #2a2520;
+      --text-body: #4a4238;
+      --text-muted: #635a4c;
+      --accent: #7a7060;
+      --accent-warm: #b8934f;
+      --border-light: rgba(42,37,32,0.06);
+      --border-medium: rgba(42,37,32,0.12);
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--surface);
+      color: var(--text-dark);
+      font-weight: 300;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(42,37,32,0.06), 0 4px 12px rgba(42,37,32,0.03);
+    }
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: 'Noto Sans JP', sans-serif;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-primary { background: var(--accent-warm); color: white; }
+    .btn-secondary { background: var(--surface-warm); color: var(--text-body); }
+    .btn-danger { background: #ef4444; color: white; }
+    .btn-sm { padding: 4px 10px; font-size: 11px; }
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-checked_in { background: #d1fae5; color: #065f46; }
+    .status-checked_out { background: #e0e7ff; color: #3730a3; }
+    .form-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1.5px solid var(--border-medium);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--surface);
+      color: var(--text-dark);
+    }
+    .form-input:focus { outline: none; border-color: var(--accent-warm); }
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      max-width: 560px;
+      width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 24px;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-size: 11px; font-weight: 600; color: var(--text-muted); padding: 8px 12px; border-bottom: 1px solid var(--border-medium); }
+    td { padding: 10px 12px; font-size: 13px; border-bottom: 1px solid var(--border-light); }
+    tr:hover td { background: var(--surface-warm); }
+    .clickable { cursor: pointer; }
+    @media (max-width: 768px) {
+      .responsive-table { overflow-x: auto; }
+      .hide-mobile { display: none; }
+    }
+  </style>
 </head>
 <body>
-  <p>ページが見つかりません</p>
+
+  <!-- Login Screen -->
+  <div id="login-screen" class="min-h-screen flex items-center justify-center px-4">
+    <div class="card p-8 w-full max-w-sm text-center">
+      <div class="w-16 h-16 rounded-full bg-sand-100 flex items-center justify-center mx-auto mb-4">
+        <i data-lucide="lock" class="w-7 h-7 text-sand-500"></i>
+      </div>
+      <h1 class="font-display text-lg font-semibold mb-1">管理画面</h1>
+      <p class="text-sand-500 text-xs mb-6">くすぶるハウス チェックイン管理</p>
+      <input type="password" id="login-token" class="form-input mb-3" placeholder="パスワードを入力">
+      <div id="login-error" class="text-red-500 text-xs mb-3 hidden"></div>
+      <button onclick="doLogin()" class="btn btn-primary w-full" id="login-btn">ログイン</button>
+    </div>
+  </div>
+
+  <!-- Password Change Modal -->
+  <div id="password-change-modal" class="modal-overlay hidden" onclick="event.stopPropagation()">
+    <div class="modal-content" style="max-width:400px;">
+      <div class="text-center mb-4">
+        <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-3">
+          <i data-lucide="key" class="w-6 h-6 text-amber-600"></i>
+        </div>
+        <h3 class="font-display text-lg font-semibold">パスワード変更</h3>
+        <p class="text-sand-500 text-xs mt-1">セキュリティのため、初期パスワードを変更してください</p>
+      </div>
+      <input type="password" id="new-password" class="form-input mb-3" placeholder="新しいパスワード（4文字以上）">
+      <input type="password" id="new-password-confirm" class="form-input mb-3" placeholder="新しいパスワード（確認）">
+      <div id="password-change-error" class="text-red-500 text-xs mb-3 hidden"></div>
+      <button onclick="doChangePassword()" class="btn btn-primary w-full">パスワードを変更</button>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="admin-screen" class="hidden">
+    <!-- Header -->
+    <header class="bg-sand-900 text-white px-5 py-4">
+      <div class="max-w-5xl mx-auto flex items-center justify-between">
+        <div>
+          <h1 class="font-display text-base font-semibold">くすぶるハウス 管理画面</h1>
+          <p class="text-sand-400 text-[10px] mt-0.5">Check-in Management</p>
+        </div>
+        <div class="flex gap-2 items-center">
+          <button onclick="showTab('list')" id="tab-list" class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:white;">一覧</button>
+          <button onclick="showTab('stats')" id="tab-stats" class="btn btn-sm" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);">統計</button>
+          <button onclick="exportCsv()" class="btn btn-secondary btn-sm flex items-center gap-1">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i> CSV
+          </button>
+          <button onclick="doLogout()" class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- List View -->
+    <div id="view-list" class="max-w-5xl mx-auto px-4 py-4">
+      <div class="card p-4 mb-4">
+        <div class="flex flex-wrap gap-3 items-end">
+          <div class="flex-1 min-w-[160px]">
+            <label class="text-[11px] font-semibold text-sand-500 block mb-1">検索</label>
+            <input type="text" id="filter-search" class="form-input" placeholder="名前・電話番号..." oninput="debounceLoad()">
+          </div>
+          <div>
+            <label class="text-[11px] font-semibold text-sand-500 block mb-1">ステータス</label>
+            <select id="filter-status" class="form-input" onchange="loadCheckins()">
+              <option value="">すべて</option>
+              <option value="pending">予約</option>
+              <option value="checked_in">チェックイン済</option>
+              <option value="checked_out">チェックアウト済</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[11px] font-semibold text-sand-500 block mb-1">日付（開始）</label>
+            <input type="date" id="filter-from" class="form-input" onchange="loadCheckins()">
+          </div>
+          <div>
+            <label class="text-[11px] font-semibold text-sand-500 block mb-1">日付（終了）</label>
+            <input type="date" id="filter-to" class="form-input" onchange="loadCheckins()">
+          </div>
+          <button onclick="clearFilters()" class="btn btn-secondary btn-sm">クリア</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <div class="card p-3 text-center">
+          <div class="text-2xl font-bold" id="stat-pending">-</div>
+          <div class="text-[10px] text-sand-500 font-semibold">予約</div>
+        </div>
+        <div class="card p-3 text-center">
+          <div class="text-2xl font-bold text-green-600" id="stat-in">-</div>
+          <div class="text-[10px] text-sand-500 font-semibold">チェックイン済</div>
+        </div>
+        <div class="card p-3 text-center">
+          <div class="text-2xl font-bold text-indigo-600" id="stat-out">-</div>
+          <div class="text-[10px] text-sand-500 font-semibold">チェックアウト済</div>
+        </div>
+      </div>
+
+      <div class="card responsive-table">
+        <table id="checkins-table">
+          <thead>
+            <tr>
+              <th>氏名</th>
+              <th>人数</th>
+              <th>チェックイン</th>
+              <th>チェックアウト</th>
+              <th class="hide-mobile">電話番号</th>
+              <th>ステータス</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="checkins-body">
+            <tr><td colspan="7" class="text-center text-sand-400 py-8">読み込み中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Stats View -->
+    <div id="view-stats" class="max-w-5xl mx-auto px-4 py-4 hidden">
+      <!-- Period Filter -->
+      <div class="card p-4 mb-4">
+        <div class="flex flex-wrap gap-3 items-end">
+          <div>
+            <label class="text-[11px] font-semibold text-sand-500 block mb-1">開始月</label>
+            <input type="month" id="stats-from" class="form-input" style="width:auto;">
+          </div>
+          <div>
+            <label class="text-[11px] font-semibold text-sand-500 block mb-1">終了月</label>
+            <input type="month" id="stats-to" class="form-input" style="width:auto;">
+          </div>
+          <button onclick="loadStats()" class="btn btn-primary btn-sm">集計</button>
+          <button onclick="clearStatsFilter()" class="btn btn-secondary btn-sm">全期間</button>
+          <button onclick="exportStatsCsv()" class="btn btn-secondary btn-sm flex items-center gap-1"><i data-lucide="download" class="w-3 h-3"></i> 統計CSV</button>
+        </div>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        <div class="card p-4 text-center">
+          <div class="text-3xl font-bold" id="stats-total">-</div>
+          <div class="text-[10px] text-sand-500 font-semibold mt-1">総宿泊者数</div>
+        </div>
+        <div class="card p-4 text-center">
+          <div class="text-3xl font-bold text-amber-600" id="stats-avg-stay">-</div>
+          <div class="text-[10px] text-sand-500 font-semibold mt-1">平均滞在日数</div>
+        </div>
+        <div class="card p-4 text-center">
+          <div class="text-3xl font-bold text-green-600" id="stats-this-month">-</div>
+          <div class="text-[10px] text-sand-500 font-semibold mt-1">今月の宿泊者</div>
+        </div>
+        <div class="card p-4 text-center">
+          <div class="text-3xl font-bold text-indigo-600" id="stats-occupancy">-</div>
+          <div class="text-[10px] text-sand-500 font-semibold mt-1">今月稼働率（3部屋）</div>
+        </div>
+      </div>
+
+      <!-- Charts Row 1 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="card p-5">
+          <h3 class="font-display font-semibold text-sm mb-3">月別宿泊者数 <span class="text-sand-400 text-[10px] font-normal">（クリックで詳細）</span></h3>
+          <div style="position:relative;height:280px;">
+            <canvas id="chart-monthly"></canvas>
+          </div>
+        </div>
+        <div class="card p-5">
+          <h3 class="font-display font-semibold text-sm mb-3">曜日別チェックイン傾向</h3>
+          <div style="position:relative;height:280px;">
+            <canvas id="chart-weekday"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row 2 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="card p-5" id="nationality-chart-card">
+          <h3 class="font-display font-semibold text-sm mb-3">国籍別ゲスト</h3>
+          <div style="position:relative;height:280px;">
+            <canvas id="chart-nationality"></canvas>
+          </div>
+        </div>
+        <div class="card p-5" id="repeater-card">
+          <h3 class="font-display font-semibold text-sm mb-3">リピーター</h3>
+          <div id="repeater-list" class="text-sm" style="max-height:280px;overflow-y:auto;"></div>
+        </div>
+      </div>
+
+      <!-- Charts Row 3: 予約サイト・年齢層 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="card p-5" id="booking-site-chart-card">
+          <h3 class="font-display font-semibold text-sm mb-3">予約サイト別</h3>
+          <div style="position:relative;height:280px;">
+            <canvas id="chart-booking-site"></canvas>
+          </div>
+        </div>
+        <div class="card p-5" id="age-group-chart-card">
+          <h3 class="font-display font-semibold text-sm mb-3">年齢層別</h3>
+          <div style="position:relative;height:280px;">
+            <canvas id="chart-age-group"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row 4: 都道府県 -->
+      <div class="grid grid-cols-1 gap-4 mb-4">
+        <div class="card p-5" id="prefecture-chart-card">
+          <h3 class="font-display font-semibold text-sm mb-3">都道府県別ゲスト <span class="text-sand-400 text-[10px] font-normal">（国内のみ）</span></h3>
+          <div style="position:relative;height:320px;">
+            <canvas id="chart-prefecture"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monthly Detail (shown when clicking a bar) -->
+      <div id="monthly-detail" class="card p-5 mb-4 hidden">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-display font-semibold text-sm" id="monthly-detail-title">-</h3>
+          <button onclick="document.getElementById('monthly-detail').classList.add('hidden')" class="text-sand-400 hover:text-sand-700 text-xs">閉じる</button>
+        </div>
+        <div class="responsive-table">
+          <table>
+            <thead><tr><th>氏名</th><th>人数</th><th>チェックイン</th><th>チェックアウト</th><th>ステータス</th></tr></thead>
+            <tbody id="monthly-detail-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Detail Modal -->
+  <div id="detail-modal" class="modal-overlay hidden" onclick="if(event.target===this)closeDetail()">
+    <div class="modal-content" id="detail-content"></div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const API_URL = 'https://kusuburu-api.mako-3gokushi.workers.dev';
+    let authToken = '';
+    let allCheckins = [];
+    let debounceTimer = null;
+
+    // === Auth ===
+    async function doLogin() {
+      const password = document.getElementById('login-token').value.trim();
+      if (!password) return;
+
+      const loginBtn = document.getElementById('login-btn');
+      const errorDiv = document.getElementById('login-error');
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'ログイン中...';
+      errorDiv.classList.add('hidden');
+
+      try {
+        const res = await fetch(API_URL + '/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password }),
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          authToken = data.token;
+          localStorage.setItem('kusuburu-admin-token', authToken);
+
+          if (data.needs_password_change) {
+            // Show password change modal
+            document.getElementById('password-change-modal').classList.remove('hidden');
+            lucide.createIcons();
+          } else {
+            showDashboard();
+          }
+        } else if (res.status === 429 && data.locked) {
+          errorDiv.textContent = 'ログイン試行回数超過。15分後に再試行してください。';
+          errorDiv.classList.remove('hidden');
+        } else {
+          const remaining = data.remaining_attempts;
+          if (remaining !== undefined && remaining <= 2) {
+            errorDiv.textContent = `パスワードが違います（残り${remaining}回）`;
+          } else {
+            errorDiv.textContent = 'パスワードが違います';
+          }
+          errorDiv.classList.remove('hidden');
+        }
+      } catch (e) {
+        errorDiv.textContent = '接続エラー';
+        errorDiv.classList.remove('hidden');
+      }
+
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'ログイン';
+    }
+
+    async function doChangePassword() {
+      const newPw = document.getElementById('new-password').value;
+      const confirmPw = document.getElementById('new-password-confirm').value;
+      const errorDiv = document.getElementById('password-change-error');
+      errorDiv.classList.add('hidden');
+
+      if (newPw.length < 4) {
+        errorDiv.textContent = 'パスワードは4文字以上にしてください';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+      if (newPw !== confirmPw) {
+        errorDiv.textContent = 'パスワードが一致しません';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        const res = await fetch(API_URL + '/admin/change-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authToken,
+          },
+          body: JSON.stringify({ new_password: newPw }),
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          document.getElementById('password-change-modal').classList.add('hidden');
+          showDashboard();
+        } else {
+          errorDiv.textContent = data.error || '変更に失敗しました';
+          errorDiv.classList.remove('hidden');
+        }
+      } catch (e) {
+        errorDiv.textContent = '接続エラー';
+        errorDiv.classList.remove('hidden');
+      }
+    }
+
+    function doLogout() {
+      authToken = '';
+      localStorage.removeItem('kusuburu-admin-token');
+      document.getElementById('admin-screen').classList.add('hidden');
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('login-token').value = '';
+      document.getElementById('login-error').classList.add('hidden');
+    }
+
+    function showDashboard() {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('admin-screen').classList.remove('hidden');
+      document.getElementById('password-change-modal').classList.add('hidden');
+      loadCheckins();
+    }
+
+    // Auto-login (verify stored token is still valid)
+    const saved = localStorage.getItem('kusuburu-admin-token');
+    if (saved) {
+      authToken = saved;
+      // Verify token by trying to load checkins
+      fetch(API_URL + '/admin/checkins?status=pending', {
+        headers: { 'Authorization': 'Bearer ' + saved },
+      }).then(res => {
+        if (res.status === 401) {
+          doLogout();
+        } else {
+          showDashboard();
+        }
+      }).catch(() => {
+        // Offline — show dashboard anyway with cached token
+        showDashboard();
+      });
+    }
+
+    document.getElementById('login-token').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+
+    // === Load Checkins ===
+    async function loadCheckins() {
+      const params = new URLSearchParams();
+      const status = document.getElementById('filter-status').value;
+      const search = document.getElementById('filter-search').value.trim();
+      const from = document.getElementById('filter-from').value;
+      const to = document.getElementById('filter-to').value;
+      if (status) params.set('status', status);
+      if (search) params.set('search', search);
+      if (from) params.set('date_from', from);
+      if (to) params.set('date_to', to);
+
+      try {
+        const res = await fetch(API_URL + '/admin/checkins?' + params.toString(), {
+          headers: { 'Authorization': 'Bearer ' + authToken },
+        });
+        if (res.status === 401) {
+          document.getElementById('login-error').classList.remove('hidden');
+          doLogout();
+          return;
+        }
+        const data = await res.json();
+        allCheckins = data.checkins || [];
+        renderTable();
+        updateStats();
+      } catch (e) {
+        document.getElementById('checkins-body').innerHTML =
+          '<tr><td colspan="7" class="text-center text-red-400 py-8">接続エラー</td></tr>';
+      }
+    }
+
+    function debounceLoad() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(loadCheckins, 300);
+    }
+
+    function clearFilters() {
+      document.getElementById('filter-search').value = '';
+      document.getElementById('filter-status').value = '';
+      document.getElementById('filter-from').value = '';
+      document.getElementById('filter-to').value = '';
+      loadCheckins();
+    }
+
+    // === Render ===
+    const statusLabels = { pending: '予約', checked_in: 'チェックイン済', checked_out: 'チェックアウト済' };
+
+    function renderTable() {
+      const tbody = document.getElementById('checkins-body');
+      if (allCheckins.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-sand-400 py-8">データがありません</td></tr>';
+        return;
+      }
+      tbody.innerHTML = allCheckins.map(c => `
+        <tr class="clickable" ondblclick="showDetail('${c.id}')">
+          <td class="font-medium">${esc(c.name)}${c.admin_memo ? ' <i data-lucide="message-square-text" class="w-3 h-3 inline text-amber-500" title="メモあり"></i>' : ''}<br><span class="text-[10px] text-sand-400">${esc(c.furigana||'')}</span></td>
+          <td>${c.adults||0}+${c.children||0}</td>
+          <td class="text-xs">${c.checkin_date||''}</td>
+          <td class="text-xs">${c.checkout_date||''}</td>
+          <td class="hide-mobile text-xs">${esc(c.phone||'')}</td>
+          <td><span class="status-badge status-${c.status}">${statusLabels[c.status]||c.status}</span></td>
+          <td>
+            <div class="flex gap-1 flex-wrap">
+              <button onclick="showDetail('${c.id}')" class="btn btn-secondary btn-sm">詳細</button>
+              ${c.status === 'pending' ? `<button onclick="updateStatus('${c.id}','checked_in')" class="btn btn-sm" style="background:#d1fae5;color:#065f46;">IN</button>` : ''}
+              ${c.status === 'checked_in' ? `<button onclick="updateStatus('${c.id}','checked_out')" class="btn btn-sm" style="background:#e0e7ff;color:#3730a3;">OUT</button>` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function updateStats() {
+      const pending = allCheckins.filter(c => c.status === 'pending').length;
+      const checkedIn = allCheckins.filter(c => c.status === 'checked_in').length;
+      const checkedOut = allCheckins.filter(c => c.status === 'checked_out').length;
+      document.getElementById('stat-pending').textContent = pending;
+      document.getElementById('stat-in').textContent = checkedIn;
+      document.getElementById('stat-out').textContent = checkedOut;
+    }
+
+    function esc(s) {
+      if (!s) return '';
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    // 住所から都道府県を抽出（日本の47都道府県）
+    function extractPrefecture(address) {
+      if (!address) return '-';
+      const prefs = ['北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'];
+      for (const p of prefs) {
+        if (address.startsWith(p)) return p;
+      }
+      return '-';
+    }
+
+    function bookingSiteLabel(v) {
+      const map = { oki_tabi: '隠岐の島旅', homepage: 'ホームページ', phone: '電話', line: 'LINE', email: 'メール' };
+      return map[v] || v || '-';
+    }
+
+    function snsConsentLabel(v) {
+      const map = { ok: 'OK', face_hidden: '顔隠せばOK', ng: 'NG' };
+      return map[v] || v || '-';
+    }
+
+    // === Detail ===
+    async function showDetail(id) {
+      const modal = document.getElementById('detail-modal');
+      const content = document.getElementById('detail-content');
+      content.innerHTML = '<div class="text-center py-8 text-sand-400">読み込み中...</div>';
+      modal.classList.remove('hidden');
+
+      try {
+        const res = await fetch(API_URL + '/admin/checkins/' + id, {
+          headers: { 'Authorization': 'Bearer ' + authToken },
+        });
+        const data = await res.json();
+        const c = data.checkin;
+        if (!c) { content.innerHTML = '<p class="text-red-500">データが見つかりません</p>'; return; }
+
+        let photoHtml = '';
+        if (c.is_foreign) {
+          photoHtml = `
+            <div class="mt-4">
+              <h4 class="text-xs font-semibold text-sand-500 mb-2">パスポート写真</h4>
+              <button onclick="loadPhoto('${c.id}')" class="btn btn-secondary btn-sm" id="photo-btn-${c.id}">写真を表示</button>
+              <div id="photo-container-${c.id}" class="mt-2"></div>
+            </div>`;
+        }
+
+        content.innerHTML = `
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display text-lg font-semibold">${esc(c.name)}</h3>
+            <button onclick="closeDetail()" class="text-sand-400 hover:text-sand-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+          </div>
+          <div class="grid grid-cols-2 gap-3 text-sm">
+            <div><span class="text-sand-400 text-xs">フリガナ</span><br>${esc(c.furigana||'-')}</div>
+            <div><span class="text-sand-400 text-xs">ステータス</span><br><span class="status-badge status-${c.status}">${statusLabels[c.status]||c.status}</span></div>
+            ${c.receipt_name ? `<div class="col-span-2"><span class="text-sand-400 text-xs">領収書宛名</span><br><span class="font-semibold text-amber-700">${esc(c.receipt_name)}</span></div>` : ''}
+            <div><span class="text-sand-400 text-xs">大人</span><br>${c.adults||0}名</div>
+            <div><span class="text-sand-400 text-xs">子供</span><br>${c.children||0}名</div>
+            <div><span class="text-sand-400 text-xs">チェックイン</span><br>${c.checkin_date||'-'}</div>
+            <div>
+              <span class="text-sand-400 text-xs">チェックアウト</span><br>
+              <div class="flex items-center gap-2 mt-1">
+                <input type="date" id="edit-checkout-${c.id}" value="${c.checkout_date||''}" class="form-input" style="width:auto;padding:4px 8px;font-size:12px;">
+                <button onclick="updateCheckoutDate('${c.id}')" class="btn btn-secondary btn-sm">更新</button>
+              </div>
+            </div>
+            <div><span class="text-sand-400 text-xs">電話番号</span><br>${esc(c.phone||'-')}</div>
+            <div><span class="text-sand-400 text-xs">メール</span><br>${esc(c.email||'-')}</div>
+            <div class="col-span-2"><span class="text-sand-400 text-xs">住所</span><br>${esc(c.zipcode||'')} ${esc(c.address||'-')}<br><span class="text-[11px] text-sand-400">都道府県: ${extractPrefecture(c.address||'')}</span></div>
+            ${c.is_foreign ? `
+              <div><span class="text-sand-400 text-xs">国籍</span><br>${esc(c.nationality||'-')}</div>
+              <div><span class="text-sand-400 text-xs">パスポート番号</span><br>${esc(c.passport_no||'-')}</div>
+            ` : ''}
+            <div><span class="text-sand-400 text-xs">交通手段</span><br>${esc(c.transport||'-')}</div>
+            <div><span class="text-sand-400 text-xs">予約サイト</span><br>${esc(bookingSiteLabel(c.booking_site||''))}</div>
+            <div><span class="text-sand-400 text-xs">年齢</span><br>${c.age ? c.age + '歳' : '-'}</div>
+            <div><span class="text-sand-400 text-xs">SNS掲載</span><br>${esc(snsConsentLabel(c.sns_consent||''))}</div>
+            <div><span class="text-sand-400 text-xs">記念撮影</span><br>${c.photo_consent === 'ok' ? '<span style="color:#065f46;font-weight:600;">OK</span>' : c.photo_consent === 'ng' ? '<span style="color:#991b1b;font-weight:600;">NG</span>' : '-'}</div>
+            ${c.companion_relation ? `<div class="col-span-2"><span class="text-sand-400 text-xs">同行者との関係性</span><br>${esc(c.companion_relation)}</div>` : ''}
+            <div class="col-span-2"><span class="text-sand-400 text-xs">アレルギー</span><br>${esc(c.allergies||'-')}</div>
+            <div class="col-span-2"><span class="text-sand-400 text-xs">備考</span><br>${esc(c.notes||'-')}</div>
+            <div class="col-span-2"><span class="text-sand-400 text-xs">登録日時</span><br>${c.created_at ? new Date(c.created_at + 'Z').toLocaleString('ja-JP', {timeZone:'Asia/Tokyo'}) : '-'}</div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-sand-100">
+            <label class="text-xs font-semibold text-sand-500 block mb-1">オーナーメモ</label>
+            <textarea id="memo-${c.id}" rows="3" class="form-input w-full text-sm" placeholder="メモを入力...">${esc(c.admin_memo||'')}</textarea>
+            <button onclick="saveMemo('${c.id}')" class="btn btn-secondary btn-sm mt-2">メモ保存</button>
+          </div>
+          ${photoHtml}
+          <div class="flex gap-2 mt-6 pt-4 border-t border-sand-100">
+            ${c.status === 'pending' ? `<button onclick="updateStatus('${c.id}','checked_in');closeDetail()" class="btn btn-sm" style="background:#d1fae5;color:#065f46;">チェックイン</button>` : ''}
+            ${c.status === 'checked_in' ? `<button onclick="updateStatus('${c.id}','checked_out');closeDetail()" class="btn btn-sm" style="background:#e0e7ff;color:#3730a3;">チェックアウト</button>` : ''}
+            <button onclick="if(confirm('本当に削除しますか？')){deleteCheckin('${c.id}');closeDetail()}" class="btn btn-danger btn-sm ml-auto">削除</button>
+          </div>
+        `;
+        lucide.createIcons();
+      } catch (e) {
+        content.innerHTML = '<p class="text-red-500">読み込みエラー</p>';
+      }
+    }
+
+    function closeDetail() {
+      document.getElementById('detail-modal').classList.add('hidden');
+    }
+
+    async function loadPhoto(id) {
+      const container = document.getElementById('photo-container-' + id);
+      const btn = document.getElementById('photo-btn-' + id);
+      btn.disabled = true;
+      btn.textContent = '読込中...';
+      try {
+        const res = await fetch(API_URL + '/admin/photo/' + id, {
+          headers: { 'Authorization': 'Bearer ' + authToken },
+        });
+        const data = await res.json();
+        if (data.photo && (data.photo.startsWith('data:image/jpeg') || data.photo.startsWith('data:image/png'))) {
+          const img = document.createElement('img');
+          img.src = data.photo;
+          img.style.maxWidth = '100%';
+          img.style.borderRadius = '8px';
+          container.innerHTML = '';
+          container.appendChild(img);
+          btn.style.display = 'none';
+        } else if (data.photo) {
+          container.innerHTML = '<p class="text-sand-400 text-xs">写真を表示できません</p>';
+          btn.style.display = 'none';
+        } else {
+          container.innerHTML = '<p class="text-sand-400 text-xs">写真なし</p>';
+          btn.style.display = 'none';
+        }
+      } catch (e) {
+        container.innerHTML = '<p class="text-red-400 text-xs">読込エラー</p>';
+        btn.disabled = false;
+        btn.textContent = '再試行';
+      }
+    }
+
+    async function saveMemo(id) {
+      const textarea = document.getElementById('memo-' + id);
+      const memo = textarea.value;
+      try {
+        const res = await fetch(API_URL + '/admin/checkins/' + id, {
+          method: 'PUT',
+          headers: { 'Authorization': 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_memo: memo }),
+        });
+        if (res.ok) {
+          showToast('メモを保存しました');
+          loadCheckins();
+        } else {
+          alert('保存に失敗しました');
+        }
+      } catch (e) {
+        alert('保存に失敗しました');
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#2a2520;color:#faf9f7;padding:10px 24px;border-radius:8px;font-size:14px;z-index:9999;opacity:0;transition:opacity 0.3s;';
+      document.body.appendChild(t);
+      requestAnimationFrame(() => t.style.opacity = '1');
+      setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2000);
+    }
+
+    // === Actions ===
+    async function updateCheckoutDate(id) {
+      const newDate = document.getElementById('edit-checkout-' + id).value;
+      if (!newDate) { alert('日付を選択してください'); return; }
+      try {
+        const res = await fetch(API_URL + '/admin/checkins/' + id, {
+          method: 'PUT',
+          headers: { 'Authorization': 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ checkout_date: newDate }),
+        });
+        if (res.ok) {
+          alert('チェックアウト日を更新しました');
+          loadCheckins();
+        } else {
+          alert('更新に失敗しました');
+        }
+      } catch (e) {
+        alert('更新に失敗しました');
+      }
+    }
+
+    async function updateStatus(id, status) {
+      try {
+        await fetch(API_URL + '/admin/checkins/' + id, {
+          method: 'PUT',
+          headers: { 'Authorization': 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status }),
+        });
+        loadCheckins();
+      } catch (e) {
+        alert('更新に失敗しました');
+      }
+    }
+
+    async function deleteCheckin(id) {
+      try {
+        await fetch(API_URL + '/admin/checkins/' + id, {
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + authToken },
+        });
+        loadCheckins();
+      } catch (e) {
+        alert('削除に失敗しました');
+      }
+    }
+
+    // === Tabs ===
+    let currentTab = 'list';
+    let monthlyChart = null;
+    let nationalityChart = null;
+    let weekdayChart = null;
+    let bookingSiteChart = null;
+    let ageGroupChart = null;
+    let prefectureChart = null;
+    let lastStatsData = null;
+    const ROOM_COUNT = 3;
+
+    function showTab(tab) {
+      currentTab = tab;
+      document.getElementById('view-list').classList.toggle('hidden', tab !== 'list');
+      document.getElementById('view-stats').classList.toggle('hidden', tab !== 'stats');
+      document.getElementById('tab-list').style.background = tab === 'list' ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)';
+      document.getElementById('tab-list').style.color = tab === 'list' ? 'white' : 'rgba(255,255,255,0.5)';
+      document.getElementById('tab-stats').style.background = tab === 'stats' ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)';
+      document.getElementById('tab-stats').style.color = tab === 'stats' ? 'white' : 'rgba(255,255,255,0.5)';
+      if (tab === 'stats') loadStats();
+    }
+
+    function clearStatsFilter() {
+      document.getElementById('stats-from').value = '';
+      document.getElementById('stats-to').value = '';
+      loadStats();
+    }
+
+    async function loadStats() {
+      try {
+        const params = new URLSearchParams();
+        const from = document.getElementById('stats-from').value;
+        const to = document.getElementById('stats-to').value;
+        if (from) params.set('from', from);
+        if (to) params.set('to', to);
+
+        const res = await fetch(API_URL + '/admin/stats?' + params.toString(), {
+          headers: { 'Authorization': 'Bearer ' + authToken },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        lastStatsData = data;
+
+        // Summary cards
+        document.getElementById('stats-total').textContent = data.total || 0;
+        document.getElementById('stats-avg-stay').textContent = data.avg_stay ? data.avg_stay + '泊' : '-';
+
+        const thisMonth = new Date().toISOString().slice(0, 7);
+        const thisMonthData = (data.monthly || []).find(m => m.month === thisMonth);
+        const thisMonthCount = thisMonthData ? thisMonthData.count : 0;
+        document.getElementById('stats-this-month').textContent = thisMonthCount;
+
+        // Occupancy rate (this month)
+        const now = new Date();
+        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        const maxCapacity = ROOM_COUNT * daysInMonth;
+        const occupancy = maxCapacity > 0 ? Math.round((thisMonthCount / maxCapacity) * 100) : 0;
+        document.getElementById('stats-occupancy').textContent = occupancy + '%';
+
+        // Monthly bar chart
+        const monthly = (data.monthly || []).reverse();
+        const monthLabels = monthly.map(m => m.month);
+        const monthCounts = monthly.map(m => m.count);
+
+        if (monthlyChart) monthlyChart.destroy();
+        monthlyChart = new Chart(document.getElementById('chart-monthly'), {
+          type: 'bar',
+          data: {
+            labels: monthLabels,
+            datasets: [{
+              label: '宿泊者数',
+              data: monthCounts,
+              backgroundColor: 'rgba(184,147,79,0.6)',
+              borderColor: 'rgba(184,147,79,1)',
+              borderWidth: 1,
+              borderRadius: 4,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            onClick: (e, elements) => {
+              if (elements.length > 0) {
+                const idx = elements[0].index;
+                showMonthlyDetail(monthLabels[idx]);
+              }
+            },
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, ticks: { stepSize: 1 } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+
+        // Weekday chart
+        const dowLabels = ['日', '月', '火', '水', '木', '金', '土'];
+        const dowData = [0, 0, 0, 0, 0, 0, 0];
+        (data.weekday || []).forEach(w => { dowData[w.dow] = w.count; });
+        const dowColors = dowData.map((_, i) => i === 0 || i === 6 ? 'rgba(239,68,68,0.5)' : 'rgba(184,147,79,0.5)');
+
+        if (weekdayChart) weekdayChart.destroy();
+        weekdayChart = new Chart(document.getElementById('chart-weekday'), {
+          type: 'bar',
+          data: {
+            labels: dowLabels,
+            datasets: [{
+              label: 'チェックイン数',
+              data: dowData,
+              backgroundColor: dowColors,
+              borderRadius: 4,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, ticks: { stepSize: 1 } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+
+        // Nationality doughnut
+        const nats = data.nationalities || [];
+        const natCard = document.getElementById('nationality-chart-card');
+        if (nats.length === 0) {
+          natCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">国籍別ゲスト</h3><p class="text-sand-400 text-sm text-center py-12">外国籍ゲストのデータがありません</p>';
+        } else {
+          natCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">国籍別ゲスト</h3><div style="position:relative;height:280px;"><canvas id="chart-nationality"></canvas></div>';
+          if (nationalityChart) nationalityChart.destroy();
+          const colors = ['#b8934f','#7a7060','#3d3832','#d4cec3','#9a9080','#5c5448','#e8e4dc','#2a2520'];
+          nationalityChart = new Chart(document.getElementById('chart-nationality'), {
+            type: 'doughnut',
+            data: {
+              labels: nats.map(n => n.nationality),
+              datasets: [{
+                data: nats.map(n => n.count),
+                backgroundColor: nats.map((_, i) => colors[i % colors.length]),
+                borderWidth: 2,
+                borderColor: '#fff',
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
+            }
+          });
+        }
+
+        // Repeaters
+        const repeaters = data.repeaters || [];
+        const rList = document.getElementById('repeater-list');
+        if (repeaters.length === 0) {
+          rList.innerHTML = '<p class="text-sand-400 text-center py-8">リピーターはまだいません</p>';
+        } else {
+          rList.innerHTML = repeaters.map(r =>
+            `<div class="flex items-center justify-between py-2 border-b border-sand-50">
+              <span class="font-medium">${esc(r.name)}</span>
+              <span class="status-badge" style="background:#fef3c7;color:#92400e;">${r.visits}回目</span>
+            </div>`
+          ).join('');
+        }
+
+        // Booking site doughnut
+        const bsites = data.booking_sites || [];
+        const bsCard = document.getElementById('booking-site-chart-card');
+        if (bsites.length === 0) {
+          bsCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">予約サイト別</h3><p class="text-sand-400 text-sm text-center py-12">データがありません</p>';
+        } else {
+          bsCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">予約サイト別</h3><div style="position:relative;height:280px;"><canvas id="chart-booking-site"></canvas></div>';
+          if (bookingSiteChart) bookingSiteChart.destroy();
+          const bsLabelMap = { oki_tabi: '隠岐の島旅', homepage: 'ホームページ', phone: '電話', line: 'LINE', email: 'メール' };
+          const bsColors = ['#b8934f','#5b8c5a','#4a7fb5','#c75c5c','#8b6bb5','#d4a03c'];
+          bookingSiteChart = new Chart(document.getElementById('chart-booking-site'), {
+            type: 'doughnut',
+            data: {
+              labels: bsites.map(b => bsLabelMap[b.booking_site] || b.booking_site),
+              datasets: [{
+                data: bsites.map(b => b.count),
+                backgroundColor: bsites.map((_, i) => bsColors[i % bsColors.length]),
+                borderWidth: 2,
+                borderColor: '#fff',
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
+            }
+          });
+        }
+
+        // Age group bar chart
+        const ageGroups = data.age_groups || [];
+        const ageCard = document.getElementById('age-group-chart-card');
+        if (ageGroups.length === 0) {
+          ageCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">年齢層別</h3><p class="text-sand-400 text-sm text-center py-12">データがありません</p>';
+        } else {
+          ageCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">年齢層別</h3><div style="position:relative;height:280px;"><canvas id="chart-age-group"></canvas></div>';
+          if (ageGroupChart) ageGroupChart.destroy();
+          ageGroupChart = new Chart(document.getElementById('chart-age-group'), {
+            type: 'bar',
+            data: {
+              labels: ageGroups.map(a => a.age_group),
+              datasets: [{
+                label: '人数',
+                data: ageGroups.map(a => a.count),
+                backgroundColor: 'rgba(90,140,90,0.6)',
+                borderColor: 'rgba(90,140,90,1)',
+                borderWidth: 1,
+                borderRadius: 4,
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                x: { grid: { display: false } }
+              }
+            }
+          });
+        }
+
+        // Prefecture horizontal bar chart
+        const prefs = data.prefectures || [];
+        const prefCard = document.getElementById('prefecture-chart-card');
+        if (prefs.length === 0) {
+          prefCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">都道府県別ゲスト <span class="text-sand-400 text-[10px] font-normal">（国内のみ）</span></h3><p class="text-sand-400 text-sm text-center py-12">データがありません</p>';
+        } else {
+          prefCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">都道府県別ゲスト <span class="text-sand-400 text-[10px] font-normal">（国内のみ）</span></h3><div style="position:relative;height:' + Math.max(200, prefs.length * 28) + 'px;"><canvas id="chart-prefecture"></canvas></div>';
+          if (prefectureChart) prefectureChart.destroy();
+          prefectureChart = new Chart(document.getElementById('chart-prefecture'), {
+            type: 'bar',
+            data: {
+              labels: prefs.map(p => p.prefecture),
+              datasets: [{
+                label: '人数',
+                data: prefs.map(p => p.count),
+                backgroundColor: 'rgba(74,127,181,0.6)',
+                borderColor: 'rgba(74,127,181,1)',
+                borderWidth: 1,
+                borderRadius: 4,
+              }]
+            },
+            options: {
+              indexAxis: 'y',
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { beginAtZero: true, ticks: { stepSize: 1 } },
+                y: { grid: { display: false } }
+              }
+            }
+          });
+        }
+
+        lucide.createIcons();
+      } catch (e) {
+        console.error('Stats load failed:', e);
+      }
+    }
+
+    async function showMonthlyDetail(month) {
+      const detail = document.getElementById('monthly-detail');
+      const title = document.getElementById('monthly-detail-title');
+      const tbody = document.getElementById('monthly-detail-body');
+      title.textContent = month + ' の宿泊者';
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center text-sand-400 py-4">読み込み中...</td></tr>';
+      detail.classList.remove('hidden');
+      detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      try {
+        const res = await fetch(API_URL + '/admin/stats/monthly/' + month, {
+          headers: { 'Authorization': 'Bearer ' + authToken },
+        });
+        const data = await res.json();
+        const checkins = data.checkins || [];
+        if (checkins.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="text-center text-sand-400 py-4">データなし</td></tr>';
+          return;
+        }
+        tbody.innerHTML = checkins.map(c =>
+          `<tr>
+            <td class="font-medium">${esc(c.name)}</td>
+            <td>${c.adults||0}+${c.children||0}</td>
+            <td class="text-xs">${c.checkin_date||''}</td>
+            <td class="text-xs">${c.checkout_date||''}</td>
+            <td><span class="status-badge status-${c.status}">${statusLabels[c.status]||c.status}</span></td>
+          </tr>`
+        ).join('');
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-red-400 py-4">読み込みエラー</td></tr>';
+      }
+    }
+
+    function exportStatsCsv() {
+      if (!lastStatsData) { alert('先に統計を読み込んでください'); return; }
+      const d = lastStatsData;
+      const rows = [['月', '宿泊者数']];
+      (d.monthly || []).forEach(m => rows.push([m.month, m.count]));
+      rows.push([]);
+      rows.push(['曜日', 'チェックイン数']);
+      const dowNames = ['日', '月', '火', '水', '木', '金', '土'];
+      const dowMap = {};
+      (d.weekday || []).forEach(w => { dowMap[w.dow] = w.count; });
+      for (let i = 0; i < 7; i++) rows.push([dowNames[i], dowMap[i] || 0]);
+      rows.push([]);
+      rows.push(['国籍', '人数']);
+      (d.nationalities || []).forEach(n => rows.push([n.nationality, n.count]));
+      rows.push([]);
+      rows.push(['リピーター', '回数']);
+      (d.repeaters || []).forEach(r => rows.push([r.name, r.visits]));
+      rows.push([]);
+      rows.push(['予約サイト', '件数']);
+      const bsLabelMap = { oki_tabi: '隠岐の島旅', homepage: 'ホームページ', phone: '電話', line: 'LINE', email: 'メール' };
+      (d.booking_sites || []).forEach(b => rows.push([bsLabelMap[b.booking_site] || b.booking_site, b.count]));
+      rows.push([]);
+      rows.push(['年齢層', '人数']);
+      (d.age_groups || []).forEach(a => rows.push([a.age_group, a.count]));
+      rows.push([]);
+      rows.push(['都道府県', '人数']);
+      (d.prefectures || []).forEach(p => rows.push([p.prefecture, p.count]));
+      rows.push([]);
+      rows.push(['総宿泊者数', d.total]);
+      rows.push(['平均滞在日数', d.avg_stay]);
+
+      const csv = '\uFEFF' + rows.map(r => r.map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'stats.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function exportCsv() {
+      try {
+        const res = await fetch(API_URL + '/admin/checkins/csv', {
+          headers: { 'Authorization': 'Bearer ' + authToken },
+        });
+        if (!res.ok) throw new Error('Export failed');
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'checkins.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        alert('CSVエクスポートに失敗しました');
+      }
+    }
+  </script>
 </body>
 </html>

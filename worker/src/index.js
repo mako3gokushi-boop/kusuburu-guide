@@ -474,8 +474,8 @@ async function handleCheckin(request, env, origin) {
   }
 
   await env.DB.prepare(`
-    INSERT INTO checkins (id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, receipt_name, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+    INSERT INTO checkins (id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, receipt_name, age, booking_site, sns_consent, photo_consent, companion_relation, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
   `).bind(
     id,
     encrypted.name,
@@ -494,7 +494,12 @@ async function handleCheckin(request, env, origin) {
     data.transport || '',
     data.allergies || '',
     data.notes || '',
-    data.receipt_name || ''
+    data.receipt_name || '',
+    parseInt(data.age) || 0,
+    data.booking_site || '',
+    data.sns_consent || '',
+    data.photo_consent || '',
+    data.companion_relation || ''
   ).run();
 
   // Send LINE notification (fire and forget)
@@ -601,7 +606,7 @@ async function handleAdminCheckins(request, env, origin) {
   const dateFrom = url.searchParams.get('date_from');
   const dateTo = url.searchParams.get('date_to');
 
-  let query = 'SELECT id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, address, is_foreign, nationality, transport, status, admin_memo, receipt_name, created_at FROM checkins WHERE 1=1';
+  let query = 'SELECT id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, address, is_foreign, nationality, transport, status, admin_memo, receipt_name, age, booking_site, sns_consent, photo_consent, companion_relation, created_at FROM checkins WHERE 1=1';
   const params = [];
 
   if (status) {
@@ -638,7 +643,7 @@ async function handleAdminCheckinDetail(env, id, request, origin) {
   }
 
   const checkin = await env.DB.prepare(
-    'SELECT id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, status, admin_memo, receipt_name, created_at FROM checkins WHERE id = ?'
+    'SELECT id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, status, admin_memo, receipt_name, age, booking_site, sns_consent, photo_consent, companion_relation, created_at FROM checkins WHERE id = ?'
   ).bind(id).first();
 
   if (!checkin) {
@@ -749,13 +754,13 @@ async function handleAdminCsvExport(request, env, origin) {
   }
 
   const result = await env.DB.prepare(
-    'SELECT name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, admin_memo, receipt_name, status, created_at FROM checkins ORDER BY created_at DESC'
+    'SELECT name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, admin_memo, receipt_name, age, booking_site, sns_consent, photo_consent, companion_relation, status, created_at FROM checkins ORDER BY created_at DESC'
   ).all();
 
   // Decrypt sensitive fields for CSV export
   const decryptedResults = await decryptCheckins(result.results || [], env);
 
-  const headers = ['氏名', 'フリガナ', '大人', '子供', 'チェックイン', 'チェックアウト', '電話番号', 'メール', '郵便番号', '住所', '外国籍', '国籍', 'パスポート番号', '交通手段', 'アレルギー', '備考', 'オーナーメモ', '領収書宛名', 'ステータス', '登録日時'];
+  const headers = ['氏名', 'フリガナ', '大人', '子供', 'チェックイン', 'チェックアウト', '電話番号', 'メール', '郵便番号', '住所', '外国籍', '国籍', 'パスポート番号', '交通手段', 'アレルギー', '備考', 'オーナーメモ', '領収書宛名', '年齢', '予約サイト', 'SNS掲載', '記念撮影', '同行者関係', 'ステータス', '登録日時'];
   const csvRows = [headers.join(',')];
 
   for (const row of decryptedResults) {
@@ -764,7 +769,9 @@ async function handleAdminCsvExport(request, env, origin) {
       row.checkin_date, row.checkout_date, row.phone, row.email,
       row.zipcode, row.address, row.is_foreign ? 'はい' : 'いいえ',
       row.nationality, row.passport_no, row.transport,
-      row.allergies, row.notes, row.admin_memo, row.receipt_name, row.status, row.created_at
+      row.allergies, row.notes, row.admin_memo, row.receipt_name,
+      row.age || '', row.booking_site || '', row.sns_consent || '', row.photo_consent || '', row.companion_relation || '',
+      row.status, row.created_at
     ].map(v => `"${String(v || '').replace(/"/g, '""')}"`);
     csvRows.push(csvRow.join(','));
   }
@@ -813,16 +820,30 @@ async function handleAdminStats(request, env, origin) {
   const repeaterStmt = env.DB.prepare(
     "SELECT name, COUNT(*) as visits FROM checkins WHERE 1=1" + dateFilter + " GROUP BY name HAVING visits > 1 ORDER BY visits DESC LIMIT 20"
   );
+  const bookingSiteStmt = env.DB.prepare(
+    "SELECT booking_site, COUNT(*) as count FROM checkins WHERE booking_site IS NOT NULL AND booking_site != ''" + dateFilter + " GROUP BY booking_site ORDER BY count DESC"
+  );
+  const ageGroupStmt = env.DB.prepare(
+    "SELECT CASE WHEN age < 20 THEN '10代以下' WHEN age < 30 THEN '20代' WHEN age < 40 THEN '30代' WHEN age < 50 THEN '40代' WHEN age < 60 THEN '50代' WHEN age >= 60 THEN '60代以上' ELSE '不明' END as age_group, COUNT(*) as count FROM checkins WHERE age IS NOT NULL AND age > 0" + dateFilter + " GROUP BY age_group ORDER BY MIN(age)"
+  );
+  const prefectureStmt = env.DB.prepare(
+    "SELECT CASE " +
+    "WHEN address LIKE '北海道%' THEN '北海道' WHEN address LIKE '青森県%' THEN '青森県' WHEN address LIKE '岩手県%' THEN '岩手県' WHEN address LIKE '宮城県%' THEN '宮城県' WHEN address LIKE '秋田県%' THEN '秋田県' WHEN address LIKE '山形県%' THEN '山形県' WHEN address LIKE '福島県%' THEN '福島県' WHEN address LIKE '茨城県%' THEN '茨城県' WHEN address LIKE '栃木県%' THEN '栃木県' WHEN address LIKE '群馬県%' THEN '群馬県' WHEN address LIKE '埼玉県%' THEN '埼玉県' WHEN address LIKE '千葉県%' THEN '千葉県' WHEN address LIKE '東京都%' THEN '東京都' WHEN address LIKE '神奈川県%' THEN '神奈川県' WHEN address LIKE '新潟県%' THEN '新潟県' WHEN address LIKE '富山県%' THEN '富山県' WHEN address LIKE '石川県%' THEN '石川県' WHEN address LIKE '福井県%' THEN '福井県' WHEN address LIKE '山梨県%' THEN '山梨県' WHEN address LIKE '長野県%' THEN '長野県' WHEN address LIKE '岐阜県%' THEN '岐阜県' WHEN address LIKE '静岡県%' THEN '静岡県' WHEN address LIKE '愛知県%' THEN '愛知県' WHEN address LIKE '三重県%' THEN '三重県' WHEN address LIKE '滋賀県%' THEN '滋賀県' WHEN address LIKE '京都府%' THEN '京都府' WHEN address LIKE '大阪府%' THEN '大阪府' WHEN address LIKE '兵庫県%' THEN '兵庫県' WHEN address LIKE '奈良県%' THEN '奈良県' WHEN address LIKE '和歌山県%' THEN '和歌山県' WHEN address LIKE '鳥取県%' THEN '鳥取県' WHEN address LIKE '島根県%' THEN '島根県' WHEN address LIKE '岡山県%' THEN '岡山県' WHEN address LIKE '広島県%' THEN '広島県' WHEN address LIKE '山口県%' THEN '山口県' WHEN address LIKE '徳島県%' THEN '徳島県' WHEN address LIKE '香川県%' THEN '香川県' WHEN address LIKE '愛媛県%' THEN '愛媛県' WHEN address LIKE '高知県%' THEN '高知県' WHEN address LIKE '福岡県%' THEN '福岡県' WHEN address LIKE '佐賀県%' THEN '佐賀県' WHEN address LIKE '長崎県%' THEN '長崎県' WHEN address LIKE '熊本県%' THEN '熊本県' WHEN address LIKE '大分県%' THEN '大分県' WHEN address LIKE '宮崎県%' THEN '宮崎県' WHEN address LIKE '鹿児島県%' THEN '鹿児島県' WHEN address LIKE '沖縄県%' THEN '沖縄県' " +
+    "ELSE NULL END as prefecture, COUNT(*) as count FROM checkins WHERE is_foreign = 0 AND address IS NOT NULL AND address != ''" + dateFilter + " GROUP BY prefecture HAVING prefecture IS NOT NULL ORDER BY count DESC"
+  );
 
   const bind = (stmt) => dateParams.length > 0 ? stmt.bind(...dateParams) : stmt;
 
-  const [monthlyResult, nationalityResult, avgResult, totalResult, weekdayResult, repeaterResult] = await Promise.all([
+  const [monthlyResult, nationalityResult, avgResult, totalResult, weekdayResult, repeaterResult, bookingSiteResult, ageGroupResult, prefectureResult] = await Promise.all([
     bind(monthlyStmt).all(),
     bind(nationalityStmt).all(),
     bind(avgStmt).first(),
     bind(totalStmt).first(),
     bind(weekdayStmt).all(),
     bind(repeaterStmt).all(),
+    bind(bookingSiteStmt).all(),
+    bind(ageGroupStmt).all(),
+    bind(prefectureStmt).all(),
   ]);
 
   return jsonResponse({
@@ -832,6 +853,9 @@ async function handleAdminStats(request, env, origin) {
     total: totalResult ? totalResult.total : 0,
     weekday: weekdayResult.results || [],
     repeaters: repeaterResult.results || [],
+    booking_sites: bookingSiteResult.results || [],
+    age_groups: ageGroupResult.results || [],
+    prefectures: prefectureResult.results || [],
   }, 200, origin, env.ALLOWED_ORIGIN);
 }
 
