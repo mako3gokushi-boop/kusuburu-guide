@@ -301,6 +301,32 @@
         </div>
       </div>
 
+      <!-- Charts Row 3: 予約サイト・年齢層 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="card p-5" id="booking-site-chart-card">
+          <h3 class="font-display font-semibold text-sm mb-3">予約サイト別</h3>
+          <div style="position:relative;height:280px;">
+            <canvas id="chart-booking-site"></canvas>
+          </div>
+        </div>
+        <div class="card p-5" id="age-group-chart-card">
+          <h3 class="font-display font-semibold text-sm mb-3">年齢層別</h3>
+          <div style="position:relative;height:280px;">
+            <canvas id="chart-age-group"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row 4: 都道府県 -->
+      <div class="grid grid-cols-1 gap-4 mb-4">
+        <div class="card p-5" id="prefecture-chart-card">
+          <h3 class="font-display font-semibold text-sm mb-3">都道府県別ゲスト <span class="text-sand-400 text-[10px] font-normal">（国内のみ）</span></h3>
+          <div style="position:relative;height:320px;">
+            <canvas id="chart-prefecture"></canvas>
+          </div>
+        </div>
+      </div>
+
       <!-- Monthly Detail (shown when clicking a bar) -->
       <div id="monthly-detail" class="card p-5 mb-4 hidden">
         <div class="flex items-center justify-between mb-3">
@@ -706,6 +732,9 @@
     let monthlyChart = null;
     let nationalityChart = null;
     let weekdayChart = null;
+    let bookingSiteChart = null;
+    let ageGroupChart = null;
+    let prefectureChart = null;
     let lastStatsData = null;
     const ROOM_COUNT = 3;
 
@@ -864,6 +893,102 @@
           ).join('');
         }
 
+        // Booking site doughnut
+        const bsites = data.booking_sites || [];
+        const bsCard = document.getElementById('booking-site-chart-card');
+        if (bsites.length === 0) {
+          bsCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">予約サイト別</h3><p class="text-sand-400 text-sm text-center py-12">データがありません</p>';
+        } else {
+          bsCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">予約サイト別</h3><div style="position:relative;height:280px;"><canvas id="chart-booking-site"></canvas></div>';
+          if (bookingSiteChart) bookingSiteChart.destroy();
+          const bsLabelMap = { oki_tabi: '隠岐の島旅', homepage: 'ホームページ', phone: '電話', line: 'LINE', email: 'メール' };
+          const bsColors = ['#b8934f','#5b8c5a','#4a7fb5','#c75c5c','#8b6bb5','#d4a03c'];
+          bookingSiteChart = new Chart(document.getElementById('chart-booking-site'), {
+            type: 'doughnut',
+            data: {
+              labels: bsites.map(b => bsLabelMap[b.booking_site] || b.booking_site),
+              datasets: [{
+                data: bsites.map(b => b.count),
+                backgroundColor: bsites.map((_, i) => bsColors[i % bsColors.length]),
+                borderWidth: 2,
+                borderColor: '#fff',
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
+            }
+          });
+        }
+
+        // Age group bar chart
+        const ageGroups = data.age_groups || [];
+        const ageCard = document.getElementById('age-group-chart-card');
+        if (ageGroups.length === 0) {
+          ageCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">年齢層別</h3><p class="text-sand-400 text-sm text-center py-12">データがありません</p>';
+        } else {
+          ageCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">年齢層別</h3><div style="position:relative;height:280px;"><canvas id="chart-age-group"></canvas></div>';
+          if (ageGroupChart) ageGroupChart.destroy();
+          ageGroupChart = new Chart(document.getElementById('chart-age-group'), {
+            type: 'bar',
+            data: {
+              labels: ageGroups.map(a => a.age_group),
+              datasets: [{
+                label: '人数',
+                data: ageGroups.map(a => a.count),
+                backgroundColor: 'rgba(90,140,90,0.6)',
+                borderColor: 'rgba(90,140,90,1)',
+                borderWidth: 1,
+                borderRadius: 4,
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                x: { grid: { display: false } }
+              }
+            }
+          });
+        }
+
+        // Prefecture horizontal bar chart
+        const prefs = data.prefectures || [];
+        const prefCard = document.getElementById('prefecture-chart-card');
+        if (prefs.length === 0) {
+          prefCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">都道府県別ゲスト <span class="text-sand-400 text-[10px] font-normal">（国内のみ）</span></h3><p class="text-sand-400 text-sm text-center py-12">データがありません</p>';
+        } else {
+          prefCard.innerHTML = '<h3 class="font-display font-semibold text-sm mb-3">都道府県別ゲスト <span class="text-sand-400 text-[10px] font-normal">（国内のみ）</span></h3><div style="position:relative;height:' + Math.max(200, prefs.length * 28) + 'px;"><canvas id="chart-prefecture"></canvas></div>';
+          if (prefectureChart) prefectureChart.destroy();
+          prefectureChart = new Chart(document.getElementById('chart-prefecture'), {
+            type: 'bar',
+            data: {
+              labels: prefs.map(p => p.prefecture),
+              datasets: [{
+                label: '人数',
+                data: prefs.map(p => p.count),
+                backgroundColor: 'rgba(74,127,181,0.6)',
+                borderColor: 'rgba(74,127,181,1)',
+                borderWidth: 1,
+                borderRadius: 4,
+              }]
+            },
+            options: {
+              indexAxis: 'y',
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { beginAtZero: true, ticks: { stepSize: 1 } },
+                y: { grid: { display: false } }
+              }
+            }
+          });
+        }
+
         lucide.createIcons();
       } catch (e) {
         console.error('Stats load failed:', e);
@@ -920,6 +1045,16 @@
       rows.push([]);
       rows.push(['リピーター', '回数']);
       (d.repeaters || []).forEach(r => rows.push([r.name, r.visits]));
+      rows.push([]);
+      rows.push(['予約サイト', '人数']);
+      const bsLabelMap = { oki_tabi: '隠岐の島旅', homepage: 'ホームページ', phone: '電話', line: 'LINE', email: 'メール' };
+      (d.booking_sites || []).forEach(b => rows.push([bsLabelMap[b.booking_site] || b.booking_site, b.count]));
+      rows.push([]);
+      rows.push(['年齢層', '人数']);
+      (d.age_groups || []).forEach(a => rows.push([a.age_group, a.count]));
+      rows.push([]);
+      rows.push(['都道府県', '人数']);
+      (d.prefectures || []).forEach(p => rows.push([p.prefecture, p.count]));
       rows.push([]);
       rows.push(['総宿泊者数', d.total]);
       rows.push(['平均滞在日数', d.avg_stay]);
