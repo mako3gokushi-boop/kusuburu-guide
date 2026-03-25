@@ -20,5 +20,26 @@
   },
   "triggers": {
     "crons": ["0 21 * * *"]
+  },
+  "env": {
+    "demo": {
+      "name": "kusuburu-api-demo",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "kusuburu-demo-db",
+          "database_id": "94aa298b-180f-4836-a42f-bac023a0812e"
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "PHOTOS",
+          "bucket_name": "kusuburu-photos"
+        }
+      ],
+      "vars": {
+        "ALLOWED_ORIGIN": "*"
+      }
+    }
   }
 }
