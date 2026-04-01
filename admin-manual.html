@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>くすぶるハウス 管理画面マニュアル</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif; background: #f5f0e8; color: #3d3529; line-height: 1.8; padding: 16px; max-width: 480px; margin: 0 auto; }
+  h1 { font-size: 20px; text-align: center; margin: 24px 0 8px; letter-spacing: 0.08em; }
+  .subtitle { text-align: center; font-size: 11px; color: #8a7e6b; margin-bottom: 32px; letter-spacing: 0.1em; }
+  h2 { font-size: 15px; background: #3d3529; color: #f5f0e8; padding: 8px 14px; border-radius: 8px; margin: 28px 0 12px; letter-spacing: 0.06em; }
+  h2 span { font-size: 11px; opacity: 0.6; margin-left: 6px; }
+  .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .step { display: flex; gap: 10px; margin-bottom: 14px; }
+  .step-num { min-width: 28px; height: 28px; background: #e8dfd2; color: #6b5f4e; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+  .step-text { font-size: 14px; }
+  .step-text strong { color: #8b5e3c; }
+  .oki { color: #6b5f4e; font-size: 13px; font-style: italic; margin-top: 4px; display: block; }
+  .tip { background: #fef9ef; border-left: 3px solid #d4a957; padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 12px 0; font-size: 13px; }
+  .tip::before { content: '💡'; margin-right: 6px; }
+  .warn { background: #fef2f2; border-left: 3px solid #dc6b6b; padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 12px 0; font-size: 13px; }
+  .warn::before { content: '⚠'; margin-right: 6px; }
+  .btn-example { display: inline-block; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; margin: 2px; }
+  .btn-in { background: #d1fae5; color: #065f46; }
+  .btn-out { background: #e0e7ff; color: #3730a3; }
+  .btn-del { background: #fee2e2; color: #991b1b; }
+  .btn-det { background: #f3f0ea; color: #3d3529; }
+  .url-box { background: #f3f0ea; padding: 10px 14px; border-radius: 8px; font-family: monospace; font-size: 11px; word-break: break-all; margin: 8px 0; }
+  .footer { text-align: center; font-size: 10px; color: #8a7e6b; margin: 40px 0 24px; letter-spacing: 0.06em; }
+  .divider { border: none; border-top: 1px dashed #d4cfc4; margin: 20px 0; }
+  .flow { display: flex; align-items: center; gap: 6px; font-size: 13px; margin: 8px 0; flex-wrap: wrap; }
+  .flow-arrow { color: #8a7e6b; }
+  .status { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .s-pending { background: #fef3c7; color: #92400e; }
+  .s-in { background: #d1fae5; color: #065f46; }
+  .s-out { background: #e0e7ff; color: #3730a3; }
+</style>
+</head>
+<body>
+
+<h1>くすぶるハウス<br>管理画面のつかいかた</h1>
+<p class="subtitle">KUSUBURU HOUSE — ADMIN MANUAL</p>
+
+<!-- ===== 1. ログイン ===== -->
+<h2>1. ログイン <span>まずはここから</span></h2>
+<div class="card">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-text">
+      スマホでこのURLを開くけん：
+      <div class="url-box">kusuburu.okikoubou.com/<wbr>admin-k7x2m9f4.html</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-text">
+      パスワードを入れて<strong>「ログイン」</strong>を押す
+      <span class="oki">最初のパスワードは「0000」だけん。あとで変えれるけんの。</span>
+    </div>
+  </div>
+  <div class="tip">ブックマーク（お気に入り）に入れちょくと、次から楽だけん</div>
+</div>
+
+<!-- ===== 2. チェックイン一覧 ===== -->
+<h2>2. ゲスト一覧 <span>お客さんの確認</span></h2>
+<div class="card">
+  <p style="font-size:14px;margin-bottom:12px">ログインしたら、チェックインしたお客さんの一覧が出るけん。</p>
+
+  <p style="font-size:13px;font-weight:600;margin-bottom:6px">ステータスの意味：</p>
+  <div class="flow">
+    <span class="status s-pending">予約済</span>
+    <span class="flow-arrow">→</span>
+    <span class="status s-in">滞在中</span>
+    <span class="flow-arrow">→</span>
+    <span class="status s-out">チェックアウト済</span>
+  </div>
+  <span class="oki">お客さんがフォームを送ったら「予約済」で上がってくるけん。来たら「IN」、帰ったら「OUT」を押すだけだわい。</span>
+
+  <hr class="divider">
+
+  <p style="font-size:13px;font-weight:600;margin-bottom:8px">ボタンの説明：</p>
+  <div style="margin-bottom:6px"><span class="btn-example btn-det">詳細</span> お客さんの情報を全部見る</div>
+  <div style="margin-bottom:6px"><span class="btn-example btn-in">IN</span> チェックイン（お客さんが来た時に押す）</div>
+  <div style="margin-bottom:6px"><span class="btn-example btn-out">OUT</span> チェックアウト（お客さんが帰る時に押す）</div>
+</div>
+
+<div class="card">
+  <p style="font-size:13px;font-weight:600;margin-bottom:8px">絞り込み検索：</p>
+  <div class="step">
+    <div class="step-num">🔍</div>
+    <div class="step-text" style="font-size:13px">
+      上の方に検索バーがあるけん。名前・国籍・ステータスで絞り込めるわい。
+      <span class="oki">お客さんが増えてきたら、がいに便利だけん。</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 3. 詳細画面 ===== -->
+<h2>3. お客さんの詳細 <span>詳細ボタンを押したら</span></h2>
+<div class="card">
+  <p style="font-size:14px;margin-bottom:12px">見れる情報：</p>
+  <div class="step">
+    <div class="step-num">👤</div>
+    <div class="step-text" style="font-size:13px">
+      名前・フリガナ・電話番号・メール・国籍・宿泊人数・チェックイン/アウト日
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">📷</div>
+    <div class="step-text" style="font-size:13px">
+      <strong>「写真を表示」</strong>を押すと、パスポート写真が見れるけん
+      <span class="oki">セキュリティのために、チェックアウト30日後に自動で消えるようになっちょるけんの。</span>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">📝</div>
+    <div class="step-text" style="font-size:13px">
+      <strong>オーナーメモ</strong>：このお客さんについてメモを残せるけん
+      <span class="oki">「アレルギーあり」とか「次も来るって言っちょった」とか、なんでも書いてごせ。「メモ保存」を押すの忘れんでの。</span>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">📅</div>
+    <div class="step-text" style="font-size:13px">
+      <strong>チェックアウト日の変更</strong>：延泊の時はここで日付を変えて「更新」を押す
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div style="margin-bottom:6px"><span class="btn-example btn-in">チェックイン</span> / <span class="btn-example btn-out">チェックアウト</span> もここから押せるけん</div>
+  <div><span class="btn-example btn-del">削除</span> 間違えて登録した時だけ使うこと</div>
+  <div class="warn">削除したら戻せんけん、気をつけてごしなさいよ</div>
+</div>
+
+<!-- ===== 4. 統計 ===== -->
+<h2>4. 統計 <span>どれだけお客さんが来たか</span></h2>
+<div class="card">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-text" style="font-size:13px">
+      上の<strong>「統計」</strong>タブを押す
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-text" style="font-size:13px">
+      <strong>「集計」</strong>ボタンを押すと、グラフが出るけん
+      <span class="oki">期間を指定したかったら、日付を入れてから「集計」を押すだわい。全部見たい時は「全期間」を押してごせ。</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <p style="font-size:13px;margin-bottom:8px">見れるグラフ：</p>
+  <div class="step">
+    <div class="step-num">📊</div>
+    <div class="step-text" style="font-size:13px"><strong>月別宿泊者数</strong> — 棒グラフをタップすると、その月の詳細が見れるけん</div>
+  </div>
+  <div class="step">
+    <div class="step-num">📅</div>
+    <div class="step-text" style="font-size:13px"><strong>曜日別</strong> — 何曜日にお客さんが多いかわかるわい</div>
+  </div>
+  <div class="step">
+    <div class="step-num">🌏</div>
+    <div class="step-text" style="font-size:13px"><strong>国籍別</strong> — 外国のお客さんがどこから来ちょるかわかるけん</div>
+  </div>
+
+  <div class="tip">「統計CSV」ボタンで、データをExcelで開けるファイルに書き出せるけんの</div>
+</div>
+
+<!-- ===== 5. CSV出力 ===== -->
+<h2>5. データ書き出し <span>CSV出力</span></h2>
+<div class="card">
+  <p style="font-size:14px;margin-bottom:8px">一覧タブの<strong>「CSV」</strong>ボタンを押すと、お客さんデータをファイルに書き出せるけん。</p>
+  <span class="oki">Excelやスプレッドシートで開けるけん、確定申告の時とかにがいに便利だわい。</span>
+</div>
+
+<!-- ===== 6. パスワード変更 ===== -->
+<h2>6. パスワード変更 <span>セキュリティ</span></h2>
+<div class="card">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-text" style="font-size:13px">
+      ログイン画面の下に<strong>「パスワードを変更」</strong>リンクがあるけん
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-text" style="font-size:13px">
+      今のパスワードと新しいパスワードを入れて変更
+    </div>
+  </div>
+  <div class="warn">パスワードを忘れたら管理画面に入れんくなるけん、メモしちょいてごしなさいよ</div>
+</div>
+
+<!-- ===== 7. 日々の流れ ===== -->
+<h2>7. 毎日やること <span>かんたんまとめ</span></h2>
+<div class="card">
+  <div class="step">
+    <div class="step-num">🌅</div>
+    <div class="step-text" style="font-size:13px">
+      <strong>朝：</strong>チェックアウトのお客さんがおったら<span class="btn-example btn-out">OUT</span>を押す
+      <span class="oki">朝6時に自動でチェックアウトされるけん、忘れてもだいじょうぶだわい</span>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">🌆</div>
+    <div class="step-text" style="font-size:13px">
+      <strong>夕方：</strong>新しいお客さんが来たら<span class="btn-example btn-in">IN</span>を押す
+      <span class="oki">お客さんがチェックインフォームを送ったら一覧に上がるけん、来た時にINを押すだけだわい</span>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">📝</div>
+    <div class="step-text" style="font-size:13px">
+      <strong>気づいたこと：</strong>メモに書いちょく
+      <span class="oki">「布団もう一枚ほしいて言っちょった」とか、なんでもええけんの</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 8. 困った時 ===== -->
+<h2>8. 困った時 <span>よくある質問</span></h2>
+<div class="card">
+  <div class="step">
+    <div class="step-num">Q</div>
+    <div class="step-text" style="font-size:13px">
+      <strong>お客さんが一覧に出てこん</strong>
+      <span class="oki">→ チェックインフォームをちゃんと送信したか確認してごせ。送信したのに出んかったら、ページをリロード（引っ張って更新）してみてごしなさい。</span>
+    </div>
+  </div>
+  <hr class="divider">
+  <div class="step">
+    <div class="step-num">Q</div>
+    <div class="step-text" style="font-size:13px">
+      <strong>延泊したいて言われた</strong>
+      <span class="oki">→ 「詳細」を開いて、チェックアウト日を変えて「更新」を押すだけだけん。</span>
+    </div>
+  </div>
+  <hr class="divider">
+  <div class="step">
+    <div class="step-num">Q</div>
+    <div class="step-text" style="font-size:13px">
+      <strong>間違えてOUTを押してしもうた</strong>
+      <span class="oki">→ 残念だけど戻せんけん、削除してもういっぺんチェックインフォームから登録してもらうしかないわい。</span>
+    </div>
+  </div>
+  <hr class="divider">
+  <div class="step">
+    <div class="step-num">Q</div>
+    <div class="step-text" style="font-size:13px">
+      <strong>パスワードを忘れた</strong>
+      <span class="oki">→ 管理者に連絡してごしなさい。リセットしてもらえるけん。</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 9. ホーム画面に追加 ===== -->
+<h2>9. アプリみたいに使う <span>ホーム画面に追加</span></h2>
+<div class="card">
+  <p style="font-size:14px;margin-bottom:12px">管理画面をスマホのホーム画面に追加すると、アプリみたいにワンタップで開けるようになるけん。</p>
+
+  <p style="font-size:13px;font-weight:700;margin-bottom:8px;color:#3d3529;">🍎 iPhone（Safari）の場合：</p>
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-text" style="font-size:13px">
+      Safariで管理画面を開く
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-text" style="font-size:13px">
+      画面下の<strong>共有ボタン</strong>（□に↑の矢印マーク）をタップ
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-text" style="font-size:13px">
+      下にスクロールして<strong>「ホーム画面に追加」</strong>をタップ
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-text" style="font-size:13px">
+      名前を「くすぶる管理」とかに変えて<strong>「追加」</strong>を押す
+      <span class="oki">これでホーム画面にアイコンが出るけん、アプリみたいに開けるわい。</span>
+    </div>
+  </div>
+
+  <div class="tip">Safariでないとダメだけん。ChromeやLINEのブラウザからは追加できんけんの。</div>
+
+  <hr class="divider">
+
+  <p style="font-size:13px;font-weight:700;margin-bottom:8px;color:#3d3529;">🤖 Android（Chrome）の場合：</p>
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-text" style="font-size:13px">
+      Chromeで管理画面を開く
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-text" style="font-size:13px">
+      右上の<strong>⋮（3つの点）</strong>メニューをタップ
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-text" style="font-size:13px">
+      <strong>「ホーム画面に追加」</strong>をタップ
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-text" style="font-size:13px">
+      名前を確認して<strong>「追加」</strong>を押す
+      <span class="oki">ホーム画面にアイコンが出るけん、次からワンタップで開けるだわい。</span>
+    </div>
+  </div>
+</div>
+
+<p class="footer">
+  くすぶるハウス — 燻家<br>
+  わからんことがあったら、がいに気軽に聞いてごしなさいの。<br>
+  だんだん。
+</p>
+
+</body>
+</html>

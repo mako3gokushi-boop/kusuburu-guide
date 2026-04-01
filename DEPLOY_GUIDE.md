@@ -44,7 +44,7 @@ git push
 ```
 
 ### Step 6: 本番確認
-https://kusuburu.ritoukoubou.com/ で動作確認
+https://kusuburu.okikoubou.com/ で動作確認
 
 ### Step 7: 問題があれば即復元
 ```bash
