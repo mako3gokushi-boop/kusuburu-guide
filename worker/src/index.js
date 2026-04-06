@@ -24,6 +24,17 @@ function generateUUID() {
 }
 
 function corsHeaders(origin, allowedOrigin) {
+  // デモ環境（ALLOWED_ORIGIN="*"）はリクエスト元をそのままエコーバック
+  // ワイルドカードはAuthorization付きリクエストで使えないため
+  if (allowedOrigin === '*') {
+    return {
+      'Access-Control-Allow-Origin': origin || '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Allow-Credentials': 'true',
+      'Access-Control-Max-Age': '86400',
+    };
+  }
   const allowed = origin === allowedOrigin || origin === 'https://mako3gokushi-boop.github.io';
   return {
     'Access-Control-Allow-Origin': allowed ? origin : allowedOrigin,
@@ -474,8 +485,8 @@ async function handleCheckin(request, env, origin) {
   }
 
   await env.DB.prepare(`
-    INSERT INTO checkins (id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, receipt_name, age, booking_site, sns_consent, photo_consent, companion_relation, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+    INSERT INTO checkins (id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, receipt_name, age, booking_site, sns_consent, photo_consent, companion_relation, migration_interest, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
   `).bind(
     id,
     encrypted.name,
@@ -499,7 +510,8 @@ async function handleCheckin(request, env, origin) {
     data.booking_site || '',
     data.sns_consent || '',
     data.photo_consent || '',
-    data.companion_relation || ''
+    data.companion_relation || '',
+    data.migration_interest || ''
   ).run();
 
   // Send LINE notification (fire and forget)
@@ -606,7 +618,7 @@ async function handleAdminCheckins(request, env, origin) {
   const dateFrom = url.searchParams.get('date_from');
   const dateTo = url.searchParams.get('date_to');
 
-  let query = 'SELECT id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, address, is_foreign, nationality, transport, status, admin_memo, receipt_name, age, booking_site, sns_consent, photo_consent, companion_relation, created_at FROM checkins WHERE 1=1';
+  let query = 'SELECT id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, address, is_foreign, nationality, transport, status, admin_memo, receipt_name, age, booking_site, sns_consent, photo_consent, companion_relation, migration_interest, created_at FROM checkins WHERE 1=1';
   const params = [];
 
   if (status) {
@@ -643,7 +655,7 @@ async function handleAdminCheckinDetail(env, id, request, origin) {
   }
 
   const checkin = await env.DB.prepare(
-    'SELECT id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, status, admin_memo, receipt_name, age, booking_site, sns_consent, photo_consent, companion_relation, created_at FROM checkins WHERE id = ?'
+    'SELECT id, name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, status, admin_memo, receipt_name, age, booking_site, sns_consent, photo_consent, companion_relation, migration_interest, created_at FROM checkins WHERE id = ?'
   ).bind(id).first();
 
   if (!checkin) {
@@ -754,13 +766,13 @@ async function handleAdminCsvExport(request, env, origin) {
   }
 
   const result = await env.DB.prepare(
-    'SELECT name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, admin_memo, receipt_name, age, booking_site, sns_consent, photo_consent, companion_relation, status, created_at FROM checkins ORDER BY created_at DESC'
+    'SELECT name, furigana, adults, children, checkin_date, checkout_date, phone, email, zipcode, address, is_foreign, nationality, passport_no, transport, allergies, notes, admin_memo, receipt_name, age, booking_site, sns_consent, photo_consent, companion_relation, migration_interest, status, created_at FROM checkins ORDER BY created_at DESC'
   ).all();
 
   // Decrypt sensitive fields for CSV export
   const decryptedResults = await decryptCheckins(result.results || [], env);
 
-  const headers = ['氏名', 'フリガナ', '大人', '子供', 'チェックイン', 'チェックアウト', '電話番号', 'メール', '郵便番号', '住所', '外国籍', '国籍', 'パスポート番号', '交通手段', 'アレルギー', '備考', 'オーナーメモ', '領収書宛名', '年齢', '予約サイト', 'SNS掲載', '記念撮影', '同行者関係', 'ステータス', '登録日時'];
+  const headers = ['氏名', 'フリガナ', '大人', '子供', 'チェックイン', 'チェックアウト', '電話番号', 'メール', '郵便番号', '住所', '外国籍', '国籍', 'パスポート番号', '交通手段', 'アレルギー', '備考', 'オーナーメモ', '領収書宛名', '年齢', '予約サイト', 'SNS掲載', '記念撮影', '同行者関係', '移住興味', 'ステータス', '登録日時'];
   const csvRows = [headers.join(',')];
 
   for (const row of decryptedResults) {
@@ -770,7 +782,7 @@ async function handleAdminCsvExport(request, env, origin) {
       row.zipcode, row.address, row.is_foreign ? 'はい' : 'いいえ',
       row.nationality, row.passport_no, row.transport,
       row.allergies, row.notes, row.admin_memo, row.receipt_name,
-      row.age || '', row.booking_site || '', row.sns_consent || '', row.photo_consent || '', row.companion_relation || '',
+      row.age || '', row.booking_site || '', row.sns_consent || '', row.photo_consent || '', row.companion_relation || '', row.migration_interest || '',
       row.status, row.created_at
     ].map(v => `"${String(v || '').replace(/"/g, '""')}"`);
     csvRows.push(csvRow.join(','));
@@ -987,51 +999,51 @@ export default {
     try {
       // Public endpoints
       if (path === '/checkin' && method === 'POST') {
-        return handleCheckin(request, env, origin);
+        return await handleCheckin(request, env, origin);
       }
       if (path === '/checkin/photo' && method === 'POST') {
-        return handlePhotoUpload(request, env, origin);
+        return await handlePhotoUpload(request, env, origin);
       }
 
       // Auth endpoints
       if (path === '/admin/login' && method === 'POST') {
-        return handleLogin(request, env, origin);
+        return await handleLogin(request, env, origin);
       }
       if (path === '/admin/change-password' && method === 'POST') {
-        return handleChangePassword(request, env, origin);
+        return await handleChangePassword(request, env, origin);
       }
 
       // Admin endpoints
       if (path === '/admin/checkins' && method === 'GET') {
-        return handleAdminCheckins(request, env, origin);
+        return await handleAdminCheckins(request, env, origin);
       }
       if (path === '/admin/stats' && method === 'GET') {
-        return handleAdminStats(request, env, origin);
+        return await handleAdminStats(request, env, origin);
       }
       const monthlyMatch = path.match(/^\/admin\/stats\/monthly\/(\d{4}-\d{2})$/);
       if (monthlyMatch && method === 'GET') {
-        return handleAdminStatsMonthly(request, env, origin, monthlyMatch[1]);
+        return await handleAdminStatsMonthly(request, env, origin, monthlyMatch[1]);
       }
       if (path === '/admin/checkins/csv' && method === 'GET') {
-        return handleAdminCsvExport(request, env, origin);
+        return await handleAdminCsvExport(request, env, origin);
       }
 
       const checkinMatch = path.match(/^\/admin\/checkins\/([a-f0-9-]+)$/);
       if (checkinMatch) {
         const id = checkinMatch[1];
-        if (method === 'GET') return handleAdminCheckinDetail(env, id, request, origin);
-        if (method === 'DELETE') return handleAdminDelete(env, id, request, origin);
-        if (method === 'PUT') return handleAdminUpdate(env, id, request, origin);
+        if (method === 'GET') return await handleAdminCheckinDetail(env, id, request, origin);
+        if (method === 'DELETE') return await handleAdminDelete(env, id, request, origin);
+        if (method === 'PUT') return await handleAdminUpdate(env, id, request, origin);
       }
 
       const photoMatch = path.match(/^\/admin\/photo\/([a-f0-9-]+)$/);
       if (photoMatch && method === 'GET') {
-        return handleAdminPhoto(env, photoMatch[1], request, origin);
+        return await handleAdminPhoto(env, photoMatch[1], request, origin);
       }
 
       return jsonResponse({ error: 'Not found' }, 404, origin, env.ALLOWED_ORIGIN);
     } catch (e) {
-      console.error('Error:', e);
+      console.error('Unhandled error:', e.message || e, e.stack || '');
       return jsonResponse({ error: 'Internal server error' }, 500, origin, env.ALLOWED_ORIGIN);
     }
   },

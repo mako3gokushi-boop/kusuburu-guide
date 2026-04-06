@@ -543,7 +543,7 @@
       }
       tbody.innerHTML = allCheckins.map(c => `
         <tr class="clickable" ondblclick="showDetail('${c.id}')">
-          <td class="font-medium">${esc(c.name)}${c.admin_memo ? ' <i data-lucide="message-square-text" class="w-3 h-3 inline text-amber-500" title="メモあり"></i>' : ''}<br><span class="text-[10px] text-sand-400">${esc(c.furigana||'')}</span></td>
+          <td class="font-medium">${esc(c.name)}${c.admin_memo ? ' <i data-lucide="message-square-text" class="w-3 h-3 inline text-amber-500" title="メモあり"></i>' : ''}${(c.migration_interest === 'yes' || c.migration_interest === 'somewhat') ? ' <span style="background:#fef3c7;color:#92400e;font-size:10px;padding:1px 6px;border-radius:8px;font-weight:600;">移住興味あり</span>' : ''}<br><span class="text-[10px] text-sand-400">${esc(c.furigana||'')}</span></td>
           <td>${c.adults||0}+${c.children||0}</td>
           <td class="text-xs">${c.checkin_date||''}</td>
           <td class="text-xs">${c.checkout_date||''}</td>
@@ -656,6 +656,7 @@
             ${c.companion_relation ? `<div class="col-span-2"><span class="text-sand-400 text-xs">同行者との関係性</span><br>${esc(c.companion_relation)}</div>` : ''}
             <div class="col-span-2"><span class="text-sand-400 text-xs">アレルギー</span><br>${esc(c.allergies||'-')}</div>
             <div class="col-span-2"><span class="text-sand-400 text-xs">備考</span><br>${esc(c.notes||'-')}</div>
+            ${c.migration_interest ? `<div class="col-span-2"><span class="text-sand-400 text-xs">移住への興味</span><br>${esc({'yes':'はい','somewhat':'少し興味がある','no':'いいえ'}[c.migration_interest] || c.migration_interest)}</div>` : ''}
             <div class="col-span-2"><span class="text-sand-400 text-xs">登録日時</span><br>${c.created_at ? new Date(c.created_at + 'Z').toLocaleString('ja-JP', {timeZone:'Asia/Tokyo'}) : '-'}</div>
           </div>
           <div class="mt-4 pt-3 border-t border-sand-100">

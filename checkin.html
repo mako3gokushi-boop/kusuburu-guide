@@ -615,6 +615,23 @@
             data-lang-placeholder-ja="例: 家族旅行、友人、カップル" data-lang-placeholder-en="e.g. family trip, friends, couple">
         </div>
 
+        <!-- Migration interest (optional) -->
+        <div class="mb-4">
+          <label class="form-label" data-lang="ja">移住に興味はありますか？<span class="optional-badge">任意</span></label>
+          <label class="form-label" data-lang="en">Are you interested in relocating?<span class="optional-badge">Optional</span></label>
+          <div class="flex flex-wrap gap-2 mt-1">
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="migration_interest" value="yes" class="accent-amber-600"> <span data-lang="ja">はい</span><span data-lang="en">Yes</span>
+            </label>
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="migration_interest" value="somewhat" class="accent-amber-600"> <span data-lang="ja">少し興味がある</span><span data-lang="en">Somewhat interested</span>
+            </label>
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-sand-200 bg-white text-sm cursor-pointer hover:bg-sand-50 transition-colors has-[:checked]:bg-amber-50 has-[:checked]:border-amber-300">
+              <input type="radio" name="migration_interest" value="no" class="accent-amber-600"> <span data-lang="ja">いいえ</span><span data-lang="en">No</span>
+            </label>
+          </div>
+        </div>
+
         <!-- Notes -->
         <div>
           <label class="form-label" data-lang="ja">備考<span class="optional-badge">任意</span></label>
@@ -924,6 +941,7 @@
         sns_consent: snsConsentChecked ? snsConsentChecked.value : '',
         photo_consent: photoConsentChecked ? photoConsentChecked.value : '',
         companion_relation: document.querySelector('[name="companion_relation"]').value.trim(),
+        migration_interest: (function() { const r = document.querySelector('[name="migration_interest"]:checked'); return r ? r.value : ''; })(),
         referral: (function() {
           const r = document.querySelector('[name="referral"]:checked');
           if (!r) return '';
@@ -975,6 +993,7 @@
         sns_consent: formData.sns_consent,
         photo_consent: formData.photo_consent,
         companion_relation: formData.companion_relation,
+        migration_interest: formData.migration_interest,
         allergies: [formData.referral ? '【知ったきっかけ】' + formData.referral : '', formData.looking_forward ? '【楽しみ】' + formData.looking_forward : '', formData.ambition ? '【野望】' + formData.ambition : ''].filter(Boolean).join(' / '),
         notes: formData.notes,
       };
